@@ -1,6 +1,6 @@
 // src/app/rosters/page.tsx
 import type { Metadata } from "next";
-import { ComingSoonRosters } from "@/components/rosters/ComingSoonRosters";
+import ComingSoonRosters from "@/components/rosters/ComingSoonRosters";
 
 export const metadata: Metadata = {
   title: "BGT — Rosters",

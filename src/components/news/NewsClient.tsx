@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { NEWS, type NewsItem } from "@/data/news";
+import { NEWS } from "@/data/news";
 import { motion, type Variants } from "framer-motion";
 import { NewsCard } from "./NewsCard";
 
