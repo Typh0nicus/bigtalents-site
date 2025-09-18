@@ -1,15 +1,76 @@
+// src/components/contact/ContactClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
+
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 export default function ContactClient() {
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const [msg, setMsg] = useState<string>("");
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("loading");
+    setMsg("");
+
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+
+    const payload = {
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      subject: String(fd.get("subject") || ""),
+      message: String(fd.get("message") || ""),
+      _hp: String(fd.get("_hp") || ""),            // honeypot
+      _ts: Number(fd.get("_ts") || Date.now()),    // timestamp
+    };
+
+    // quick client-side sanity (better UX)
+    if (!payload.name || !payload.email || !payload.message) {
+      setStatus("err");
+      setMsg("Please fill your name, email, and message.");
+      return;
+    }
+    if (payload.message.length > 5000) {
+      setStatus("err");
+      setMsg("Message is too long (limit 5000 characters).");
+      return;
+    }
+
+    try {
+      const res = await fetch("/.netlify/functions/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setStatus("ok");
+        setMsg("Thanks! We’ll get back to you shortly.");
+        form.reset();
+        // refresh timestamp so next submit isn't rejected by timing check
+        const ts = form.querySelector<HTMLInputElement>('input[name="_ts"]');
+        if (ts) ts.value = String(Date.now());
+      } else {
+        const text = await res.text().catch(() => "");
+        setStatus("err");
+        setMsg(text || "Something went wrong. Please try again later.");
+      }
+    } catch {
+      setStatus("err");
+      setMsg("Network error. Please try again later.");
+    }
+  }
+
   return (
     <section className="container py-16 md:py-24">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
+        transition={{ duration: 0.28, ease: EASE_OUT }}
         className="max-w-2xl"
       >
         <h1 className="h2">Contact Big Talents</h1>
@@ -24,7 +85,7 @@ export default function ContactClient() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.28, ease: "easeOut" }}
+          transition={{ delay: 0.1, duration: 0.28, ease: EASE_OUT }}
           className="rounded-2xl border border-white/10 p-6"
         >
           <h2 className="h4">How to reach us</h2>
@@ -35,8 +96,9 @@ export default function ContactClient() {
                 Join our Discord for event questions, check-ins, and support.
               </div>
               <a
-                href="https://discord.gg/bgt"
+                href="https://discord.gg/bgt?utm_source=site&utm_medium=contact_card&utm_campaign=join_discord"
                 className="btn btn-outline mt-3 rounded-xl"
+                rel="noopener noreferrer"
               >
                 Join Discord
               </a>
@@ -79,12 +141,14 @@ export default function ContactClient() {
                 <a
                   href="https://x.com/bgtalents"
                   className="btn btn-outline rounded-xl"
+                  rel="noopener noreferrer"
                 >
                   X / Twitter
                 </a>
                 <a
                   href="https://instagram.com/bigtalents_org"
                   className="btn btn-outline rounded-xl"
+                  rel="noopener noreferrer"
                 >
                   Instagram
                 </a>
@@ -93,27 +157,21 @@ export default function ContactClient() {
           </ul>
         </motion.div>
 
-        {/* Column: Netlify Form */}
+        {/* Column: Functional Form (Netlify Function) */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.28, ease: "easeOut" }}
+          transition={{ delay: 0.15, duration: 0.28, ease: EASE_OUT }}
           className="rounded-2xl border border-white/10 p-6"
         >
           <h2 className="h4">Send a message</h2>
 
-          <form
-            name="contact"
-            method="POST"
-            action="/contact/thanks"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            className="mt-5 space-y-4"
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            <p className="hidden">
+          <form onSubmit={onSubmit} className="mt-5 space-y-4" noValidate>
+            {/* timing + honeypot */}
+            <input type="hidden" name="_ts" value={Date.now()} />
+            <p className="hidden" aria-hidden>
               <label>
-                Don’t fill this out: <input name="bot-field" />
+                Leave this field empty: <input name="_hp" autoComplete="off" />
               </label>
             </p>
 
@@ -146,6 +204,7 @@ export default function ContactClient() {
                 autoComplete="email"
                 autoCorrect="off"
                 autoCapitalize="none"
+                inputMode="email"
                 suppressHydrationWarning
               />
             </div>
@@ -180,8 +239,12 @@ export default function ContactClient() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              <button type="submit" className="btn btn-primary rounded-xl">
-                Send Message
+              <button
+                type="submit"
+                className="btn btn-primary rounded-xl"
+                disabled={status === "loading"}
+              >
+                {status === "loading" ? "Sending…" : "Send Message"}
               </button>
               <a
                 href="mailto:contact@bigtalents.org"
@@ -189,6 +252,16 @@ export default function ContactClient() {
               >
                 Open in Email App
               </a>
+            </div>
+
+            {/* status messages (a11y live region) */}
+            <div className="min-h-[1.25rem]" aria-live="polite">
+              {status === "ok" && (
+                <p className="text-green-400 text-sm">{msg}</p>
+              )}
+              {status === "err" && (
+                <p className="text-red-400 text-sm">{msg || "Something went wrong. Try again later."}</p>
+              )}
             </div>
 
             <p className="caption mt-2 text-white/60">
@@ -202,7 +275,7 @@ export default function ContactClient() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.25, duration: 0.28 }}
+        transition={{ delay: 0.25, duration: 0.28, ease: EASE_OUT }}
         className="mt-10 text-center text-sm text-white/50"
       >
         Global esports community, operating across NA & EU.

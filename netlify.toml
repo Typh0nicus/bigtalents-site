@@ -7,3 +7,20 @@
 
 [functions]
   node_bundler = "esbuild"
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[edge_functions]]
+  function = "track"
+  path = "/api/track"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; style-src 'self' 'unsafe-inline'"
+
