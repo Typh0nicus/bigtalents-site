@@ -157,3 +157,5 @@ html { scroll-behavior: smooth; }
   background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
   animation: skel-sweep 1.1s linear infinite;
 }
+/* lock background scroll when mobile drawer is open */
+.no-scroll { overflow: hidden; }

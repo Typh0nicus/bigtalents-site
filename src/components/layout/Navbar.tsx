@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import type { Variants } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
+// --------------------------- Nav model ---------------------------
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/news", label: "News" },
@@ -16,7 +16,6 @@ const NAV_ITEMS = [
   { href: "/contact", label: "Contact" },
 ];
 
-// helper: match path to item (keeps Home strict)
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(href + "/");
@@ -31,9 +30,8 @@ function DesktopLink({
   label: string;
   active: boolean;
 }) {
-  // base styles
   const base =
-    "group relative px-3 py-2 text-sm font-medium transition-all duration-[210ms] ease-[cubic-bezier(.22,1,.36,1)] will-change-transform";
+    "group relative px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out";
   const on = "text-[color:var(--gold)]";
   const off =
     "text-white/80 hover:text-[color:var(--gold)] hover:scale-105 hover:drop-shadow-[0_0_12px_rgba(212,175,55,.35)]";
@@ -41,10 +39,9 @@ function DesktopLink({
   return (
     <Link href={href} className={`${base} ${active ? on : off}`}>
       {label}
-      {/* underline indicator */}
       <span
         aria-hidden
-        className={`pointer-events-none absolute left-3 -bottom-1 h-[2px] rounded-full bg-[color:var(--gold)] transition-all duration-[210ms] ease-[cubic-bezier(.22,1,.36,1)] ${
+        className={`pointer-events-none absolute left-3 -bottom-1 h-[2px] rounded-full bg-[color:var(--gold)] transition-all duration-200 ease-in-out ${
           active
             ? "w-1/2 opacity-100"
             : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-100"
@@ -54,21 +51,13 @@ function DesktopLink({
   );
 }
 
+// ----------------------- Drawer animation ------------------------
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const prefersReduced = useReducedMotion();
-
-  // lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (open) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = prev;
-      };
-    }
-  }, [open]);
 
   const items = useMemo(
     () =>
@@ -79,38 +68,57 @@ export function Navbar() {
     [pathname]
   );
 
-  // Motion variants for overlay and sheet (typed)
-  const overlayV: Variants = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { duration: prefersReduced ? 0 : 0.18 } },
-    exit: { opacity: 0, transition: { duration: prefersReduced ? 0 : 0.12 } },
-  };
+  // Close drawer on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
-  const sheetV: Variants = {
-    hidden: { y: "-10%", opacity: 0.7 },
-    show: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: prefersReduced ? 0 : 0.22,
-        // easeOut
-        ease: [0.0, 0.0, 0.2, 1.0],
-      },
-    },
-    exit: {
-      y: "-8%",
-      opacity: 0,
-      transition: {
-        duration: prefersReduced ? 0 : 0.16,
-        // easeIn
-        ease: [0.4, 0.0, 1.0, 1.0],
-      },
-    },
+  // Scroll lock while open
+  useEffect(() => {
+    if (!open) return;
+    document.documentElement.classList.add("no-scroll");
+    return () => document.documentElement.classList.remove("no-scroll");
+  }, [open]);
+
+  // Focus trap within drawer
+  const drawerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const first = drawerRef.current?.querySelector<HTMLElement>(
+      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+    );
+    first?.focus();
+  }, [open]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      return;
+    }
+    if (e.key !== "Tab" || !drawerRef.current) return;
+
+    const focusables = Array.from(
+      drawerRef.current.querySelectorAll<HTMLElement>(
+        'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute("disabled"));
+
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   };
 
   return (
-    // NOT sticky
-    <header className="z-50 w-full border-b border-white/10 bg-black">
+    <header className="z-50 w-full border-b border-white/10 bg-black/90">
       <nav className="container flex items-center justify-between py-4">
         {/* Brand / Logo */}
         <Link href="/" aria-label="Big Talents Home" className="flex items-center gap-2">
@@ -118,9 +126,9 @@ export function Navbar() {
             src="/images/logo/bgt-logo.png"
             alt="BGT Logo"
             width={120}
-            height={48}
+            height={40}
+            className="h-10 w-auto md:h-12"
             priority={false}
-            className="h-10 w-auto md:h-12 transition-transform duration-[210ms] ease-[cubic-bezier(.22,1,.36,1)] hover:scale-105"
           />
         </Link>
 
@@ -139,86 +147,87 @@ export function Navbar() {
         {/* Mobile menu button */}
         <button
           className="md:hidden p-2 text-white/80 hover:text-[color:var(--gold)] transition-colors"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle Menu"
-          aria-expanded={open}
-          aria-controls="mobile-menu"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
         >
-          <span className="inline-block align-middle text-xl">{open ? "✕" : "☰"}</span>
+          <span className="inline-block align-middle text-xl">☰</span>
         </button>
       </nav>
 
-      {/* Mobile nav */}
-      <AnimatePresence>
-        {open && (
-          <>
-            {/* Backdrop */}
-            <motion.button
-              aria-label="Close menu"
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
-              onClick={() => setOpen(false)}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              variants={overlayV}
-            />
+      {/* Mobile drawer + scrim */}
+      {open && (
+        <>
+          {/* Scrim */}
+          <motion.button
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 bg-black/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.18, ease: easeOut } }}
+            exit={{ opacity: 0, transition: { duration: 0.14, ease: easeOut } }}
+          />
 
-            {/* Top sheet */}
-            <motion.div
-              className="fixed left-0 right-0 top-0 z-50 md:hidden"
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              variants={sheetV}
-            >
-              <div className="mx-3 mt-[calc(env(safe-area-inset-top)+10px)] rounded-2xl border border-white/12 bg-black/92 backdrop-blur-md shadow-2xl">
-                <div className="flex items-center justify-between px-4 py-3">
-                  <Link
-                    href="/"
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-2"
-                    aria-label="Big Talents Home"
-                  >
-                    <Image
-                      src="/images/logo/bgt-logo.png"
-                      alt="BGT Logo"
-                      width={110}
-                      height={40}
-                      className="h-8 w-auto"
-                    />
-                  </Link>
-                  <button
-                    className="rounded-lg border border-white/12 px-3 py-1.5 text-sm text-white/85 hover:text-[color:var(--gold)]"
-                    onClick={() => setOpen(false)}
-                    aria-label="Close menu"
-                  >
-                    Close ✕
-                  </button>
-                </div>
+          {/* Drawer */}
+          <motion.aside
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-menu-title"
+            className="fixed left-0 top-0 z-50 h-[100dvh] w-[86vw] max-w-[420px] bg-black/95 backdrop-blur-md border-r border-white/10 shadow-soft"
+            ref={drawerRef}
+            onKeyDown={onKeyDown}
+            initial={{ x: "-100%" }}
+            animate={{
+              x: 0,
+              transition: { duration: prefersReduced ? 0 : 0.22, ease: easeOut },
+            }}
+            exit={{ x: "-100%", transition: { duration: 0.18, ease: easeOut } }}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <Image
+                  src="/images/logo/bgt-logo.png"
+                  alt="BGT Logo"
+                  width={100}
+                  height={32}
+                />
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-white/80 hover:text-[color:var(--gold)] transition"
+              >
+                ✕
+              </button>
+            </div>
 
-                <nav id="mobile-menu" className="grid gap-1 px-2 pb-3 pt-1">
-                  {items.map((item) => (
+            {/* Links */}
+            <nav className="px-3 py-2">
+              <ul className="flex flex-col">
+                {items.map((item) => (
+                  <li key={item.href}>
                     <Link
-                      key={item.href}
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`mx-2 rounded-xl px-4 py-3 text-base font-medium transition-all ${
+                      className={`block rounded-lg px-3 py-3 text-base font-medium transition-all duration-200 ease-in-out ${
                         item.active
-                          ? "bg-white/[0.06] text-[color:var(--gold)]"
-                          : "text-white/90 hover:bg-white/[0.06] hover:text-[color:var(--gold)]"
+                          ? "text-[color:var(--gold)] bg-white/5"
+                          : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.04] hover:translate-x-[2px]"
                       }`}
                     >
                       {item.label}
                     </Link>
-                  ))}
-                </nav>
+                  </li>
+                ))}
+              </ul>
+            </nav>
 
-                <div className="h-3" />
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+            {/* Footer (tiny trust lockup, optional) */}
+            <div className="mt-auto px-5 py-4 border-t border-white/10 text-xs text-white/55">
+              <span className="opacity-80">© {new Date().getFullYear()} Big Talents</span>
+            </div>
+          </motion.aside>
+        </>
+      )}
     </header>
   );
 }
