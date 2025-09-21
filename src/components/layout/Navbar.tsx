@@ -51,8 +51,8 @@ function DesktopLink({
   );
 }
 
-// ----------------------- Drawer animation ------------------------
-const easeOut = [0.22, 1, 0.36, 1] as const;
+// ----------------------- Drawer animation helpers ------------------------
+const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -75,22 +75,23 @@ export function Navbar() {
 
   // Scroll lock while open
   useEffect(() => {
-    if (!open) return;
-    document.documentElement.classList.add("no-scroll");
-    return () => document.documentElement.classList.remove("no-scroll");
+    const cls = "no-scroll";
+    if (open) document.documentElement.classList.add(cls);
+    return () => document.documentElement.classList.remove(cls);
   }, [open]);
 
   // Focus trap within drawer
   const drawerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
-    const first = drawerRef.current?.querySelector<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
-    );
-    first?.focus();
+    const firstFocusable =
+      drawerRef.current?.querySelector<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      ) ?? null;
+    firstFocusable?.focus();
   }, [open]);
 
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Escape") {
       e.preventDefault();
       setOpen(false);
@@ -98,20 +99,21 @@ export function Navbar() {
     }
     if (e.key !== "Tab" || !drawerRef.current) return;
 
-    const focusables = Array.from(
+    const focusables: HTMLElement[] = Array.from(
       drawerRef.current.querySelectorAll<HTMLElement>(
-        'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
       )
     ).filter((el) => !el.hasAttribute("disabled"));
 
     if (focusables.length === 0) return;
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
+    const activeEl = document.activeElement as HTMLElement | null;
 
-    if (e.shiftKey && document.activeElement === first) {
+    if (e.shiftKey && activeEl === first) {
       e.preventDefault();
       last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
+    } else if (!e.shiftKey && activeEl === last) {
       e.preventDefault();
       first.focus();
     }
@@ -163,24 +165,33 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-40 bg-black/50"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.18, ease: easeOut } }}
-            exit={{ opacity: 0, transition: { duration: 0.14, ease: easeOut } }}
+            animate={{
+              opacity: 1,
+              transition: {
+                duration: prefersReduced ? 0 : 0.22,
+                ease: EASE_OUT,
+              },
+            }}
+            exit={{ opacity: 0 }}
           />
 
-          {/* Drawer */}
+          {/* Drawer (right slide, smoother & slightly slower) */}
           <motion.aside
             role="dialog"
             aria-modal="true"
             aria-labelledby="mobile-menu-title"
-            className="fixed left-0 top-0 z-50 h-[100dvh] w-[86vw] max-w-[420px] bg-black/95 backdrop-blur-md border-r border-white/10 shadow-soft"
+            className="fixed right-0 top-0 z-50 h-[100dvh] w-[86vw] max-w-[420px] bg-black/95 backdrop-blur-md border-l border-white/10 shadow-soft"
             ref={drawerRef}
             onKeyDown={onKeyDown}
-            initial={{ x: "-100%" }}
+            initial={{ x: "100%" }}
             animate={{
               x: 0,
-              transition: { duration: prefersReduced ? 0 : 0.22, ease: easeOut },
+              transition: {
+                duration: prefersReduced ? 0 : 0.28,
+                ease: EASE_OUT,
+              },
             }}
-            exit={{ x: "-100%", transition: { duration: 0.18, ease: easeOut } }}
+            exit={{ x: "100%" }}
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
@@ -188,9 +199,12 @@ export function Navbar() {
                 <Image
                   src="/images/logo/bgt-logo.png"
                   alt="BGT Logo"
-                  width={100}
-                  height={32}
+                  width={88}
+                  height={28}
+                  className="h-7 w-auto"
                 />
+                {/* Optional second title lockup slot (small) */}
+                {/* <span className="text-sm tracking-wide text-white/80">BIG TALENTS</span> */}
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -221,7 +235,7 @@ export function Navbar() {
               </ul>
             </nav>
 
-            {/* Footer (tiny trust lockup, optional) */}
+            {/* Footer (tiny trust lockup) */}
             <div className="mt-auto px-5 py-4 border-t border-white/10 text-xs text-white/55">
               <span className="opacity-80">© {new Date().getFullYear()} Big Talents</span>
             </div>
