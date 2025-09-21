@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 /* --------------------------- Nav model --------------------------- */
@@ -21,7 +21,7 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-/* ----------------------- Desktop link (unchanged) ----------------------- */
+/* --------------------------- Desktop link --------------------------- */
 function DesktopLink({
   href,
   label,
@@ -51,7 +51,7 @@ function DesktopLink({
   );
 }
 
-/* ----------------------- Navbar ----------------------- */
+/* ------------------------------ Navbar ------------------------------ */
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export function Navbar() {
@@ -69,36 +69,35 @@ export function Navbar() {
   );
 
   // Close on route change
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
-  // Lock/unlock background scroll at the <html> level
+  // Lock background scroll when open
   useEffect(() => {
-    if (open) {
-      const prev = document.documentElement.style.overflow;
-      document.documentElement.style.overflow = "hidden";
-      return () => {
-        document.documentElement.style.overflow = prev;
-      };
-    }
+    const cls = "no-scroll";
+    if (open) document.documentElement.classList.add(cls);
+    return () => document.documentElement.classList.remove(cls);
   }, [open]);
 
-  // Close on ESC
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
-
-  // for accessible association (button → region)
-  const regionId = "mobile-menu";
+  // Dropdown animations
+  const panelVariants = {
+    hidden: { opacity: 0, y: -8, scaleY: 0.9, transformOrigin: "top" as const },
+    show: {
+      opacity: 1,
+      y: 0,
+      scaleY: 1,
+      transition: { duration: prefersReduced ? 0 : 0.26, ease: EASE },
+    },
+    exit: {
+      opacity: 0,
+      y: -6,
+      scaleY: 0.95,
+      transition: { duration: prefersReduced ? 0 : 0.18, ease: EASE },
+    },
+  };
 
   return (
-    <header className="z-50 w-full border-b border-white/10 bg-black/95">
+    // RELATIVE so the dropdown anchors under the bar and can’t hide behind it
+    <header className="relative z-50 w-full border-b border-white/10 bg-black">
       <nav className="container flex items-center justify-between py-4">
         {/* Brand / Logo */}
         <Link href="/" aria-label="Big Talents Home" className="flex items-center gap-2">
@@ -112,7 +111,7 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav (unchanged) */}
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           {items.map((item) => (
             <DesktopLink
@@ -124,73 +123,61 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile toggle */}
         <button
-          className="md:hidden p-2 text-white/80 transition-colors hover:text-[color:var(--gold)]"
+          className="md:hidden p-2 text-white/85 hover:text-[color:var(--gold)] transition-colors"
           onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-controls="mobile-nav"
           aria-expanded={open}
-          aria-controls={regionId}
-          aria-label="Toggle menu"
         >
           <span className="inline-block align-middle text-xl">{open ? "✕" : "☰"}</span>
         </button>
       </nav>
 
-      {/* Mobile drop-down (slides from top, under the bar) */}
-      <AnimatePresence initial={false}>
+      {/* Mobile dropdown + scrim */}
+      <AnimatePresence>
         {open && (
           <>
-            {/* Scrim for outside-click close (mobile only) */}
+            {/* Scrim below header */}
             <motion.button
-              type="button"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 bg-black/50 md:hidden"
+              className="fixed inset-0 z-40 bg-black/55 backdrop-blur-[1px] md:hidden"
               initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                transition: { duration: prefersReduced ? 0 : 0.2, ease: EASE },
-              }}
-              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.15, ease: EASE } }}
+              animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.18 } }}
+              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.14 } }}
             />
-
-            {/* The sheet itself — absolutely positioned below header, no logo inside */}
+            {/* Panel (inside header, under the bar) */}
             <motion.div
-              id={regionId}
-              role="region"
-              aria-label="Mobile navigation"
-              className="absolute left-0 right-0 top-full z-50 border-t border-white/10 bg-black/95 backdrop-blur-md md:hidden"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{
-                height: "auto",
-                opacity: 1,
-                transition: { duration: prefersReduced ? 0 : 0.28, ease: EASE },
-              }}
-              exit={{
-                height: 0,
-                opacity: 0,
-                transition: { duration: prefersReduced ? 0 : 0.22, ease: EASE },
-              }}
+              id="mobile-nav"
+              role="menu"
+              className="mobile-panel absolute left-0 right-0 top-full z-[60] border-b border-white/10 bg-black/95 backdrop-blur-md md:hidden"
+              variants={panelVariants}
+              initial="hidden"
+              animate="show"
+              exit="exit"
             >
-              <nav className="px-3 py-2">
+              <div className="container py-3">
                 <ul className="flex flex-col">
                   {items.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
                         onClick={() => setOpen(false)}
-                        className={`block rounded-lg px-3 py-3 text-base font-medium transition-all duration-200 ease-in-out ${
+                        className={`nav-link block rounded-lg px-2 py-3 text-base ${
                           item.active
-                            ? "text-[color:var(--gold)] bg-white/5"
-                            : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.05]"
+                            ? "text-[color:var(--gold)] bg-white/[0.04]"
+                            : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.03]"
                         }`}
+                        role="menuitem"
                       >
                         {item.label}
                       </Link>
                     </li>
                   ))}
                 </ul>
-              </nav>
+              </div>
             </motion.div>
           </>
         )}

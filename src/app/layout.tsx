@@ -1,11 +1,11 @@
 // src/app/layout.tsx
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Outfit } from "next/font/google"; // clean, modern display
+import { Outfit } from "next/font/google";
 
-// Expose heading font via CSS var (body text stays your existing font)
+// Display font just for headings (exposed as CSS var)
 const heading = Outfit({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
@@ -36,18 +36,19 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
   icons: { icon: "/favicon.ico" },
+  themeColor: "#0a0a0a",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // Apply heading.variable so the CSS var is actually used (fixes the ESLint “unused” warning)
     <html lang="en" className={heading.variable}>
-      <head>
-        {/* allow content to extend under the notch & use safe-area insets */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        {/* optional but nice for mobile UI chrome */}
-        <meta name="theme-color" content="#0a0a0a" />
-      </head>
       <body className="safe-areas">
         <Navbar />
         <main className="min-h-screen">{children}</main>

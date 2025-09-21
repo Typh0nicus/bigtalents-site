@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ===== Root variables (colors, fonts, safe-area) ========================= */
+/* ===== Root tokens ====================================================== */
 :root{
   --bg:#0a0a0a;
   --muted:rgba(255,255,255,.78);
@@ -8,46 +8,51 @@
   --gold-600:#e0b84f;
   --border:rgba(212,175,55,.35);
 
-  /* Fallback so headings still render if font fails to load */
+  /* Headings fallback if font fails */
   --font-heading: ui-sans-serif;
 
-  /* Mobile safe-area insets (iOS notches, etc.) */
+  /* Safe areas (iOS notches, etc.) */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
+
+  /* Make built-in controls use dark styling */
+  color-scheme: dark;
 }
 
 /* ===== Base ============================================================= */
 html,body{background:var(--bg);color:#fff}
 ::selection{background:var(--gold);color:#111}
 
-/* Smooth scrolling + better tap behavior on mobile */
-html { scroll-behavior: smooth; }
-:where(a, button) { -webkit-tap-highlight-color: transparent; }
+html{
+  scroll-behavior:smooth;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+:where(a,button){-webkit-tap-highlight-color:transparent}
 
-/* Page-level safe padding only when a device reports insets */
-.safe-areas {
-  padding-left: var(--safe-left);
-  padding-right: var(--safe-right);
+/* Page-level safe padding (left/right only) */
+.safe-areas{
+  padding-left:var(--safe-left);
+  padding-right:var(--safe-right);
 }
 
 /* Container */
 .container{
   width:100%;
   max-width:80rem;
-  margin-left:auto;
-  margin-right:auto;
-  padding-left:1.5rem;
-  padding-right:1.5rem
+  margin-left:auto;margin-right:auto;
+  padding-left:1.5rem;padding-right:1.5rem
 }
 
-/* ===== Headings use display font only (body stays as-is) ================ */
-.h1, .h2, .h3, .display, .heading {
-  font-family: var(--font-heading), ui-sans-serif, system-ui, -apple-system,
-    Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    "Apple Color Emoji", "Segoe UI Emoji";
-  letter-spacing: -0.01em;
+/* ===== Headings use display font only ================================== */
+.h1,.h2,.h3,.display,.heading{
+  font-family:var(--font-heading),ui-sans-serif,system-ui,-apple-system,
+  Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans",
+  "Apple Color Emoji","Segoe UI Emoji";
+  letter-spacing:-.01em;
 }
 
 /* ===== Buttons ========================================================== */
@@ -63,7 +68,7 @@ html { scroll-behavior: smooth; }
 .btn-outline{border:1px solid rgba(255,255,255,.16);color:#fff}
 .btn-outline:hover{background:rgba(255,255,255,.08)}
 
-/* ===== Type scale (controls weights/sizes) ============================== */
+/* ===== Type scale ======================================================= */
 .h1{font-size:2.5rem;line-height:1.1;font-weight:900;letter-spacing:-.01em}
 @media (min-width:768px){.h1{font-size:3.75rem}}
 .h2{font-size:2rem;line-height:1.1;font-weight:800}
@@ -81,81 +86,57 @@ html { scroll-behavior: smooth; }
   transition:border-color .18s ease,transform .18s ease
 }
 .card:hover{border-color:var(--border);transform:translateY(-2px)}
+.card:focus-within{border-color:var(--border)}
 .shadow-soft{box-shadow:0 10px 30px rgba(0,0,0,.35)}
 
 /* ===== Focus & motion =================================================== */
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-@media (prefers-reduced-motion: reduce){
+@media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 }
 
-/* --- NAV LINK: gold glow + upsize on hover/active ------------------------ */
+/* --- NAV LINK: gold glow + upsize on hover/active ---------------------- */
 .nav-link{
-  position: relative;
-  padding: .5rem .35rem;
-  font-weight: 700;
-  color: rgba(255,255,255,.86);
-  transition: color .18s ease, transform .18s ease, text-shadow .18s ease;
+  position:relative;
+  padding:.5rem .35rem;
+  font-weight:700;
+  color:rgba(255,255,255,.86);
+  transition:color .18s ease, transform .18s ease, text-shadow .18s ease;
 }
-
 .nav-link::after{
   content:"";
-  position:absolute;
-  left:0; right:0; bottom:-8px;
-  height:2px;
-  border-radius:2px;
+  position:absolute; left:0; right:0; bottom:-8px;
+  height:2px; border-radius:2px;
   background:linear-gradient(90deg,var(--gold),var(--gold-600));
-  transform:scaleX(0);
-  transform-origin:left;
-  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease, height .18s ease;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease, height .18s ease;
   opacity:.9;
 }
-
-/* hover/active state */
 .nav-link:hover,
 .nav-link:focus-visible,
 .nav-link[aria-current="page"]{
-  color: var(--gold);
-  transform: translateY(-1px) scale(1.065);
-  text-shadow: 0 0 10px rgba(212,175,55,.45);
+  color:var(--gold);
+  transform:translateY(-1px) scale(1.065);
+  text-shadow:0 0 10px rgba(212,175,55,.45);
 }
-
 .nav-link:hover::after,
 .nav-link[aria-current="page"]::after{
-  transform: scaleX(1);
-  height: 3px;
-  box-shadow: 0 0 14px rgba(212,175,55,.55);
+  transform:scaleX(1);
+  height:3px;
+  box-shadow:0 0 14px rgba(212,175,55,.55);
 }
 
-/* mobile drawer: keep it calmer, no underline animation */
-@media (max-width: 767px){
-  .mobile-panel .nav-link{
-    transform: none !important;
-    text-shadow: none !important;
-  }
-  .mobile-panel .nav-link::after{ display: none; }
-  .mobile-panel .nav-link[aria-current="page"]{ color: var(--gold); }
-}
-/* --- skeleton / shimmer utilities --- */
-@keyframes skel-sweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+/* Mobile menu: calmer */
+@media (max-width:767px){
+  .mobile-panel .nav-link{transform:none!important;text-shadow:none!important}
+  .mobile-panel .nav-link::after{display:none}
+  .mobile-panel .nav-link[aria-current="page"]{color:var(--gold)}
 }
 
-/* base block */
-.skel {
-  position: relative;
-  overflow: hidden;
-  border-radius: .75rem;
-  background: rgba(255,255,255,.06);
-}
+/* --- Skeleton / shimmer utilities ------------------------------------- */
+@keyframes skel-sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.skel{position:relative;overflow:hidden;border-radius:.75rem;background:rgba(255,255,255,.06)}
+.skel::after{content:"";position:absolute;inset:0;background-image:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);animation:skel-sweep 1.1s linear infinite}
 
-/* animated light sweep */
-.skel::after {
-  content:"";
-  position:absolute; inset:0;
-  background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-  animation: skel-sweep 1.1s linear infinite;
-}
-/* lock background scroll when mobile drawer is open */
-.no-scroll { overflow: hidden; }
+/* Lock background scroll when mobile drawer is open */
+.no-scroll{overflow:hidden}
