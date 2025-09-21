@@ -4,9 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
-// --------------------------- Nav model ---------------------------
+/* --------------------------- Nav model --------------------------- */
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
   { href: "/news", label: "News" },
@@ -21,6 +21,7 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
+/* ----------------------- Desktop link (unchanged) ----------------------- */
 function DesktopLink({
   href,
   label,
@@ -35,7 +36,6 @@ function DesktopLink({
   const on = "text-[color:var(--gold)]";
   const off =
     "text-white/80 hover:text-[color:var(--gold)] hover:scale-105 hover:drop-shadow-[0_0_12px_rgba(212,175,55,.35)]";
-
   return (
     <Link href={href} className={`${base} ${active ? on : off}`}>
       {label}
@@ -51,8 +51,8 @@ function DesktopLink({
   );
 }
 
-// ----------------------- Drawer animation helpers ------------------------
-const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+/* ----------------------- Navbar ----------------------- */
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export function Navbar() {
   const pathname = usePathname();
@@ -68,59 +68,37 @@ export function Navbar() {
     [pathname]
   );
 
-  // Close drawer on route change
+  // Close on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Scroll lock while open
+  // Lock/unlock background scroll at the <html> level
   useEffect(() => {
-    const cls = "no-scroll";
-    if (open) document.documentElement.classList.add(cls);
-    return () => document.documentElement.classList.remove(cls);
+    if (open) {
+      const prev = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = "hidden";
+      return () => {
+        document.documentElement.style.overflow = prev;
+      };
+    }
   }, [open]);
 
-  // Focus trap within drawer
-  const drawerRef = useRef<HTMLDivElement>(null);
+  // Close on ESC
   useEffect(() => {
     if (!open) return;
-    const firstFocusable =
-      drawerRef.current?.querySelector<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-      ) ?? null;
-    firstFocusable?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      setOpen(false);
-      return;
-    }
-    if (e.key !== "Tab" || !drawerRef.current) return;
-
-    const focusables: HTMLElement[] = Array.from(
-      drawerRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute("disabled"));
-
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    const activeEl = document.activeElement as HTMLElement | null;
-
-    if (e.shiftKey && activeEl === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && activeEl === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  };
+  // for accessible association (button → region)
+  const regionId = "mobile-menu";
 
   return (
-    <header className="z-50 w-full border-b border-white/10 bg-black/90">
+    <header className="z-50 w-full border-b border-white/10 bg-black/95">
       <nav className="container flex items-center justify-between py-4">
         {/* Brand / Logo */}
         <Link href="/" aria-label="Big Talents Home" className="flex items-center gap-2">
@@ -134,7 +112,7 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav (unchanged) */}
         <div className="hidden md:flex items-center gap-6">
           {items.map((item) => (
             <DesktopLink
@@ -148,100 +126,75 @@ export function Navbar() {
 
         {/* Mobile menu button */}
         <button
-          className="md:hidden p-2 text-white/80 hover:text-[color:var(--gold)] transition-colors"
-          onClick={() => setOpen(true)}
-          aria-label="Open menu"
+          className="md:hidden p-2 text-white/80 transition-colors hover:text-[color:var(--gold)]"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={regionId}
+          aria-label="Toggle menu"
         >
-          <span className="inline-block align-middle text-xl">☰</span>
+          <span className="inline-block align-middle text-xl">{open ? "✕" : "☰"}</span>
         </button>
       </nav>
 
-      {/* Mobile drawer + scrim */}
-      {open && (
-        <>
-          {/* Scrim */}
-          <motion.button
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            className="fixed inset-0 z-40 bg-black/50"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              transition: {
-                duration: prefersReduced ? 0 : 0.22,
-                ease: EASE_OUT,
-              },
-            }}
-            exit={{ opacity: 0 }}
-          />
+      {/* Mobile drop-down (slides from top, under the bar) */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <>
+            {/* Scrim for outside-click close (mobile only) */}
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 z-40 bg-black/50 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: prefersReduced ? 0 : 0.2, ease: EASE },
+              }}
+              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.15, ease: EASE } }}
+            />
 
-          {/* Drawer (right slide, smoother & slightly slower) */}
-          <motion.aside
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mobile-menu-title"
-            className="fixed right-0 top-0 z-50 h-[100dvh] w-[86vw] max-w-[420px] bg-black/95 backdrop-blur-md border-l border-white/10 shadow-soft"
-            ref={drawerRef}
-            onKeyDown={onKeyDown}
-            initial={{ x: "100%" }}
-            animate={{
-              x: 0,
-              transition: {
-                duration: prefersReduced ? 0 : 0.28,
-                ease: EASE_OUT,
-              },
-            }}
-            exit={{ x: "100%" }}
-          >
-            {/* Drawer header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <Image
-                  src="/images/logo/bgt-logo.png"
-                  alt="BGT Logo"
-                  width={88}
-                  height={28}
-                  className="h-7 w-auto"
-                />
-                {/* Optional second title lockup slot (small) */}
-                {/* <span className="text-sm tracking-wide text-white/80">BIG TALENTS</span> */}
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-white/80 hover:text-[color:var(--gold)] transition"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Links */}
-            <nav className="px-3 py-2">
-              <ul className="flex flex-col">
-                {items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className={`block rounded-lg px-3 py-3 text-base font-medium transition-all duration-200 ease-in-out ${
-                        item.active
-                          ? "text-[color:var(--gold)] bg-white/5"
-                          : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.04] hover:translate-x-[2px]"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            {/* Footer (tiny trust lockup) */}
-            <div className="mt-auto px-5 py-4 border-t border-white/10 text-xs text-white/55">
-              <span className="opacity-80">© {new Date().getFullYear()} Big Talents</span>
-            </div>
-          </motion.aside>
-        </>
-      )}
+            {/* The sheet itself — absolutely positioned below header, no logo inside */}
+            <motion.div
+              id={regionId}
+              role="region"
+              aria-label="Mobile navigation"
+              className="absolute left-0 right-0 top-full z-50 border-t border-white/10 bg-black/95 backdrop-blur-md md:hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{
+                height: "auto",
+                opacity: 1,
+                transition: { duration: prefersReduced ? 0 : 0.28, ease: EASE },
+              }}
+              exit={{
+                height: 0,
+                opacity: 0,
+                transition: { duration: prefersReduced ? 0 : 0.22, ease: EASE },
+              }}
+            >
+              <nav className="px-3 py-2">
+                <ul className="flex flex-col">
+                  {items.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className={`block rounded-lg px-3 py-3 text-base font-medium transition-all duration-200 ease-in-out ${
+                          item.active
+                            ? "text-[color:var(--gold)] bg-white/5"
+                            : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -174,7 +174,7 @@ function AnimatedChunk({
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 leading-tight max-w-[22ch]" // gentle wrap help on tiny screens
+      className="h1 leading-tight max-w-[22ch]"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
@@ -278,21 +278,15 @@ export function Hero() {
         >
           <a
             href="/tournaments"
-            className="btn btn-primary rounded-2xl px-6 py-3 text-base md:text-lg h-12
-                       sm:w-auto w-full transition-all duration-300 ease-in-out
-                       hover:scale-[1.07] hover:shadow-[0_0_25px_rgba(212,175,55,.3)]
-                       focus-visible:outline-none focus-visible:ring focus-visible:ring-[color:var(--gold)]/50
-                       active:scale-[0.98]"
+            aria-label="View Tournaments"
+            className={`btn btn-primary rounded-2xl px-6 py-3 text-base md:text-lg h-12 sm:w-auto w-full transition-all duration-300 ease-in-out hover:scale-[1.07] hover:shadow-[0_0_25px_rgba(212,175,55,.3)] focus-visible:outline-none focus-visible:ring focus-visible:ring-[color:var(--gold)]/50 active:scale-[0.98]`}
           >
             View Tournaments
           </a>
           <a
             href="https://discord.gg/bgt?utm_source=site&utm_medium=hero_btn&utm_campaign=join_discord"
-            className="btn btn-outline rounded-2xl px-6 py-3 text-base md:text-lg h-12
-                       sm:w-auto w-full transition-all duration-300 ease-in-out
-                       hover:scale-[1.07] hover:bg-[color:var(--gold)] hover:text-black
-                       focus-visible:outline-none focus-visible:ring focus-visible:ring-[color:var(--gold)]/50
-                       active:scale-[0.98]"
+            aria-label="Join Big Talents on Discord"
+            className={`btn btn-outline rounded-2xl px-6 py-3 text-base md:text-lg h-12 sm:w-auto w-full transition-all duration-300 ease-in-out hover:scale-[1.07] hover:bg-[color:var(--gold)] hover:text-black focus-visible:outline-none focus-visible:ring focus-visible:ring-[color:var(--gold)]/50 active:scale-[0.98]`}
             rel="noopener noreferrer"
           >
             Join Discord
