@@ -68,38 +68,34 @@ export function Navbar() {
     [pathname]
   );
 
-  // Close on route change
   useEffect(() => setOpen(false), [pathname]);
 
-  // Lock background scroll when open
   useEffect(() => {
     const cls = "no-scroll";
     if (open) document.documentElement.classList.add(cls);
     return () => document.documentElement.classList.remove(cls);
   }, [open]);
 
-  // Dropdown animations
+  // Slower, smoother dropdown
   const panelVariants = {
     hidden: { opacity: 0, y: -8, scaleY: 0.9, transformOrigin: "top" as const },
     show: {
       opacity: 1,
       y: 0,
       scaleY: 1,
-      transition: { duration: prefersReduced ? 0 : 0.26, ease: EASE },
+      transition: { duration: prefersReduced ? 0 : 0.34, ease: EASE },
     },
     exit: {
       opacity: 0,
       y: -6,
       scaleY: 0.95,
-      transition: { duration: prefersReduced ? 0 : 0.18, ease: EASE },
+      transition: { duration: prefersReduced ? 0 : 0.22, ease: EASE },
     },
   };
 
   return (
-    // RELATIVE so the dropdown anchors under the bar and can’t hide behind it
     <header className="relative z-50 w-full border-b border-white/10 bg-black">
       <nav className="container flex items-center justify-between py-4">
-        {/* Brand / Logo */}
         <Link href="/" aria-label="Big Talents Home" className="flex items-center gap-2">
           <Image
             src="/images/logo/bgt-logo.png"
@@ -139,20 +135,20 @@ export function Navbar() {
       <AnimatePresence>
         {open && (
           <>
-            {/* Scrim below header */}
+            {/* Scrim (no blur) */}
             <motion.button
               aria-label="Close menu"
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 bg-black/55 backdrop-blur-[1px] md:hidden"
+              className="fixed inset-0 z-40 bg-black/55 md:hidden"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.18 } }}
-              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.14 } }}
+              animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.2 } }}
+              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.16 } }}
             />
-            {/* Panel (inside header, under the bar) */}
+            {/* Panel under the bar (no blur) */}
             <motion.div
               id="mobile-nav"
               role="menu"
-              className="mobile-panel absolute left-0 right-0 top-full z-[60] border-b border-white/10 bg-black/95 backdrop-blur-md md:hidden"
+              className="mobile-panel absolute left-0 right-0 top-full z-[60] border-b border-white/10 bg-black md:hidden"
               variants={panelVariants}
               initial="hidden"
               animate="show"
