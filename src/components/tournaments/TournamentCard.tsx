@@ -1,15 +1,19 @@
+// src/components/tournaments/TournamentCard.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Tournament } from "@/data/tournaments";
+import { useParticipants } from "@/hooks/useParticipants";
+import { FiExternalLink } from "react-icons/fi";
 
 export function TournamentCard({ t }: { t: Tournament }) {
-  // Fallback image if not provided on the data item
   const img = t.image ?? `/images/tournaments/${t.slug}.png`;
-    (t.image as string | undefined) ?? `/images/tournaments/${t.slug}.png`;
+  const hasMatcherino = !!t.url && t.url !== "#";
+  const hasLiqui = !!t.liquipedia;
 
-  const hasLink = t.url && t.url !== "#";
+  // NEW: fetch (or use static) participants
+  const participants = useParticipants(t);
 
   return (
     <motion.article
@@ -44,17 +48,22 @@ export function TournamentCard({ t }: { t: Tournament }) {
         {/* Title */}
         <h3 className="mt-2 text-lg font-semibold">{t.title}</h3>
 
-        {/* Prize */}
-        {typeof t.prizeUsd === "number" && (
+        {/* Prize + players */}
+        {(typeof t.prizeUsd === "number" || typeof participants === "number") && (
           <div className="mt-1 caption text-white/85">
-            Prize: $
-            {t.prizeUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            {typeof t.prizeUsd === "number" && (
+              <>Prize: ${t.prizeUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</>
+            )}
+            {typeof t.prizeUsd === "number" && typeof participants === "number" && (
+              <span className="mx-2">•</span>
+            )}
+            {typeof participants === "number" && <>Players: {participants}</>}
           </div>
         )}
 
-        {/* CTA (single interactive element to avoid nested links) */}
-        <div className="mt-auto pt-4">
-          {hasLink ? (
+        {/* CTAs */}
+        <div className="mt-auto pt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {hasMatcherino ? (
             <a
               className="btn btn-primary w-full"
               href={t.url}
@@ -65,12 +74,21 @@ export function TournamentCard({ t }: { t: Tournament }) {
               Open on Matcherino
             </a>
           ) : (
-            <span
-              className="btn btn-outline w-full cursor-default select-none"
-              aria-disabled="true"
-            >
+            <span className="btn btn-outline w-full cursor-default select-none" aria-disabled="true">
               Private Event
             </span>
+          )}
+
+          {hasLiqui && (
+            <a
+              className="btn btn-outline w-full"
+              href={t.liquipedia!}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${t.title} on Liquipedia`}
+            >
+              Liquipedia <FiExternalLink className="ml-1 -mr-1 inline align-[-2px]" />
+            </a>
           )}
         </div>
       </div>
