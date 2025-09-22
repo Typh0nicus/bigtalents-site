@@ -13,6 +13,7 @@ const MAX_FPS = 58;            // mild cap to avoid mobile jank
 // ==========================================================================
 
 // Subtle gold particles (time-based, wrap-around, no edge clustering)
+// inside Hero.tsx — replace your current Particles() with this version
 function Particles() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReduced = useReducedMotion();
@@ -29,45 +30,70 @@ function Particles() {
     const FRAME = 1000 / MAX_FPS;
     const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
-    const MARGIN = 0.035; // 3.5% inset per side (visual margin)
-    const JITTER = 0.10;  // micro randomness
-    const CENTER_PULL = 0.08; // gentle pull to center
+    const MARGIN = 0.035;
+    const JITTER = 0.10;
+    const CENTER_PULL = 0.08;
 
     type P = { x: number; y: number; r: number; dx: number; dy: number };
     const P: P[] = [];
 
-    const isMobile = () => window.innerWidth < 640;
+    // Track whether we're in the "mobile count" bucket
+    const mql = window.matchMedia("(max-width: 639px)");
+    let mobileBucket = mql.matches;
 
-    const resetParticles = () => {
+    const spawn = (count: number) => {
       P.length = 0;
-      const count = prefersReduced
-        ? 0
-        : (isMobile() ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT);
-
+      if (prefersReduced) return;
       for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 0.4 + Math.random() * 0.6;
+        const a = Math.random() * Math.PI * 2;
+        const s = 0.4 + Math.random() * 0.6;
         P.push({
           x: Math.random(),
           y: Math.random(),
           r: Math.random() * 2 + 0.8,
-          dx: Math.cos(angle) * speed,
-          dy: Math.sin(angle) * speed,
+          dx: Math.cos(a) * s,
+          dy: Math.sin(a) * s,
         });
       }
     };
 
-    const resize = () => {
+    const targetCount = () =>
+      prefersReduced ? 0 : (mobileBucket ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT);
+
+    const sizeCanvas = () => {
+      // Only resize pixels; do NOT respawn here
       const w = Math.floor(window.innerWidth * DPR);
       const h = Math.floor(window.innerHeight * DPR);
-      canvas.width = w;
-      canvas.height = h;
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(DPR, DPR);
-      resetParticles(); // re-balance on screen/orientation changes
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(DPR, DPR);
+      }
     };
+
+    // Initial paint
+    sizeCanvas();
+    spawn(targetCount());
+
+    // Resize: just resize the bitmap; keep the same particles
+    let resizeTimer: number | undefined;
+    const onResize = () => {
+      // debounce a bit to avoid thrash when the URL bar animates
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(sizeCanvas, 120);
+    };
+
+    // When crossing sm breakpoint, adjust particle COUNT (spawn/reset)
+    const onBucketChange = (ev: MediaQueryListEvent) => {
+      mobileBucket = ev.matches;
+      spawn(targetCount());
+    };
+
+    mql.addEventListener?.("change", onBucketChange);
+    window.addEventListener("resize", onResize);
 
     const step = (ts: number) => {
       if (ts - lastDraw < FRAME) {
@@ -83,7 +109,6 @@ function Particles() {
       ctx.clearRect(0, 0, w, h);
 
       for (const p of P) {
-        // draw inside inset box (prevents edge clustering)
         const sx = (MARGIN + (1 - 2 * MARGIN) * p.x) * w;
         const sy = (MARGIN + (1 - 2 * MARGIN) * p.y) * h;
 
@@ -92,23 +117,19 @@ function Particles() {
         ctx.fillStyle = "rgba(212,175,55,0.30)";
         ctx.fill();
 
-        // micro jitter + center pull
         p.dx += (Math.random() - 0.5) * JITTER * dt;
         p.dy += (Math.random() - 0.5) * JITTER * dt;
         p.dx += (0.5 - p.x) * CENTER_PULL * dt;
         p.dy += (0.5 - p.y) * CENTER_PULL * dt;
 
-        // integrate
         p.x += p.dx * dt * SPEED;
         p.y += p.dy * dt * SPEED;
 
-        // wrap-around
         if (p.x < 0) p.x += 1;
         if (p.x > 1) p.x -= 1;
         if (p.y < 0) p.y += 1;
         if (p.y > 1) p.y -= 1;
 
-        // clamp velocity
         const vmax = 1.2;
         p.dx = Math.max(-vmax, Math.min(vmax, p.dx));
         p.dy = Math.max(-vmax, Math.min(vmax, p.dy));
@@ -117,14 +138,12 @@ function Particles() {
       raf = requestAnimationFrame(step);
     };
 
-    resize();
-    last = performance.now();
     raf = requestAnimationFrame(step);
 
-    window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
+      mql.removeEventListener?.("change", onBucketChange);
     };
   }, [prefersReduced]);
 
@@ -137,6 +156,7 @@ function Particles() {
     />
   );
 }
+
 
 // Per-letter animated heading with gold highlight for “Bigger Stages.”
 function AnimatedChunk({
@@ -251,8 +271,8 @@ export function Hero() {
             priority
             className="h-6 w-auto"
           />
-          <span className="hidden sm:inline">Official Esports Tournaments</span>
-          <span className="sm:hidden">Esports Tournaments</span>
+          <span className="hidden sm:inline">Official Esport Tournaments</span>
+          <span className="sm:hidden">Esport Tournaments</span>
         </motion.div>
 
         {/* Heading */}
@@ -266,7 +286,7 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.3 }}
         >
-          <TypingEffect text="Player-first esports tournaments across NA & EU. Clean formats, on-time starts, transparent comms." />
+          <TypingEffect text="Player-first esports community across NA & EU." />
         </motion.div>
 
         {/* CTAs + socials */}
