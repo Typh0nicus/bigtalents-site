@@ -1,19 +1,20 @@
-// src/components/tournaments/TournamentCard.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Image from "next/image";
 import type { Tournament } from "@/data/tournaments";
-import { useParticipants } from "@/hooks/useParticipants";
 import { FiExternalLink } from "react-icons/fi";
 
-export function TournamentCard({ t }: { t: Tournament }) {
+export function TournamentCard({
+  t,
+  participants,
+}: {
+  t: Tournament;
+  participants?: number | null; // NEW: passed from the page
+}) {
   const img = t.image ?? `/images/tournaments/${t.slug}.png`;
   const hasMatcherino = !!t.url && t.url !== "#";
   const hasLiqui = !!t.liquipedia;
-
-  // NEW: fetch (or use static) participants
-  const participants = useParticipants(t);
 
   return (
     <motion.article
@@ -48,7 +49,7 @@ export function TournamentCard({ t }: { t: Tournament }) {
         {/* Title */}
         <h3 className="mt-2 text-lg font-semibold">{t.title}</h3>
 
-        {/* Prize + players */}
+        {/* Prize + players (show players only when fetched) */}
         {(typeof t.prizeUsd === "number" || typeof participants === "number") && (
           <div className="mt-1 caption text-white/85">
             {typeof t.prizeUsd === "number" && (
@@ -66,7 +67,7 @@ export function TournamentCard({ t }: { t: Tournament }) {
           {hasMatcherino ? (
             <a
               className="btn btn-primary w-full"
-              href={t.url}
+              href={t.url!}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${t.title} on Matcherino`}
@@ -74,7 +75,10 @@ export function TournamentCard({ t }: { t: Tournament }) {
               Open on Matcherino
             </a>
           ) : (
-            <span className="btn btn-outline w-full cursor-default select-none" aria-disabled="true">
+            <span
+              className="btn btn-outline w-full cursor-default select-none"
+              aria-disabled="true"
+            >
               Private Event
             </span>
           )}

@@ -3,7 +3,12 @@
 import { useMemo, useState } from "react";
 import { TOURNAMENTS } from "@/data/tournaments";
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { useParticipants, keyFromMatcherino } from "@/hooks/useParticipants";
+
+// ---- easing ---------------------------------------------------------------
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 // simple date parsing
 function parseWhen(s?: string): number {
@@ -21,9 +26,8 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "prize", label: "Prize" },
 ];
 
-// animation configs (typed + TS-safe easing tuple)
+// animation configs (typed, and using tuple easing)
 const gridStagger: Variants = {
-  hidden: {},
   show: {
     transition: {
       staggerChildren: 0.08,
@@ -31,13 +35,12 @@ const gridStagger: Variants = {
     },
   },
 };
-
 const itemUp: Variants = {
   hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] }, // easeOut-like
+    transition: { duration: 0.28, ease: EASE_OUT },
   },
 };
 
@@ -86,19 +89,26 @@ export default function TournamentsPage() {
     return list;
   }, [q, sort, dir]);
 
+  // Build a list of URLs for visible tournaments and fetch participants
+  const urls = useMemo(
+    () => filtered.map((t) => t.url).filter(Boolean),
+    [filtered]
+  );
+  const pMap = useParticipants(urls);
+
   return (
     <motion.section
       className="container py-14"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }} // TS-safe
+      transition={{ duration: 0.25, ease: EASE_OUT }}
     >
       {/* Header / controls */}
       <motion.div
         className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.15, duration: 0.25 }}
+        transition={{ delay: 0.15, duration: 0.25, ease: EASE_OUT }}
       >
         <div>
           <h1 className="h2">Tournaments</h1>
@@ -165,7 +175,7 @@ export default function TournamentsPage() {
           className="mt-14 rounded-xl border border-white/10 p-8 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
+          transition={{ delay: 0.2, duration: 0.3, ease: EASE_OUT }}
         >
           <div className="h3">No tournaments match that search.</div>
           <p className="caption mt-2">Try a different keyword or clear your filters.</p>
@@ -187,11 +197,15 @@ export default function TournamentsPage() {
           initial="hidden"
           animate="show"
         >
-          {filtered.map((t) => (
-            <motion.div key={t.slug} variants={itemUp}>
-              <TournamentCard t={t} />
-            </motion.div>
-          ))}
+          {filtered.map((t) => {
+            const k = keyFromMatcherino(t.url);
+            const participants = k ? pMap[k] ?? null : null;
+            return (
+              <motion.div key={t.slug} variants={itemUp}>
+                <TournamentCard t={t} participants={participants} />
+              </motion.div>
+            );
+          })}
         </motion.div>
       )}
     </motion.section>

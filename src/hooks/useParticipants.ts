@@ -1,70 +1,72 @@
-// src/hooks/useParticipants.ts
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { Tournament } from "@/data/tournaments";
 
-const mem = new Map<string, number | null>();
+type ResultMap = Record<string, number | null>; // keys like "id:145019" or "slug:haneki-x-bigtalents"
+const cache = new Map<string, number | null>();
 
-export function useParticipants(t: Tournament) {
-  // Prefer ID key; otherwise slug key
-  const key =
-    typeof t.matcherinoId === "number"
-      ? `id:${t.matcherinoId}`
-      : t.matcherinoSlug
-      ? `slug:${t.matcherinoSlug}`
-      : null;
+// Turn a Matcherino URL into a cache key the function understands
+export function keyFromMatcherino(url: string): string | null {
+  if (!url) return null;
+  const mSlug = url.match(/\/t\/([^/]+)/);          // e.g. /t/haneki-x-bigtalents
+  if (mSlug?.[1]) return `slug:${mSlug[1]}`;
+  const mId = url.match(/tournaments\/(\d+)/);      // e.g. /tournaments/145019
+  if (mId?.[1]) return `id:${mId[1]}`;
+  return null;
+}
 
-  const [count, setCount] = useState<number | null | undefined>(undefined);
+export function useParticipants(urls: string[]) {
+  // dedupe & normalize keys
+  const keys = useMemo(() => {
+    const ks = urls.map(keyFromMatcherino).filter(Boolean) as string[];
+    return Array.from(new Set(ks)); // unique
+  }, [urls]);
 
-  // If static number already provided in data, surface it immediately.
-  const staticProvided = typeof t.participants === "number" ? t.participants : null;
+  const [map, setMap] = useState<ResultMap>({});
 
   useEffect(() => {
-    if (!key) {
-      setCount(staticProvided);
-      return;
-    }
-    // If we already have it this session, use it.
-    if (mem.has(key)) {
-      setCount(mem.get(key) ?? null);
+    if (keys.length === 0) {
+      setMap({});
       return;
     }
 
-    // Don’t try in plain `next dev` (function isn’t there). It’s fine to skip.
-    const isLocalNext = typeof window !== "undefined" && location.port === "3000";
-    if (isLocalNext) {
-      setCount(staticProvided);
+    // what do we still need to fetch?
+    const need = keys.filter((k) => !cache.has(k));
+    // if all cached, flush immediately
+    if (need.length === 0) {
+      const out: ResultMap = {};
+      keys.forEach((k) => (out[k] = cache.get(k) ?? null));
+      setMap(out);
       return;
     }
 
-    const controller = new AbortController();
-    const url = new URL("/.netlify/functions/participants", location.origin);
-    if (key.startsWith("id:")) url.searchParams.set("id", key.slice(3));
-    if (key.startsWith("slug:")) url.searchParams.set("slug", key.slice(5));
+    const ids = need.filter((k) => k.startsWith("id:")).map((k) => k.slice(3));
+    const slugs = need.filter((k) => k.startsWith("slug:")).map((k) => k.slice(5));
 
-    fetch(url.toString(), { signal: controller.signal })
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((json) => {
-        const val = json?.results?.[key];
-        if (typeof val === "number") {
-          mem.set(key, val);
-          setCount(val);
-        } else {
-          mem.set(key, null);
-          setCount(staticProvided);
-        }
+    const params = new URLSearchParams();
+    if (ids.length) params.set("ids", ids.join(","));
+    if (slugs.length) params.set("slugs", slugs.join(","));
+
+    const ctrl = new AbortController();
+
+    fetch(`/api/participants?${params.toString()}`, { signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.statusText)))
+      .then((data: { results?: ResultMap }) => {
+        const res = data?.results ?? {};
+        Object.entries(res).forEach(([k, v]) => cache.set(k, v));
+        const out: ResultMap = {};
+        keys.forEach((k) => (out[k] = cache.get(k) ?? null));
+        setMap(out);
       })
-      .catch(() => setCount(staticProvided ?? null));
+      .catch(() => {
+        // best-effort: show whatever we have cached
+        const out: ResultMap = {};
+        keys.forEach((k) => (out[k] = cache.get(k) ?? null));
+        setMap(out);
+      });
 
-    return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+    return () => ctrl.abort();
+  }, [keys]);
 
-  // Prefer the fetched value; otherwise staticProvided; undefined while loading.
-  return useMemo(() => {
-    if (typeof count === "number") return count;
-    if (typeof staticProvided === "number") return staticProvided;
-    return count ?? null; // null = known missing, undefined = loading
-  }, [count, staticProvided]);
+  return map; // e.g. { "id:145019": 128, "slug:haneki-x-bigtalents": 64 }
 }
