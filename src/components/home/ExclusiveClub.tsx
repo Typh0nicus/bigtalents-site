@@ -139,7 +139,7 @@ export function ExclusiveClub() {
         </motion.div>
 
         {/* Member grid — compact cards */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {MEMBERS.map((m, i) => (
             <motion.article
               key={m.name}
@@ -163,7 +163,7 @@ export function ExclusiveClub() {
                 />
               </div>
 
-              <div className="p-3">
+              <div className="p-3 md:p-4">
                 <h3 className="text-base font-semibold">{m.name}</h3>
                 <p className="mt-1 text-xs text-white/75">{m.blurb}</p>
 

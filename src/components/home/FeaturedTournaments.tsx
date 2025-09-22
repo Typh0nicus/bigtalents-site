@@ -47,14 +47,15 @@ const ITEMS: TItem[] = [
 export function FeaturedTournaments() {
   return (
     <section className="container py-12 md:py-16">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="h2">Featured Tournaments</h2>
-          <p className="mt-2 text-white/75">Upcoming brackets.</p>
+      {/* Header with single-row CTA on mobile */}
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="h2 text-2xl sm:text-3xl truncate">Featured Tournaments</h2>
+          <p className="mt-1 text-sm sm:text-base text-white/75">Upcoming brackets.</p>
         </div>
         <a
           href="/tournaments"
-          className="hidden sm:inline-flex btn btn-outline rounded-xl"
+          className="inline-flex shrink-0 items-center whitespace-nowrap btn btn-outline rounded-xl px-3 py-1.5 text-sm md:text-base"
           aria-label="View all tournaments"
         >
           View all
@@ -141,13 +142,6 @@ export function FeaturedTournaments() {
             </li>
           ))}
         </ul>
-      </div>
-
-      {/* Secondary “View all” for mobile */}
-      <div className="mt-6 sm:hidden">
-        <a href="/tournaments" className="btn btn-outline w-full rounded-xl">
-          View all tournaments
-        </a>
       </div>
     </section>
   );
