@@ -4,13 +4,13 @@ export type Tournament = {
   title: string;
   date?: string;
   prizeUsd?: number;
-  url: string;           // primary registration/overview (Matcherino, etc.)
-  slug: string;          // local slug (for images/fallbacks)
+  url: string;             // primary registration/overview (Matcherino, etc.)
+  slug: string;            // local slug (for images/fallbacks)
   image?: string;
-  liquipedia?: string;   // Optional: Liquipedia event page
-  participants?: number; // Optional: players/teams (can be hydrated)
-  matcherinoId?: number; // Optional: numeric ID for Netlify participants fn
-  matcherinoSlug?: string; // Optional: /t/<slug> style (no numeric ID)
+  liquipedia?: string;     // Optional: Liquipedia event page
+  participants?: number;   // Optional: number of TEAMS
+  matcherinoId?: number;   // Optional: numeric ID (kept for future)
+  matcherinoSlug?: string; // Optional: /t/<slug> style (kept for future)
 };
 
 export const TOURNAMENTS: Tournament[] = [
@@ -21,8 +21,11 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/145019",
     slug: "145019-eternal-bgt-march-madness",
     image: "/images/tournaments/145019.AVIF",
-    liquipedia: "https://liquipedia.net/brawlstars/Eternal_x_BigTipper/March_Madness/Tournament/1",
+    liquipedia:
+      "https://liquipedia.net/brawlstars/Eternal_x_BigTipper/March_Madness/Tournament/1",
     matcherinoId: 145019,
+    participants: 226,
+    // participants:  , // teams
   },
   {
     title: "March Mayhem #1",
@@ -33,6 +36,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/145309.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/March_Mayhem/1",
     matcherinoId: 145309,
+    participants: 380, // teams
   },
   {
     title: "March Mayhem #2",
@@ -43,6 +47,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/145309.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/March_Mayhem/2",
     matcherinoId: 145395,
+    participants: 400, // teams
   },
   {
     title: "March Mayhem #3",
@@ -53,6 +58,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/145309.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/March_Mayhem/3",
     matcherinoId: 145402,
+    participants: 400, // teams
   },
   {
     title: "March Mayhem #4",
@@ -63,6 +69,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/145309.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/March_Mayhem/4",
     matcherinoId: 145404,
+    participants: 285, // teams
   },
   {
     title: "TOG x Big Talents",
@@ -73,6 +80,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/145690.png",
     liquipedia: "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper",
     matcherinoId: 145690,
+    participants: 439, // teams
   },
   {
     title: "R7 x Big Talents Tournament",
@@ -83,6 +91,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/144717.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/R7_x_Big_Tipper_Tournament",
     matcherinoId: 144717,
+    participants: 543, // teams
   },
   {
     title: "TOG x Big Talents (Brawl Ball Only)",
@@ -91,8 +100,10 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/149584",
     slug: "149584-tog-x-bgt-brawl-ball",
     image: "/images/tournaments/149584.jpg",
-    liquipedia: "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper_Tournament_(Brawl_Ball_Only)",
+    liquipedia:
+      "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper_Tournament_(Brawl_Ball_Only)",
     matcherinoId: 149584,
+    participants: 387, // teams
   },
   {
     title: "RCN x Big Talents EU Cup",
@@ -103,6 +114,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/152394.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/RCN_x_BGT_EU_Cup",
     matcherinoId: 152394,
+    participants: 545, // teams
   },
   {
     title: "Haneki x Big Talents Tournament",
@@ -113,6 +125,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/haneki.JPG",
     liquipedia: "https://liquipedia.net/brawlstars/Haneki_x_Big_Talents_Tournament",
     matcherinoSlug: "haneki-x-bigtalents",
+    participants: 373, // teams
   },
   {
     title: "BGT July Cup",
@@ -121,8 +134,8 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/156361",
     slug: "156361-bgt-july-cup",
     image: "/images/tournaments/156361.WEBP",
-    // liquipedia: "(no page yet)",
     matcherinoId: 156361,
+    participants: 163,
   },
   {
     title: "Wildcard Weekend #1",
@@ -131,8 +144,8 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/165244/overview",
     slug: "165244-wildcard-weekend-1",
     image: "/images/tournaments/165244.WEBP",
-    // liquipedia: "(no page yet)",
     matcherinoId: 165244,
+    participants: 8,
   },
   {
     title: "Wildcard Weekend #2",
@@ -141,8 +154,8 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/165521/overview",
     slug: "165521-wildcard-weekend-2",
     image: "/images/tournaments/165521.WEBP",
-    // liquipedia: "(no page yet)",
     matcherinoId: 165521,
+   participants: 29,
   },
   {
     title: "Wildcard Weekend #3",
@@ -153,5 +166,6 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/ww3.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/Wildcard_Weekend/3",
     matcherinoSlug: "ww3",
+    participants: 427,
   },
 ];

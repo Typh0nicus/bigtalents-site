@@ -5,9 +5,7 @@ import { TOURNAMENTS } from "@/data/tournaments";
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useParticipants, keyFromMatcherino } from "@/hooks/useParticipants";
 
-// ---- easing ---------------------------------------------------------------
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 // simple date parsing
@@ -88,13 +86,6 @@ export default function TournamentsPage() {
     if (dir === "desc") list.reverse();
     return list;
   }, [q, sort, dir]);
-
-  // Build a list of URLs for visible tournaments and fetch participants
-  const urls = useMemo(
-    () => filtered.map((t) => t.url).filter(Boolean),
-    [filtered]
-  );
-  const pMap = useParticipants(urls);
 
   return (
     <motion.section
@@ -197,15 +188,11 @@ export default function TournamentsPage() {
           initial="hidden"
           animate="show"
         >
-          {filtered.map((t) => {
-            const k = keyFromMatcherino(t.url);
-            const participants = k ? pMap[k] ?? null : null;
-            return (
-              <motion.div key={t.slug} variants={itemUp}>
-                <TournamentCard t={t} participants={participants} />
-              </motion.div>
-            );
-          })}
+          {filtered.map((t) => (
+            <motion.div key={t.slug} variants={itemUp}>
+              <TournamentCard t={t} />
+            </motion.div>
+          ))}
         </motion.div>
       )}
     </motion.section>

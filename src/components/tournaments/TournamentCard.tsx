@@ -5,13 +5,8 @@ import Image from "next/image";
 import type { Tournament } from "@/data/tournaments";
 import { FiExternalLink } from "react-icons/fi";
 
-export function TournamentCard({
-  t,
-  participants,
-}: {
-  t: Tournament;
-  participants?: number | null; // NEW: passed from the page
-}) {
+export function TournamentCard({ t }: { t: Tournament }) {
+  // Fallback image if not provided
   const img = t.image ?? `/images/tournaments/${t.slug}.png`;
   const hasMatcherino = !!t.url && t.url !== "#";
   const hasLiqui = !!t.liquipedia;
@@ -22,13 +17,12 @@ export function TournamentCard({
       whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
     >
-      {/* Media (16:9) with subtle overlay and hover zoom */}
+      {/* Media (16:9) with subtle overlay and hover zoom) */}
       <div className="relative w-full aspect-[16/9] overflow-hidden">
         <Image
           src={img}
           alt={t.title}
           fill
-          priority={false}
           className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
@@ -49,16 +43,16 @@ export function TournamentCard({
         {/* Title */}
         <h3 className="mt-2 text-lg font-semibold">{t.title}</h3>
 
-        {/* Prize + players (show players only when fetched) */}
-        {(typeof t.prizeUsd === "number" || typeof participants === "number") && (
+        {/* Prize + players (optional) */}
+        {(typeof t.prizeUsd === "number" || typeof t.participants === "number") && (
           <div className="mt-1 caption text-white/85">
             {typeof t.prizeUsd === "number" && (
               <>Prize: ${t.prizeUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</>
             )}
-            {typeof t.prizeUsd === "number" && typeof participants === "number" && (
+            {typeof t.prizeUsd === "number" && typeof t.participants === "number" && (
               <span className="mx-2">•</span>
             )}
-            {typeof participants === "number" && <>Players: {participants}</>}
+            {typeof t.participants === "number" && <>Teams: {t.participants}</>}
           </div>
         )}
 
