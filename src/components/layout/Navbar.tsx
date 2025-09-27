@@ -1,8 +1,9 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
@@ -105,6 +106,35 @@ function DesktopLink({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const prefersReduced = useReducedMotion();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Enhanced hover logic with delay for better UX
+  const handleMouseEnter = useCallback(() => {
+    if (!dropdown) return;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsOpen(true);
+  }, [dropdown]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!dropdown) return;
+    // Add a small delay before closing to allow moving to dropdown
+    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
+  }, [dropdown]);
+
+  const handleDropdownEnter = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  }, []);
+
+  const handleDropdownLeave = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   // Different styling for Club
   const baseClasses = special 
@@ -122,8 +152,8 @@ function DesktopLink({
   return (
     <div 
       className="relative"
-      onMouseEnter={() => dropdown && setIsOpen(true)}
-      onMouseLeave={() => dropdown && setIsOpen(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Link
         href={href}
@@ -151,7 +181,7 @@ function DesktopLink({
         )}
       </Link>
 
-      {/* Dropdown Menu - SMOOTHER ANIMATION */}
+      {/* Dropdown Menu - Enhanced with proper hover handling */}
       <AnimatePresence>
         {dropdown && isOpen && (
           <motion.div
@@ -160,6 +190,8 @@ function DesktopLink({
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: prefersReduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="absolute top-full left-0 mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl p-2 shadow-2xl z-50"
+            onMouseEnter={handleDropdownEnter}
+            onMouseLeave={handleDropdownLeave}
           >
             {dropdown.map((item) => (
               <Link
@@ -178,7 +210,7 @@ function DesktopLink({
   );
 }
 
-// Enhanced mobile menu with animations
+// Enhanced mobile menu with animations and proper scrolling
 function MobileMenu({ 
   isOpen, 
   onClose, 
@@ -189,7 +221,7 @@ function MobileMenu({
   items: (NavItem & { active: boolean })[]
 }) {
   const prefersReduced = useReducedMotion();
-  const pathname = usePathname();
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const menuVariants = {
     closed: {
@@ -217,6 +249,10 @@ function MobileMenu({
     open: { x: 0, opacity: 1 }
   };
 
+  const toggleExpanded = (href: string) => {
+    setExpandedItem(expandedItem === href ? null : href);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -237,10 +273,10 @@ function MobileMenu({
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-50 lg:hidden"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-50 lg:hidden flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/10">
+            <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
               <Image
                 src="/images/logo/bgt-logo.png"
                 alt="BGT"
@@ -257,47 +293,87 @@ function MobileMenu({
               </button>
             </div>
 
-            {/* Navigation Links */}
-            <motion.nav className="flex flex-col p-6 space-y-2">
-              {items.map((item) => (
-                <motion.div key={item.href} variants={itemVariants}>
-                  <Link
-                    href={item.href}
-                    onClick={onClose}
-                    className={`block px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
-                      item.special 
-                        ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/30' 
-                        : item.active 
-                          ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/20' 
-                          : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                  
-                  {/* Mobile dropdown items */}
-                  {item.dropdown && (
-                    <div className="ml-4 mt-2 space-y-1">
-                      {item.dropdown.map((subItem) => (
+            {/* Scrollable Navigation Container */}
+            <div className="flex-1 overflow-y-auto">
+              <motion.nav className="flex flex-col p-6 space-y-2">
+                {items.map((item) => (
+                  <motion.div key={item.href} variants={itemVariants}>
+                    <div className="flex flex-col">
+                      <div className="flex items-center justify-between">
                         <Link
-                          key={subItem.href}
-                          href={subItem.href}
+                          href={item.href}
                           onClick={onClose}
-                          className="block px-4 py-2 text-sm text-white/60 hover:text-[var(--gold)] transition-colors"
+                          className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
+                            item.special 
+                              ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/30' 
+                              : item.active 
+                                ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/20' 
+                                : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                          }`}
                         >
-                          {subItem.label}
+                          {item.label}
                         </Link>
-                      ))}
+                        
+                        {/* Dropdown toggle for items with dropdowns */}
+                        {item.dropdown && (
+                          <button
+                            onClick={() => toggleExpanded(item.href)}
+                            className="p-2 ml-2 text-white/60 hover:text-[var(--gold)] transition-colors"
+                            aria-expanded={expandedItem === item.href}
+                            aria-label={`Toggle ${item.label} menu`}
+                          >
+                            <motion.div
+                              animate={{ rotate: expandedItem === item.href ? 180 : 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <FiChevronDown size={16} />
+                            </motion.div>
+                          </button>
+                        )}
+                      </div>
+                      
+                      {/* Mobile dropdown items with smooth expand/collapse */}
+                      <AnimatePresence>
+                        {item.dropdown && expandedItem === item.href && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="ml-4 mt-2 space-y-1 pb-2">
+                              {item.dropdown.map((subItem) => (
+                                <motion.div
+                                  key={subItem.href}
+                                  initial={{ x: 20, opacity: 0 }}
+                                  animate={{ x: 0, opacity: 1 }}
+                                  exit={{ x: 20, opacity: 0 }}
+                                  transition={{ duration: 0.15, delay: 0.05 }}
+                                >
+                                  <Link
+                                    href={subItem.href}
+                                    onClick={onClose}
+                                    className="block px-4 py-3 text-sm text-white/60 hover:text-[var(--gold)] hover:bg-white/5 rounded-lg transition-all duration-150"
+                                  >
+                                    {subItem.label}
+                                  </Link>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  )}
-                </motion.div>
-              ))}
-            </motion.nav>
+                  </motion.div>
+                ))}
+              </motion.nav>
+            </div>
 
-            {/* Social Links & CTA */}
+            {/* Footer - Fixed at bottom */}
             <motion.div 
               variants={itemVariants}
-              className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10"
+              className="flex-shrink-0 p-6 border-t border-white/10"
             >
               <div className="flex items-center justify-center gap-4 mb-4">
                 <a
