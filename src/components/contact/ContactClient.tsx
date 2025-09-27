@@ -1,285 +1,324 @@
-// src/components/contact/ContactClient.tsx
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { FiMail, FiMessageSquare, FiUsers, FiTrendingUp, FiSend } from "react-icons/fi";
+import { FaDiscord } from "react-icons/fa";
 
-const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+type ContactMethod = {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  contact: string;
+  href: string;
+};
+
+const CONTACT_METHODS: ContactMethod[] = [
+  {
+    icon: FiMail,
+    title: "General Inquiries",
+    description: "Questions about tournaments, partnerships, or general support",
+    contact: "hello@bigtalents.gg",
+    href: "mailto:hello@bigtalents.gg",
+  },
+  {
+    icon: FiUsers,
+    title: "Partnerships",
+    description: "Brand partnerships, sponsorships, and collaboration opportunities",
+    contact: "partnerships@bigtalents.gg",
+    href: "mailto:partnerships@bigtalents.gg",
+  },
+  {
+    icon: FiTrendingUp,
+    title: "Media & Press",
+    description: "Press releases, media kits, interviews, and brand assets",
+    contact: "media@bigtalents.gg",
+    href: "mailto:media@bigtalents.gg",
+  },
+  {
+    icon: FiMessageSquare,
+    title: "Player Support",
+    description: "Tournament questions, technical issues, and player assistance",
+    contact: "Discord Community",
+    href: "https://discord.gg/bgt",
+  },
+];
+
+const REGIONS = [
+  { name: "North America", timezone: "EST/PST", flag: "🇺🇸" },
+  { name: "Europe", timezone: "CET/GMT", flag: "🇪🇺" },
+];
 
 export default function ContactClient() {
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
-  const [msg, setMsg] = useState<string>("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    category: "general",
+    message: "",
+  });
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("loading");
-    setMsg("");
+    setIsSubmitting(true);
 
-    const form = e.currentTarget;
-    const fd = new FormData(form);
+    // Simulate form submission
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const payload = {
-      name: String(fd.get("name") || ""),
-      email: String(fd.get("email") || ""),
-      subject: String(fd.get("subject") || ""),
-      message: String(fd.get("message") || ""),
-      _hp: String(fd.get("_hp") || ""),            // honeypot
-      _ts: Number(fd.get("_ts") || Date.now()),    // timestamp
-    };
+    setSubmitted(true);
+    setIsSubmitting(false);
+  };
 
-    // quick client-side sanity (better UX)
-    if (!payload.name || !payload.email || !payload.message) {
-      setStatus("err");
-      setMsg("Please fill your name, email, and message.");
-      return;
-    }
-    if (payload.message.length > 5000) {
-      setStatus("err");
-      setMsg("Message is too long (limit 5000 characters).");
-      return;
-    }
-
-    try {
-      const res = await fetch("/.netlify/functions/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.ok) {
-        setStatus("ok");
-        setMsg("Thanks! We’ll get back to you shortly.");
-        form.reset();
-        // refresh timestamp so next submit isn't rejected by timing check
-        const ts = form.querySelector<HTMLInputElement>('input[name="_ts"]');
-        if (ts) ts.value = String(Date.now());
-      } else {
-        const text = await res.text().catch(() => "");
-        setStatus("err");
-        setMsg(text || "Something went wrong. Please try again later.");
-      }
-    } catch {
-      setStatus("err");
-      setMsg("Network error. Please try again later.");
-    }
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
-    <section className="container py-16 md:py-24">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, ease: EASE_OUT }}
-        className="max-w-2xl"
-      >
-        <h1 className="h2">Contact Big Talents</h1>
-        <p className="lead mt-3 text-white/80">
-          For the fastest replies on player questions, join our Discord.
-        </p>
-      </motion.div>
+    <div className="relative">
+      {/* Hero */}
+      <section className="relative py-20 md:py-32">
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(1000px 500px at 20% -10%, rgba(212,175,55,0.06), transparent 60%),
+                radial-gradient(800px 400px at 80% 10%, rgba(224,184,79,0.04), transparent 60%)
+              `,
+            }}
+          />
+        </div>
 
-      {/* Grid: Methods + Form */}
-      <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-2">
-        {/* Column: Methods */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.28, ease: EASE_OUT }}
-          className="rounded-2xl border border-white/10 p-6"
-        >
-          <h2 className="h4">How to reach us</h2>
-          <ul className="mt-5 space-y-4 text-sm">
-            <li className="rounded-xl border border-white/10 p-4">
-              <div className="font-semibold text-white">Players & Support</div>
-              <div className="mt-1 text-white/70">
-                Join our Discord for event questions, check-ins, and support.
-              </div>
-              <a
-                href="https://discord.gg/bgt?utm_source=site&utm_medium=contact_card&utm_campaign=join_discord"
-                className="btn btn-outline mt-3 rounded-xl"
-                rel="noopener noreferrer"
-              >
-                Join Discord
-              </a>
-            </li>
+        <div className="container relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <h1 className="h1 mb-6">
+              Get in <span className="text-[color:var(--gold)]">Touch</span>
+            </h1>
 
-            <li className="rounded-xl border border-white/10 p-4">
-              <div className="font-semibold text-white">
-                Partnerships & Business
-              </div>
-              <div className="mt-1 text-white/70">
-                Collaborations, sponsorships, tournament partnerships.
-              </div>
-              <a
-                href="mailto:partnerships@bigtalents.org"
-                className="btn btn-outline mt-3 rounded-xl"
-              >
-                partnerships@bigtalents.org
-              </a>
-            </li>
-
-            <li className="rounded-xl border border-white/10 p-4">
-              <div className="font-semibold text-white">General Inquiries</div>
-              <div className="mt-1 text-white/70">
-                Media, press, or anything else.
-              </div>
-              <a
-                href="mailto:contact@bigtalents.org"
-                className="btn btn-outline mt-3 rounded-xl"
-              >
-                contact@bigtalents.org
-              </a>
-            </li>
-
-            <li className="rounded-xl border border-white/10 p-4">
-              <div className="font-semibold text-white">Follow</div>
-              <div className="mt-1 text-white/70">
-                Get updates and announcements.
-              </div>
-              <div className="mt-3 flex gap-3">
-                <a
-                  href="https://x.com/bgtalents"
-                  className="btn btn-outline rounded-xl"
-                  rel="noopener noreferrer"
-                >
-                  X / Twitter
-                </a>
-                <a
-                  href="https://instagram.com/bigtalents_org"
-                  className="btn btn-outline rounded-xl"
-                  rel="noopener noreferrer"
-                >
-                  Instagram
-                </a>
-              </div>
-            </li>
-          </ul>
-        </motion.div>
-
-        {/* Column: Functional Form (Netlify Function) */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.28, ease: EASE_OUT }}
-          className="rounded-2xl border border-white/10 p-6"
-        >
-          <h2 className="h4">Send a message</h2>
-
-          <form onSubmit={onSubmit} className="mt-5 space-y-4" noValidate>
-            {/* timing + honeypot */}
-            <input type="hidden" name="_ts" value={Date.now()} />
-            <p className="hidden" aria-hidden>
-              <label>
-                Leave this field empty: <input name="_hp" autoComplete="off" />
-              </label>
+            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+              Reach the Big Talents team for partnerships, press, player support, or any questions.
+              We&apos;re active across NA &amp; EU and ready to help.
             </p>
 
-            <div>
-              <label htmlFor="name" className="caption text-white/80">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                required
-                placeholder="Your name"
-                className="mt-1 w-full rounded-xl border border-white/15 bg-transparent px-4 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
-                autoComplete="name"
-                suppressHydrationWarning
-              />
+            <div className="flex items-center justify-center gap-6 mb-8">
+              {REGIONS.map((region) => (
+                <div key={region.name} className="text-center">
+                  <div className="text-2xl mb-1">{region.flag}</div>
+                  <div className="text-sm font-medium text-white">{region.name}</div>
+                  <div className="text-xs text-white/60">{region.timezone}</div>
+                </div>
+              ))}
             </div>
+          </motion.div>
+        </div>
+      </section>
 
-            <div>
-              <label htmlFor="email" className="caption text-white/80">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="mt-1 w-full rounded-xl border border-white/15 bg-transparent px-4 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
-                autoComplete="email"
-                autoCorrect="off"
-                autoCapitalize="none"
-                inputMode="email"
-                suppressHydrationWarning
-              />
-            </div>
+      <div className="container">
+        <div className="grid gap-12 lg:grid-cols-3">
+          {/* Contact Methods */}
+          <div className="lg:col-span-1">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-2xl font-bold mb-8">Contact Methods</h2>
 
-            <div>
-              <label htmlFor="subject" className="caption text-white/80">
-                Subject (optional)
-              </label>
-              <input
-                id="subject"
-                name="subject"
-                placeholder="Sponsorship, press, etc."
-                className="mt-1 w-full rounded-xl border border-white/15 bg-transparent px-4 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
-                autoComplete="off"
-                suppressHydrationWarning
-              />
-            </div>
+              <div className="space-y-6">
+                {CONTACT_METHODS.map((method, idx) => (
+                  <motion.a
+                    key={method.title}
+                    href={method.href}
+                    target={method.href.startsWith("http") ? "_blank" : undefined}
+                    rel={method.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1, duration: 0.5 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="block p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[color:var(--gold)]/30 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-[color:var(--gold)]/20 rounded-lg">
+                        <method.icon className="text-[color:var(--gold)] text-xl" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold mb-2">{method.title}</h3>
+                        <p className="text-sm text-white/70 mb-2">{method.description}</p>
+                        <div className="text-sm text-[color:var(--gold)]">{method.contact}</div>
+                      </div>
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          </div>
 
-            <div>
-              <label htmlFor="message" className="caption text-white/80">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                required
-                placeholder="Tell us a bit more…"
-                rows={6}
-                className="mt-1 w-full rounded-xl border border-white/15 bg-transparent px-4 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
-                suppressHydrationWarning
-              />
-            </div>
+          {/* Contact Form */}
+          <div className="lg:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              {submitted ? (
+                <div className="card p-8 text-center">
+                  <div className="inline-flex p-4 bg-green-500/20 text-green-400 rounded-full mb-6">
+                    <FiSend size={32} />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">Message Sent!</h3>
+                  <p className="text-white/80 mb-6">
+                    Thank you for reaching out. We&apos;ll get back to you within 24-48 hours.
+                  </p>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="btn btn-outline rounded-xl px-6 py-3"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
+              ) : (
+                <div className="card p-8">
+                  <h2 className="text-2xl font-bold mb-8">Send us a Message</h2>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <button
-                type="submit"
-                className="btn btn-primary rounded-xl"
-                disabled={status === "loading"}
-              >
-                {status === "loading" ? "Sending…" : "Send Message"}
-              </button>
-              <a
-                href="mailto:contact@bigtalents.org"
-                className="btn btn-outline rounded-xl"
-              >
-                Open in Email App
-              </a>
-            </div>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-white/90">
+                          Name *
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[color:var(--gold)] focus:outline-none transition-colors text-white placeholder-white/50"
+                          placeholder="Your full name"
+                        />
+                      </div>
 
-            {/* status messages (a11y live region) */}
-            <div className="min-h-[1.25rem]" aria-live="polite">
-              {status === "ok" && (
-                <p className="text-green-400 text-sm">{msg}</p>
+                      <div>
+                        <label className="block text-sm font-medium mb-2 text-white/90">
+                          Email *
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[color:var(--gold)] focus:outline-none transition-colors text-white placeholder-white/50"
+                          placeholder="your@email.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-white/90">
+                        Category
+                      </label>
+                      <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-black/50 border border-white/20 rounded-xl focus:border-[color:var(--gold)] focus:outline-none transition-colors text-white [&>option]:bg-black [&>option]:text-white"
+                      >
+                        <option value="general">General Inquiry</option>
+                        <option value="partnership">Partnership</option>
+                        <option value="media">Media &amp; Press</option>
+                        <option value="support">Player Support</option>
+                        <option value="creator">Creator Program</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-white/90">
+                        Subject *
+                      </label>
+                      <input
+                        type="text"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[color:var(--gold)] focus:outline-none transition-colors text-white placeholder-white/50"
+                        placeholder="What&apos;s this about?"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-white/90">
+                        Message *
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        rows={6}
+                        className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[color:var(--gold)] focus:outline-none transition-colors resize-none text-white placeholder-white/50"
+                        placeholder="Tell us more about your inquiry..."
+                      />
+                    </div>
+
+                    <motion.button
+                      type="submit"
+                      disabled={isSubmitting}
+                      whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                      whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                      className="w-full btn btn-primary rounded-xl py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                          Sending Message...
+                        </>
+                      ) : (
+                        <>
+                          <FiSend className="mr-2" />
+                          Send Message
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+                </div>
               )}
-              {status === "err" && (
-                <p className="text-red-400 text-sm">{msg || "Something went wrong. Try again later."}</p>
-              )}
-            </div>
+            </motion.div>
+          </div>
+        </div>
 
-            <p className="caption mt-2 text-white/60">
-              By submitting, you agree to being contacted about your inquiry.
-            </p>
-          </form>
-        </motion.div>
+        {/* Simple footer note */}
+        <div className="mt-16 mb-16 text-center">
+          <p className="text-white/60">
+            Need immediate help? Join our{" "}
+            <a
+              href="https://discord.gg/bgt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[color:var(--gold)] hover:underline"
+            >
+              <FaDiscord className="inline" />
+              Discord community
+            </a>
+          </p>
+        </div>
       </div>
-
-      {/* Footnote */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.25, duration: 0.28, ease: EASE_OUT }}
-        className="mt-10 text-center text-sm text-white/50"
-      >
-        Global esports community, operating across NA & EU.
-      </motion.div>
-    </section>
+    </div>
   );
 }

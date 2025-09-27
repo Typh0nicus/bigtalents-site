@@ -1,67 +1,105 @@
 "use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
-import type { Tournament } from "@/data/tournaments";
-import { FiExternalLink } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FiExternalLink, FiCalendar, FiAward, FiUsers, FiDollarSign } from "react-icons/fi";
+import { Tournament } from "@/data/tournaments";
 
-export function TournamentCard({ t }: { t: Tournament }) {
-  // Fallback image if not provided
-  const img = t.image ?? `/images/tournaments/${t.slug}.png`;
+interface TournamentCardProps {
+  t: Tournament;
+  featured?: boolean;
+  index?: number;
+}
+
+export function TournamentCard({ t, featured = false, index = 0 }: TournamentCardProps) {
+  const formatPrize = (usd: number) => 
+    usd.toLocaleString(undefined, { maximumFractionDigits: 2 }); // Removed $ here since we add it in the badge
+
   const hasMatcherino = !!t.url && t.url !== "#";
   const hasLiqui = !!t.liquipedia;
 
   return (
     <motion.article
-      className="group card overflow-hidden h-full flex flex-col shadow-soft focus-within:border-[color:var(--gold)]"
-      whileHover={{ y: -2 }}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        duration: 0.4, 
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1] 
+      }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      className="card overflow-hidden h-full flex flex-col group"
     >
-      {/* Media (16:9) with subtle overlay and hover zoom) */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden">
-        <Image
-          src={img}
-          alt={t.title}
-          fill
-          className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.00),rgba(0,0,0,.06))]"
-        />
-      </div>
-
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        {/* Meta row */}
-        <div className="text-sm text-white/70 flex items-center gap-3">
-          <span className="rounded-full border border-white/20 px-2 py-0.5">BGT</span>
-          {t.date && <span>{t.date}</span>}
-        </div>
-
-        {/* Title */}
-        <h3 className="mt-2 text-lg font-semibold">{t.title}</h3>
-
-        {/* Prize + players (optional) */}
-        {(typeof t.prizeUsd === "number" || typeof t.participants === "number") && (
-          <div className="mt-1 caption text-white/85">
-            {typeof t.prizeUsd === "number" && (
-              <>Prize: ${t.prizeUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</>
+      {/* Tournament Image/Banner */}
+      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+        {t.image ? (
+          <Image
+            src={t.image}
+            alt={t.title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={index < 3}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            {t.region ? (
+              <span className="text-6xl font-bold text-[var(--gold)] opacity-50">
+                {t.region}
+              </span>
+            ) : (
+              <FiAward className="text-6xl text-[var(--gold)] opacity-50" />
             )}
-            {typeof t.prizeUsd === "number" && typeof t.participants === "number" && (
-              <span className="mx-2">•</span>
-            )}
-            {typeof t.participants === "number" && <>Teams: {t.participants}</>}
+          </div>
+        )}
+        
+        {/* Region badge - top left - NO BLUR */}
+        {t.region && (
+          <div className="absolute top-3 left-3">
+            <span className="px-2 py-1 bg-black/70 text-white text-xs rounded-full font-bold shadow-lg">
+              {t.region}
+            </span>
           </div>
         )}
 
-        {/* CTAs */}
-        <div className="mt-auto pt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {/* Prize pool - top right - WITH BLUR */}
+        {t.prizeUsd && t.prizeUsd > 0 && (
+          <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-sm rounded-full font-bold shadow-lg">
+            <FiDollarSign size={14} />
+            ${formatPrize(t.prizeUsd)}
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex-1 flex flex-col">
+        {/* Title */}
+        <h3 className="font-bold text-xl mb-3 line-clamp-2 transition-colors">
+          {t.title}
+        </h3>
+
+        {/* Meta information */}
+        <div className="flex flex-col gap-3 mb-5 text-sm">
+          {t.date && (
+            <div className="flex items-center gap-2 text-white/80">
+              <FiCalendar className="text-[var(--gold)] flex-shrink-0" size={16} />
+              <span>{t.date}</span>
+            </div>
+          )}
+          
+          {t.participants && (
+            <div className="flex items-center gap-2 text-white/80">
+              <FiUsers className="text-[var(--gold)] flex-shrink-0" size={16} />
+              <span>{t.participants} teams</span>
+            </div>
+          )}
+        </div>
+
+        {/* CTAs - YOUR ORIGINAL BUTTON STRUCTURE */}
+        <div className={`mt-auto pt-4 grid gap-2 ${hasLiqui ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
           {hasMatcherino ? (
             <a
               className="btn btn-primary w-full"
-              href={t.url!}
+              href={t.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${t.title} on Matcherino`}
@@ -80,7 +118,7 @@ export function TournamentCard({ t }: { t: Tournament }) {
           {hasLiqui && (
             <a
               className="btn btn-outline w-full"
-              href={t.liquipedia!}
+              href={t.liquipedia}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View ${t.title} on Liquipedia`}

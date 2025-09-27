@@ -1,147 +1,136 @@
 "use client";
 
-import Image from "next/image";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { FiExternalLink } from "react-icons/fi";
+import Link from "next/link";
+import { TOURNAMENTS } from "@/data/tournaments"; // Import TOURNAMENTS array directly
+import { TournamentCard } from "@/components/tournaments/TournamentCard";
 
-type TItem = {
-  title: string;
-  date: string;
-  region: "NA" | "EU";
-  prize?: string;
-  image?: string;
-  registerUrl?: string;
-  detailsUrl?: string;
-};
-
-const ITEMS: TItem[] = [
-  {
-    title: "Silver Talent League #1",
-    date: "Coming Soon",
-    region: "EU",
-    prize: "$???",
-    image: "/images/logo/wordmark.webp",
-    registerUrl: "https://matcherino.com",
-    detailsUrl: "/tournaments/stl1",
-  },
-  {
-    title: "Wildcard Weekend #4",
-    date: "Coming Soon",
-    region: "NA",
-    prize: "$???",
-    image: "/images/logo/wordmark.webp",
-    registerUrl: "https://matcherino.com",
-    detailsUrl: "/tournaments/ww4",
-  },
-  {
-    title: "Wildcard Weekend #5",
-    date: "Coming Soon",
-    region: "EU",
-    prize: "$???",
-    image: "/images/logo/wordmark.webp",
-    registerUrl: "https://matcherino.com",
-    detailsUrl: "/tournaments/ww5",
-  },
-];
+function parseWhen(s?: string): number {
+  if (!s) return 0;
+  const t = Date.parse(s.replace("GMT+1", "GMT+0100").replace("GMT", "GMT+0000"));
+  return Number.isNaN(t) ? 0 : t;
+}
 
 export function FeaturedTournaments() {
+  const featuredTournaments = useMemo(() => {
+    const now = Date.now();
+    
+    // Get upcoming tournaments (not archived and future dates)
+    const upcoming = TOURNAMENTS.filter(t => {
+      if (t.archived) return false; // Skip archived tournaments
+      const tournamentDate = parseWhen(t.date);
+      return tournamentDate > now; // Only future tournaments
+    });
+
+    // Sort by date (soonest first) and take top 3
+    return upcoming
+      .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
+      .slice(0, 3);
+  }, []);
+
   return (
-    <section className="container py-12 md:py-16">
-      {/* Header with single-row CTA on mobile */}
-      <div className="flex items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="h2 text-2xl sm:text-3xl truncate">Featured Tournaments</h2>
-          <p className="mt-1 text-sm sm:text-base text-white/75">Upcoming brackets.</p>
-        </div>
-        <a
-          href="/tournaments"
-          className="inline-flex shrink-0 items-center whitespace-nowrap btn btn-outline rounded-xl px-3 py-1.5 text-sm md:text-base"
-          aria-label="View all tournaments"
+    <section className="relative py-16 md:py-24">
+      {/* Background Effects */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(1000px 500px at 20% -10%, rgba(212,175,55,.06), transparent 60%), 
+            radial-gradient(800px 400px at 80% 10%, rgba(224,184,79,.04), transparent 60%)
+          `,
+        }}
+      />
+
+      <div className="container relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          View all
-        </a>
-      </div>
+          <div className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs tracking-wide text-white/85 backdrop-blur mb-4">
+            <span className="rounded-full bg-[color:var(--gold)]/20 px-2 py-0.5 text-[11px] font-bold text-[color:var(--gold)]">
+              LIVE
+            </span>
+            <span>Upcoming Competitions</span>
+          </div>
+          
+          <h2 className="h2 mb-4">Featured <span className="text-[color:var(--gold)]">Tournaments</span></h2>
+          <p className="text-xl text-white/70 max-w-2xl mx-auto">
+            Join the most competitive Brawl Stars tournaments and prove your skills on the biggest stages
+          </p>
+        </motion.div>
 
-      {/* Mobile: horizontal snap rail  •  Desktop: 3-up grid */}
-      <div className="mt-8 -mx-4 px-4 overflow-x-auto md:overflow-visible md:mx-0 md:px-0">
-        <ul className="flex gap-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-6">
-          {ITEMS.map((it, idx) => (
-            <li
-              key={`${it.title}-${idx}`}
-              className="snap-start md:snap-none min-w-[85%] sm:min-w-[60%] md:min-w-0"
-            >
-              <motion.article
-                whileHover={{ y: -3 }}
-                transition={{ type: "spring", stiffness: 420, damping: 30 }}
-                className="card overflow-hidden h-full flex flex-col"
+        {/* Tournament Grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {featuredTournaments.length > 0 ? (
+            featuredTournaments.map((tournament, index) => (
+              <motion.div
+                key={tournament.slug}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.1,
+                  ease: [0.22, 1, 0.36, 1] 
+                }}
               >
-                {/* Media */}
-                <div className="relative w-full aspect-[16/9]">
-                  {it.image ? (
-                    <Image
-                      src={it.image}
-                      alt={it.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
-                      priority={false}
-                    />
-                  ) : (
-                    <div className="skel w-full h-full" />
-                  )}
-
-                  {/* Badges on media */}
-                  <div className="absolute left-3 top-3 flex items-center gap-2">
-                    <span className="rounded-full border border-white/25 bg-black/40 backdrop-blur px-2 py-0.5 text-xs font-semibold">
-                      {it.region}
-                    </span>
-                  </div>
-                  {it.prize && (
-                    <div className="absolute right-3 top-3">
-                      <span className="rounded-full bg-[color:var(--gold)] text-black px-2.5 py-0.5 text-xs font-bold shadow-soft/20">
-                        {it.prize}
-                      </span>
-                    </div>
-                  )}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.00),rgba(0,0,0,.06))]"
-                  />
+                <TournamentCard 
+                  t={tournament} // Use 't' prop as expected by TournamentCard
+                />
+              </motion.div>
+            ))
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="col-span-full text-center py-16"
+            >
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
+                <h3 className="text-xl font-bold mb-3 text-white">No Upcoming Tournaments</h3>
+                <p className="text-white/60 mb-6">Check back soon for new tournament announcements!</p>
+                <Link 
+                  href="/tournaments"
+                  className="btn btn-outline rounded-2xl px-6 py-3"
+                >
+                  View All Tournaments
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </div>
 
-                {/* Body */}
-                <div className="p-5 flex flex-col flex-1">
-                  <div className="caption text-white/75">{it.date}</div>
-                  <h3 className="mt-1 text-lg font-semibold leading-snug">{it.title}</h3>
-
-                  {/* CTAs */}
-                  <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-2">
-                    {it.registerUrl && (
-                      <a
-                        href={it.registerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary w-full rounded-xl"
-                        aria-label={`Register for ${it.title}`}
-                      >
-                        Register <FiExternalLink className="ml-1 -mr-1" />
-                      </a>
-                    )}
-                    {it.detailsUrl && (
-                      <a
-                        href={it.detailsUrl}
-                        className="btn btn-outline w-full rounded-xl"
-                        aria-label={`View details for ${it.title}`}
-                      >
-                        View details
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </motion.article>
-            </li>
-          ))}
-        </ul>
+        {/* CTA Section */}
+        {featuredTournaments.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-center mt-12"
+          >
+            <Link 
+              href="/tournaments"
+              className="btn btn-primary rounded-2xl px-8 py-4 text-lg hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300"
+            >
+              View All Tournaments
+            </Link>
+            
+            <p className="text-white/60 text-sm mt-4">
+              More tournaments available • Register now to secure your spot
+            </p>
+          </motion.div>
+        )}
       </div>
     </section>
   );

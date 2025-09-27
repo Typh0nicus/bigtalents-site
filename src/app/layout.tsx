@@ -36,7 +36,6 @@ export const metadata: Metadata = {
     images: ["/og.png"],
   },
   icons: { icon: "/favicon.ico" },
-  themeColor: "#0a0a0a",
 };
 
 export const viewport: Viewport = {
@@ -51,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={heading.variable}>
       <body className="safe-areas">
         <Navbar />
-        <main className="min-h-screen">{children}</main>
+        {children}
         <Footer />
       </body>
     </html>

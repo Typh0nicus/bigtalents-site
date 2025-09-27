@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { NEWS } from "@/data/news";
 import { motion, type Variants } from "framer-motion";
 import { NewsCard } from "./NewsCard";
+import { FiSearch, FiX } from "react-icons/fi";
 
-// animation configs (typed + safe easing tuple)
 const gridStagger: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
@@ -16,124 +16,177 @@ const itemUp: Variants = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] }, // "easeOut"-like curve
+    transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
 export default function NewsClient() {
-  const [q, setQ] = useState("");
-  const [tag, setTag] = useState<string>("All");
+  const [query, setQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string>("All");
 
   const allTags = useMemo(() => {
-    const set = new Set<string>();
-    NEWS.forEach((n) => n.tags?.forEach((t) => set.add(t)));
-    return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+    const tagSet = new Set<string>();
+    NEWS.forEach((item) => item.tags?.forEach((tag) => tagSet.add(tag)));
+    return ["All", ...Array.from(tagSet).sort()];
   }, []);
 
-  const filtered = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    let list = NEWS;
-    if (tag !== "All") list = list.filter((n) => n.tags?.includes(tag));
-    if (s) {
-      list = list.filter(
-        (n) =>
-          n.title.toLowerCase().includes(s) ||
-          (n.excerpt?.toLowerCase().includes(s) ?? false)
+  const filteredNews = useMemo(() => {
+    const searchTerm = query.trim().toLowerCase();
+    let filtered = NEWS;
+
+    // Filter by tag
+    if (selectedTag !== "All") {
+      filtered = filtered.filter((item) => item.tags?.includes(selectedTag));
+    }
+
+    // Filter by search query
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchTerm) ||
+          (item.excerpt?.toLowerCase().includes(searchTerm) ?? false) ||
+          (item.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ?? false)
       );
     }
-    // newest first
-    return [...list].sort(
+
+    // Sort by date (newest first)
+    return filtered.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-  }, [q, tag]);
+  }, [query, selectedTag]);
+
+  // Separate featured and regular news
+  const featuredNews = filteredNews.filter(item => item.featured);
+  const regularNews = filteredNews.filter(item => !item.featured);
 
   return (
     <motion.section
       className="container py-14"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }} // TS-safe
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Header */}
       <motion.div
-        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+        className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.12, duration: 0.25 }}
       >
-        <div>
-          <h1 className="h2">News & Announcements</h1>
-          <p className="caption mt-2">
-            Tournament recaps, updates, and community info.
+        <div className="max-w-2xl">
+          <h1 className="h1 mb-4">News & <span className="text-[color:var(--gold)]">Updates</span></h1>
+          <p className="text-white/70 text-lg leading-relaxed">
+            Stay updated with tournament results, player achievements, community announcements, 
+            and the latest from the Big Talents ecosystem.
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          {/* Tag chips */}
-          <div className="flex flex-wrap gap-2">
-            {allTags.map((t) => {
-              const active = tag === t;
-              return (
-                <button
-                  key={t}
-                  onClick={() => setTag(t)}
-                  className={
-                    "rounded-xl border px-3 py-1 text-sm transition-all " +
-                    (active
-                      ? "border-[color:var(--gold)] bg-[color:var(--gold)] text-black"
-                      : "border-white/15 hover:border-[color:var(--gold)]/60")
-                  }
-                >
-                  {t}
-                </button>
-              );
-            })}
-          </div>
-
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           {/* Search */}
-          <div className="flex items-center gap-2">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
             <input
-              placeholder="Search news…"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="rounded-xl border border-white/15 bg-transparent px-4 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
+              placeholder="Search news..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10 pr-4 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors"
             />
-            {q && (
+            {query && (
               <button
-                onClick={() => setQ("")}
-                className="rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/10"
+                onClick={() => setQuery("")}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white transition-colors"
               >
-                Clear
+                <FiX />
               </button>
             )}
           </div>
         </div>
       </motion.div>
 
-      {/* Grid */}
-      {filtered.length === 0 ? (
+      {/* Tag filters */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.25 }}
+        className="flex flex-wrap gap-3 mb-8"
+      >
+        {allTags.map((tag) => {
+          const isActive = selectedTag === tag;
+          return (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
+              className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
+                isActive
+                  ? "border-[color:var(--gold)] bg-[color:var(--gold)] text-black"
+                  : "border-white/15 hover:border-[color:var(--gold)]/50 hover:bg-white/5"
+              }`}
+            >
+              {tag}
+            </button>
+          );
+        })}
+      </motion.div>
+
+      {/* Results */}
+      {filteredNews.length === 0 ? (
         <motion.div
-          className="mt-14 rounded-xl border border-white/10 p-8 text-center"
+          className="mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
+          transition={{ delay: 0.3, duration: 0.3 }}
         >
-          <div className="h3">No posts yet.</div>
-          <p className="caption mt-2">Try another tag or clear the search.</p>
+          <div className="text-6xl mb-4">📰</div>
+          <h3 className="text-xl font-bold mb-2">No articles found</h3>
+          <p className="text-white/60 mb-6">Try adjusting your search or selecting a different tag.</p>
+          <button
+            onClick={() => {
+              setQuery("");
+              setSelectedTag("All");
+            }}
+            className="btn btn-outline rounded-xl px-6 py-3"
+          >
+            Clear Filters
+          </button>
         </motion.div>
       ) : (
-        <motion.div
-          className="grid gap-5 mt-8 sm:grid-cols-2 lg:grid-cols-3"
-          variants={gridStagger}
-          initial="hidden"
-          animate="show"
-        >
-          {filtered.map((n) => (
-            <motion.div key={n.slug} variants={itemUp}>
-              <NewsCard item={n} />
+        <div className="space-y-12">
+          {/* Featured News */}
+          {featuredNews.length > 0 && (
+            <motion.div
+              variants={gridStagger}
+              initial="hidden"
+              animate="show"
+            >
+              <h2 className="text-xl font-bold mb-6">Featured</h2>
+              <div className="grid gap-6 lg:grid-cols-2">
+                {featuredNews.slice(0, 2).map((item) => (
+                  <motion.div key={item.slug} variants={itemUp}>
+                    <NewsCard item={item} featured />
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
-          ))}
-        </motion.div>
+          )}
+
+          {/* Regular News */}
+          {regularNews.length > 0 && (
+            <motion.div
+              variants={gridStagger}
+              initial="hidden"
+              animate="show"
+            >
+              {featuredNews.length > 0 && <h2 className="text-xl font-bold mb-6">Latest News</h2>}
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {regularNews.map((item) => (
+                  <motion.div key={item.slug} variants={itemUp}>
+                    <NewsCard item={item} />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </div>
       )}
     </motion.section>
   );

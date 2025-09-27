@@ -1,8 +1,20 @@
-export default function Page() {
-  return (
-    <section className="container py-16">
-      <h1 className="h2">About BGT</h1>
-      <p className="mt-4 text-white/80">Coming soon.</p>
-    </section>
-  );
+import type { Metadata } from "next";
+import AboutClient from "@/components/about/AboutClient";
+
+export const metadata: Metadata = {
+  title: "About — Big Talents",
+  description:
+    "Learn about Big Talents - the premier Brawl Stars esports organization. Our story, mission, and the team behind the biggest tournaments.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About — Big Talents",
+    description:
+      "The premier Brawl Stars esports organization. Our story, mission, and team.",
+    url: "/about",
+    type: "website",
+  },
+};
+
+export default function AboutPage() {
+  return <AboutClient />;
 }

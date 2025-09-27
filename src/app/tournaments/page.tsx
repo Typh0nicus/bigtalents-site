@@ -24,7 +24,7 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: "prize", label: "Prize" },
 ];
 
-// animation configs (typed, and using tuple easing)
+// animation configs (typed, and using tuple easing) - YOUR ORIGINAL
 const gridStagger: Variants = {
   show: {
     transition: {
@@ -52,51 +52,82 @@ export default function TournamentsPage() {
     []
   );
 
-  const filtered = useMemo(() => {
+  // Separate upcoming and finalized tournaments
+  const { upcomingTournaments, finalizedTournaments } = useMemo(() => {
+    const upcoming = TOURNAMENTS.filter(t => !t.archived);
+    const finalized = TOURNAMENTS.filter(t => t.archived);
+    return { upcomingTournaments: upcoming, finalizedTournaments: finalized };
+  }, []);
+
+  // Apply filtering to ALL tournaments
+  const { filteredUpcoming, filteredFinalized } = useMemo(() => {
     const s = q.trim().toLowerCase();
-    let list = !s
-      ? TOURNAMENTS
-      : TOURNAMENTS.filter(
+    
+    // Filter upcoming
+    let upcomingList = !s
+      ? upcomingTournaments
+      : upcomingTournaments.filter(
           (t) =>
             t.title.toLowerCase().includes(s) ||
             (t.date?.toLowerCase().includes(s) ?? false)
         );
 
-    list = [...list].sort((a, b) => {
-      switch (sort) {
-        case "title": {
-          const A = a.title.toLowerCase();
-          const B = b.title.toLowerCase();
-          return A === B ? 0 : A < B ? -1 : 1;
-        }
-        case "prize": {
-          const A = a.prizeUsd ?? -Infinity;
-          const B = b.prizeUsd ?? -Infinity;
-          return A - B;
-        }
-        case "date":
-        default: {
-          const A = parseWhen(a.date);
-          const B = parseWhen(b.date);
-          return A - B;
-        }
-      }
-    });
+    // Filter finalized
+    let finalizedList = !s
+      ? finalizedTournaments
+      : finalizedTournaments.filter(
+          (t) =>
+            t.title.toLowerCase().includes(s) ||
+            (t.date?.toLowerCase().includes(s) ?? false)
+        );
 
-    if (dir === "desc") list.reverse();
-    return list;
-  }, [q, sort, dir]);
+    // Sort function - YOUR ORIGINAL LOGIC
+    const sortTournaments = (list: typeof TOURNAMENTS) => {
+      return [...list].sort((a, b) => {
+        switch (sort) {
+          case "title": {
+            const A = a.title.toLowerCase();
+            const B = b.title.toLowerCase();
+            return A === B ? 0 : A < B ? -1 : 1;
+          }
+          case "prize": {
+            const A = a.prizeUsd ?? -Infinity;
+            const B = b.prizeUsd ?? -Infinity;
+            return A - B;
+          }
+          case "date":
+          default: {
+            const A = parseWhen(a.date);
+            const B = parseWhen(b.date);
+            return A - B;
+          }
+        }
+      });
+    };
+
+    upcomingList = sortTournaments(upcomingList);
+    finalizedList = sortTournaments(finalizedList);
+
+    if (dir === "desc") {
+      upcomingList.reverse();
+      finalizedList.reverse();
+    }
+
+    return { filteredUpcoming: upcomingList, filteredFinalized: finalizedList };
+  }, [q, sort, dir, upcomingTournaments, finalizedTournaments]);
+
+  const hasResults = filteredUpcoming.length > 0 || filteredFinalized.length > 0;
 
   return (
     <motion.section
-      className="container py-14"
+      className="container py-20"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: EASE_OUT }}
     >
-      {/* Header / controls */}
+      {/* Header / controls - YOUR ORIGINAL ANIMATION */}
       <motion.div
-        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.15, duration: 0.25, ease: EASE_OUT }}
@@ -161,7 +192,7 @@ export default function TournamentsPage() {
       </motion.div>
 
       {/* Results */}
-      {filtered.length === 0 ? (
+      {!hasResults ? (
         <motion.div
           className="mt-14 rounded-xl border border-white/10 p-8 text-center"
           initial={{ opacity: 0 }}
@@ -182,18 +213,45 @@ export default function TournamentsPage() {
           </button>
         </motion.div>
       ) : (
-        <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8"
-          variants={gridStagger}
-          initial="hidden"
-          animate="show"
-        >
-          {filtered.map((t) => (
-            <motion.div key={t.slug} variants={itemUp}>
-              <TournamentCard t={t} />
-            </motion.div>
-          ))}
-        </motion.div>
+        <>
+          {/* Upcoming Tournaments Section */}
+          {filteredUpcoming.length > 0 && (
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold mb-8 text-[var(--gold)]">Upcoming Tournaments</h2>
+              <motion.div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                variants={gridStagger}
+                initial="hidden"
+                animate="show"
+              >
+                {filteredUpcoming.map((t) => (
+                  <motion.div key={t.slug} variants={itemUp}>
+                    <TournamentCard t={t} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          )}
+
+          {/* Finalized Tournaments Section */}
+          {filteredFinalized.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-8">Finalized Tournaments</h2>
+              <motion.div
+                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                variants={gridStagger}
+                initial="hidden"
+                animate="show"
+              >
+                {filteredFinalized.map((t) => (
+                  <motion.div key={t.slug} variants={itemUp}>
+                    <TournamentCard t={t} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          )}
+        </>
       )}
     </motion.section>
   );

@@ -1,19 +1,87 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
+import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
+import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
 
-/* --------------------------- Nav model --------------------------- */
-const NAV_ITEMS = [
+// Type for navigation items
+type NavItem = {
+  href: string;
+  label: string;
+  dropdown?: { href: string; label: string }[];
+  special?: boolean; // For Club styling
+};
+
+// Navigation model with dropdowns (for mobile)
+const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/news", label: "News" },
   { href: "/tournaments", label: "Tournaments" },
-  { href: "/rosters", label: "Rosters" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    dropdown: [
+      { href: "/rosters/creators", label: "Creators" },
+      { href: "/rosters/players", label: "Players" }
+    ]
+  },
+  { href: "/club", label: "Club", special: true },
+  { 
+    href: "/creator-program", 
+    label: "Creator Program",
+    dropdown: [
+      { href: "/creator-program", label: "Overview" },
+      { href: "/creator-program/apply", label: "Apply Now" }
+    ]
+  },
+  { 
+    href: "/company", 
+    label: "Company",
+    dropdown: [
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/brand-guidelines", label: "Brand Guidelines" }
+    ]
+  }
+];
+
+// Desktop layout - Left side (farthest to closest to logo)
+const LEFT_NAV_ITEMS: NavItem[] = [
+  { 
+    href: "/company", 
+    label: "Company",
+    dropdown: [
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/brand-guidelines", label: "Brand Guidelines" }
+    ]
+  },
+  { 
+    href: "/creator-program", 
+    label: "Creator Program",
+    dropdown: [
+      { href: "/creator-program", label: "Overview" },
+      { href: "/creator-program/apply", label: "Apply Now" }
+    ]
+  },
+  { href: "/news", label: "News" }
+];
+
+// Desktop layout - Right side (closest to farthest from logo)
+const RIGHT_NAV_ITEMS: NavItem[] = [
+  { href: "/tournaments", label: "Tournaments" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    dropdown: [
+      { href: "/rosters/creators", label: "Creators" },
+      { href: "/rosters/players", label: "Players" }
+    ]
+  },
+  { href: "/club", label: "Club", special: true }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -21,43 +89,290 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-/* --------------------------- Desktop link --------------------------- */
+// Enhanced desktop link with dropdown support and special Club styling
 function DesktopLink({
   href,
   label,
   active,
+  dropdown,
+  special = false,
 }: {
   href: string;
   label: string;
   active: boolean;
+  dropdown?: { href: string; label: string }[];
+  special?: boolean;
 }) {
-  const base =
-    "group relative px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out";
-  const on = "text-[color:var(--gold)]";
-  const off =
-    "text-white/80 hover:text-[color:var(--gold)] hover:scale-105 hover:drop-shadow-[0_0_12px_rgba(212,175,55,.35)]";
+  const [isOpen, setIsOpen] = useState(false);
+  const prefersReduced = useReducedMotion();
+
+  // Different styling for Club
+  const baseClasses = special 
+    ? "group relative px-3 py-2 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide border border-[var(--gold)] rounded-lg bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"
+    : "group relative px-4 py-3 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide";
+  
+  const activeClasses = special 
+    ? "text-[var(--gold)]"
+    : "text-[var(--gold)]";
+    
+  const inactiveClasses = special
+    ? "text-[var(--gold)] hover:text-[var(--gold)]"
+    : "text-white/90 hover:text-[var(--gold)]";
+
   return (
-    <Link href={href} className={`${base} ${active ? on : off}`}>
-      {label}
-      <span
-        aria-hidden
-        className={`pointer-events-none absolute left-3 -bottom-1 h-[2px] rounded-full bg-[color:var(--gold)] transition-all duration-200 ease-in-out ${
-          active
-            ? "w-1/2 opacity-100"
-            : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-100"
-        }`}
-      />
-    </Link>
+    <div 
+      className="relative"
+      onMouseEnter={() => dropdown && setIsOpen(true)}
+      onMouseLeave={() => dropdown && setIsOpen(false)}
+    >
+      <Link
+        href={href}
+        className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}
+        aria-expanded={dropdown ? isOpen : undefined}
+      >
+        {label}
+        {dropdown && (
+          <motion.div
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <FiChevronDown size={12} />
+          </motion.div>
+        )}
+        
+        {/* Underline effect - only for non-special items */}
+        {!special && (
+          <motion.div
+            className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: active || isOpen ? "calc(100% - 2rem)" : 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          />
+        )}
+      </Link>
+
+      {/* Dropdown Menu - SMOOTHER ANIMATION */}
+      <AnimatePresence>
+        {dropdown && isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: prefersReduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute top-full left-0 mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl p-2 shadow-2xl z-50"
+          >
+            {dropdown.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-4 py-3 text-sm font-medium text-white/90 hover:text-[var(--gold)] hover:bg-white/10 rounded-lg transition-all duration-150"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
-/* ------------------------------ Navbar ------------------------------ */
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+// Enhanced mobile menu with animations
+function MobileMenu({ 
+  isOpen, 
+  onClose, 
+  items 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  items: (NavItem & { active: boolean })[]
+}) {
+  const prefersReduced = useReducedMotion();
+  const pathname = usePathname();
+
+  const menuVariants = {
+    closed: {
+      x: "100%",
+      transition: {
+        duration: prefersReduced ? 0 : 0.3,
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        staggerChildren: 0.05,
+        staggerDirection: -1
+      }
+    },
+    open: {
+      x: 0,
+      transition: {
+        duration: prefersReduced ? 0 : 0.3,
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        staggerChildren: 0.07,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    closed: { x: 50, opacity: 0 },
+    open: { x: 0, opacity: 1 }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReduced ? 0 : 0.2 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={onClose}
+          />
+
+          {/* Menu Panel */}
+          <motion.div
+            variants={menuVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-50 lg:hidden"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <Image
+                src="/images/logo/bgt-logo.png"
+                alt="BGT"
+                width={80}
+                height={20}
+                className="h-5 w-auto"
+              />
+              <button
+                onClick={onClose}
+                className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
+                aria-label="Close menu"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+
+            {/* Navigation Links */}
+            <motion.nav className="flex flex-col p-6 space-y-2">
+              {items.map((item) => (
+                <motion.div key={item.href} variants={itemVariants}>
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className={`block px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
+                      item.special 
+                        ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/30' 
+                        : item.active 
+                          ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/20' 
+                          : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                  
+                  {/* Mobile dropdown items */}
+                  {item.dropdown && (
+                    <div className="ml-4 mt-2 space-y-1">
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.href}
+                          href={subItem.href}
+                          onClick={onClose}
+                          className="block px-4 py-2 text-sm text-white/60 hover:text-[var(--gold)] transition-colors"
+                        >
+                          {subItem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </motion.nav>
+
+            {/* Social Links & CTA */}
+            <motion.div 
+              variants={itemVariants}
+              className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10"
+            >
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <a
+                  href="https://discord.gg/bgt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  aria-label="Discord"
+                >
+                  <FaDiscord size={20} />
+                </a>
+                <a
+                  href="https://x.com/bgtalents"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  aria-label="Twitter"
+                >
+                  <FaTwitter size={20} />
+                </a>
+                <a
+                  href="https://instagram.com/bigtalents_org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  aria-label="Instagram"
+                >
+                  <FaInstagram size={20} />
+                </a>
+              </div>
+              
+              <Link
+                href="/tournaments"
+                onClick={onClose}
+                className="block w-full text-center py-3 bg-[var(--gold)] text-black font-bold rounded-xl hover:bg-[var(--gold-600)] transition-colors"
+              >
+                View Tournaments
+              </Link>
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollY } = useScroll();
   const prefersReduced = useReducedMotion();
+
+  // Track scroll position for navbar styling
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 50);
+  });
+
+  const leftItems = useMemo(
+    () =>
+      LEFT_NAV_ITEMS.map((it) => ({
+        ...it,
+        active: isActive(pathname ?? "/", it.href),
+      })),
+    [pathname]
+  );
+
+  const rightItems = useMemo(
+    () =>
+      RIGHT_NAV_ITEMS.map((it) => ({
+        ...it,
+        active: isActive(pathname ?? "/", it.href),
+      })),
+    [pathname]
+  );
 
   const items = useMemo(
     () =>
@@ -68,116 +383,122 @@ export function Navbar() {
     [pathname]
   );
 
-  useEffect(() => setOpen(false), [pathname]);
+  // Close mobile menu on route change
+  useEffect(() => setIsOpen(false), [pathname]);
 
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    const cls = "no-scroll";
-    if (open) document.documentElement.classList.add(cls);
-    return () => document.documentElement.classList.remove(cls);
-  }, [open]);
-
-  // Slower, smoother dropdown
-  const panelVariants = {
-    hidden: { opacity: 0, y: -8, scaleY: 0.9, transformOrigin: "top" as const },
-    show: {
-      opacity: 1,
-      y: 0,
-      scaleY: 1,
-      transition: { duration: prefersReduced ? 0 : 0.34, ease: EASE },
-    },
-    exit: {
-      opacity: 0,
-      y: -6,
-      scaleY: 0.95,
-      transition: { duration: prefersReduced ? 0 : 0.22, ease: EASE },
-    },
-  };
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
-    <header className="relative z-50 w-full border-b border-white/10 bg-black">
-      <nav className="container flex items-center justify-between py-4">
-        <Link href="/" aria-label="Big Talents Home" className="flex items-center gap-2">
-          <Image
-            src="/images/logo/bgt-logo.png"
-            alt="BGT Logo"
-            width={120}
-            height={40}
-            className="h-10 w-auto md:h-12"
-            priority={false}
-          />
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
-          {items.map((item) => (
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ 
+        duration: prefersReduced ? 0 : 0.6,
+        ease: [0.22, 1, 0.36, 1],
+        delay: 0.1
+      }}
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-2xl' 
+          : 'bg-transparent'
+      }`}
+    >
+      <nav className="container flex items-center justify-center py-4 relative">
+        {/* Left Navigation - Close to logo */}
+        <div className="hidden lg:flex items-center absolute right-1/2 mr-20">
+          {leftItems.reverse().map((item) => (
             <DesktopLink
               key={item.href}
               href={item.href}
               label={item.label}
               active={item.active}
+              dropdown={item.dropdown}
+              special={item.special}
             />
           ))}
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden p-2 text-white/85 hover:text-[color:var(--gold)] transition-colors"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-controls="mobile-nav"
-          aria-expanded={open}
-        >
-          <span className="inline-block align-middle text-xl">{open ? "✕" : "☰"}</span>
-        </button>
-      </nav>
+        {/* Centered Logo */}
+        <Link href="/" className="flex items-center gap-3 group z-10">
+          <Image
+            src="/images/logo/bgt-logo.png"
+            alt="Big Talents"
+            width={120}
+            height={30}
+            priority
+            className="h-8 w-auto transition-transform duration-200 group-hover:scale-105"
+          />
+        </Link>
 
-      {/* Mobile dropdown + scrim */}
-      <AnimatePresence>
-        {open && (
-          <>
-            {/* Scrim (no blur) */}
-            <motion.button
-              aria-label="Close menu"
-              onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 bg-black/55 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: prefersReduced ? 0 : 0.2 } }}
-              exit={{ opacity: 0, transition: { duration: prefersReduced ? 0 : 0.16 } }}
+        {/* Right Navigation - Close to logo */}
+        <div className="hidden lg:flex items-center absolute left-1/2 ml-20">
+          {rightItems.map((item) => (
+            <DesktopLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              active={item.active}
+              dropdown={item.dropdown}
+              special={item.special}
             />
-            {/* Panel under the bar (no blur) */}
-            <motion.div
-              id="mobile-nav"
-              role="menu"
-              className="mobile-panel absolute left-0 right-0 top-full z-[60] border-b border-white/10 bg-black md:hidden"
-              variants={panelVariants}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-            >
-              <div className="container py-3">
-                <ul className="flex flex-col">
-                  {items.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        className={`nav-link block rounded-lg px-2 py-3 text-base ${
-                          item.active
-                            ? "text-[color:var(--gold)] bg-white/[0.04]"
-                            : "text-white/85 hover:text-[color:var(--gold)] hover:bg-white/[0.03]"
-                        }`}
-                        role="menuitem"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </header>
+          ))}
+        </div>
+        
+        {/* Social Icons - Far right edge */}
+        <div className="hidden lg:flex items-center absolute right-0 gap-2">
+          <a
+            href="https://discord.gg/bgt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
+            aria-label="Discord"
+          >
+            <FaDiscord size={18} />
+          </a>
+          <a
+            href="https://x.com/bgtalents"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
+            aria-label="Twitter"
+          >
+            <FaTwitter size={18} />
+          </a>
+          <a
+            href="https://instagram.com/bigtalents_org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
+            aria-label="Instagram"
+          >
+            <FaInstagram size={18} />
+          </a>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsOpen(true)}
+          className="lg:hidden absolute right-0 p-2 text-white/85 hover:text-[var(--gold)] transition-colors"
+          aria-label="Open menu"
+          aria-expanded={isOpen}
+        >
+          <FiMenu size={24} />
+        </button>
+
+        {/* Mobile Menu */}
+        <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
+      </nav>
+    </motion.header>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { TOURNAMENTS } from "@/data/tournaments";
+import { TOURNAMENTS } from "@/data/tournaments"; // Direct import, no getFeaturedTournaments
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
 
 function parseWhen(s?: string): number {
@@ -11,8 +11,18 @@ function parseWhen(s?: string): number {
 
 export function FeaturedSlice() {
   const featured = useMemo(() => {
-    return [...TOURNAMENTS]
-      .sort((a, b) => parseWhen(b.date) - parseWhen(a.date))
+    const now = Date.now();
+    
+    // Filter for upcoming tournaments (not archived and future dates)
+    const upcoming = TOURNAMENTS.filter(t => {
+      if (t.archived) return false; // Skip archived tournaments
+      const tournamentDate = parseWhen(t.date);
+      return tournamentDate > now; // Only future tournaments
+    });
+
+    // Sort by date (soonest first) and take top 3
+    return upcoming
+      .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
       .slice(0, 3);
   }, []);
 
@@ -24,9 +34,16 @@ export function FeaturedSlice() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-        {featured.map((t) => (
-          <TournamentCard key={t.slug} t={t} />
-        ))}
+        {featured.length > 0 ? (
+          featured.map((t) => (
+            <TournamentCard key={t.slug} t={t} /> // Use 't' prop correctly
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12">
+            <p className="text-white/60">No upcoming tournaments at the moment.</p>
+            <p className="text-white/40 text-sm mt-2">Check back soon for new tournament announcements!</p>
+          </div>
+        )}
       </div>
     </section>
   );

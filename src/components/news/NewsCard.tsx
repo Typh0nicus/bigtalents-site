@@ -2,69 +2,102 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export type NewsItem = {
   slug: string;
   title: string;
-  date: string;            // ISO or human date
+  date: string;
   excerpt?: string;
-  image?: string;          // e.g. "/images/news/xyz.jpg"
+  image?: string;
   tags?: string[];
+  featured?: boolean;
 };
 
-export function NewsCard({ item }: { item: NewsItem }) {
+export function NewsCard({ item, featured = false }: { item: NewsItem; featured?: boolean }) {
   return (
-    <article
-      className="group rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5 backdrop-blur-sm
-                 transition-colors duration-200 hover:border-[color:var(--gold)]/50 focus-within:border-[color:var(--gold)]"
+    <motion.article
+      whileHover={{ y: -4 }}
+      className={`group rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-all duration-300 hover:border-[color:var(--gold)]/50 focus-within:border-[color:var(--gold)] ${
+        featured ? 'md:col-span-2 lg:col-span-2' : ''
+      }`}
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <Link
         href={`/news/${item.slug}`}
-        className="block outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-xl"
+        className="block p-4 sm:p-5 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-2xl"
         aria-label={`Read: ${item.title}`}
       >
-        {/* 16:9 media with hover micro-zoom */}
+        {/* Image */}
         <div className="relative mb-4 overflow-hidden rounded-xl">
-          <div className="relative aspect-[16/9] w-full">
+          <div className={`relative w-full ${featured ? 'aspect-[21/9]' : 'aspect-[16/9]'}`}>
             <Image
               src={item.image ?? "/images/news/placeholder.jpg"}
               alt={item.title}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
-              priority={false}
+              sizes={featured ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+              className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+              priority={featured}
             />
           </div>
-          {/* gentle readability gradient */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.00),rgba(0,0,0,.06))]"
-          />
+          {/* Gradient overlay */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+          
+          {item.featured && (
+            <div className="absolute top-3 left-3 px-3 py-1 bg-[color:var(--gold)] text-black rounded-full text-xs font-bold">
+              Featured
+            </div>
+          )}
         </div>
 
-        <h3 className="text-lg font-semibold">{item.title}</h3>
-        <p className="caption mt-1 text-white/60">
-          {new Date(item.date).toLocaleDateString()}
-        </p>
+        {/* Content */}
+        <div className={featured ? 'grid gap-4 lg:grid-cols-2' : ''}>
+          <div>
+            <h3 className={`font-semibold group-hover:text-[color:var(--gold)] transition-colors ${
+              featured ? 'text-xl lg:text-2xl' : 'text-lg'
+            }`}>
+              {item.title}
+            </h3>
+            
+            <p className="caption mt-1 text-white/60">
+              {new Date(item.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </p>
+          </div>
 
-        {item.excerpt && (
-          <p className="mt-3 text-sm text-white/80 line-clamp-3">{item.excerpt}</p>
-        )}
+          {item.excerpt && (
+            <div className={featured ? '' : 'mt-3'}>
+              <p className={`text-white/80 line-clamp-3 ${
+                featured ? 'text-base leading-relaxed' : 'text-sm'
+              }`}>
+                {item.excerpt}
+              </p>
+            </div>
+          )}
+        </div>
 
+        {/* Tags */}
         {item.tags && item.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {item.tags.map((t) => (
+            {item.tags.slice(0, 3).map((tag) => (
               <span
-                key={t}
-                className="rounded-lg border border-white/10 px-2 py-0.5 text-xs text-white/70"
+                key={tag}
+                className="rounded-lg border border-white/10 px-2 py-0.5 text-xs text-white/70 group-hover:border-[color:var(--gold)]/30 transition-colors"
               >
-                {t}
+                {tag}
               </span>
             ))}
+            {item.tags.length > 3 && (
+              <span className="rounded-lg border border-white/10 px-2 py-0.5 text-xs text-white/50">
+                +{item.tags.length - 3} more
+              </span>
+            )}
           </div>
         )}
       </Link>
-    </article>
+    </motion.article>
   );
 }
