@@ -21,7 +21,7 @@ const MEMBERS: Member[] = [
   {
     name: "HMB | Boss",
     image: "/images/club/boss.jpg",
-    blurb: "2024 BSC World Champion",
+    blurb: "2024 World Champion",
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
     wiki: "https://liquipedia.net/brawlstars/BosS",
@@ -32,6 +32,14 @@ const MEMBERS: Member[] = [
     blurb: "Top-1 Ranked • Worlds Finalist",
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
+  },
+  {
+    name: "ELV | DiegoGamer",
+    image: "/images/club/diego.webp",
+    blurb: " NA Pro Player • Worlds Finalist",
+    youtube: "https://www.youtube.com/@DiegogamerCR_",
+    twitch: "https://www.twitch.tv/diegogamercr",
+    wiki: "https://liquipedia.net/brawlstars/Diegogamer",
   },
   {
     name: "Hyra",
@@ -64,6 +72,10 @@ const MEMBERS: Member[] = [
 
 /* ======================= Component ======================= */
 export function ExclusiveClub() {
+  // Split
+  const firstRow = MEMBERS.slice(0, 4); // First members
+  const secondRow = MEMBERS.slice(4);   // Remaining members
+
   return (
     <section className="relative overflow-hidden">
       {/* Ambient accents */}
@@ -204,7 +216,7 @@ export function ExclusiveClub() {
           </div>
         </motion.div>
 
-        {/* Members */}
+        {/* Members - FIXED: 2-row layout, centralized */}
         <div className="mt-16">
           <motion.h3
             initial={{ opacity: 0 }}
@@ -216,72 +228,148 @@ export function ExclusiveClub() {
           </motion.h3>
           <p className="text-center text-white/70 mb-8">World champions, top global players, and biggest creators</p>
 
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
-            {MEMBERS.map((m: Member, i: number) => (
-              <motion.article
-                key={m.name}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ scale: 1.03 }}
-                className="card overflow-hidden group"
-              >
-                <div className="relative w-full aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={m.image}
-                    alt={m.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                </div>
+          <div className="space-y-6">
+            {/* First Row - 4 members */}
+            <div className="flex justify-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl">
+                {firstRow.map((m: Member, i: number) => (
+                  <motion.article
+                    key={m.name}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ scale: 1.03 }}
+                    className="card overflow-hidden group"
+                  >
+                    <div className="relative w-full aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={m.image}
+                        alt={m.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, 25vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    </div>
 
-                <div className="p-4">
-                  <h4 className="font-semibold text-sm group-hover:text-[color:var(--gold)] transition-colors">
-                    {m.name}
-                  </h4>
-                  <p className="text-xs text-white/70 mt-1 leading-relaxed">{m.blurb}</p>
+                    <div className="p-4">
+                      <h4 className="font-semibold text-sm group-hover:text-[color:var(--gold)] transition-colors">
+                        {m.name}
+                      </h4>
+                      <p className="text-xs text-white/70 mt-1 leading-relaxed">{m.blurb}</p>
 
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {m.youtube && (
-                      <a
-                        href={m.youtube}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 transition-all text-xs"
-                        aria-label={`${m.name} on YouTube`}
-                      >
-                        <FaYoutube />
-                      </a>
-                    )}
-                    {m.twitch && (
-                      <a
-                        href={m.twitch}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 transition-all text-xs"
-                        aria-label={`${m.name} on Twitch`}
-                      >
-                        <FaTwitch />
-                      </a>
-                    )}
-                    {m.wiki && (
-                      <a
-                        href={m.wiki}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-[color:var(--gold)] hover:border-[color:var(--gold)]/50 transition-all text-xs"
-                        aria-label={`${m.name} on Wikipedia`}
-                      >
-                        <FaWikipediaW />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {m.youtube && (
+                          <a
+                            href={m.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 transition-all text-xs"
+                            aria-label={`${m.name} on YouTube`}
+                          >
+                            <FaYoutube />
+                          </a>
+                        )}
+                        {m.twitch && (
+                          <a
+                            href={m.twitch}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 transition-all text-xs"
+                            aria-label={`${m.name} on Twitch`}
+                          >
+                            <FaTwitch />
+                          </a>
+                        )}
+                        {m.wiki && (
+                          <a
+                            href={m.wiki}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-[color:var(--gold)] hover:border-[color:var(--gold)]/50 transition-all text-xs"
+                            aria-label={`${m.name} on Wikipedia`}
+                          >
+                            <FaWikipediaW />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            </div>
+
+            {/* Second Row - 3 members centered */}
+            <div className="flex justify-center">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl">
+                {secondRow.map((m: Member, i: number) => (
+                  <motion.article
+                    key={m.name}
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ delay: (i + 4) * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ scale: 1.03 }}
+                    className="card overflow-hidden group"
+                  >
+                    <div className="relative w-full aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={m.image}
+                        alt={m.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 640px) 50vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    </div>
+
+                    <div className="p-4">
+                      <h4 className="font-semibold text-sm group-hover:text-[color:var(--gold)] transition-colors">
+                        {m.name}
+                      </h4>
+                      <p className="text-xs text-white/70 mt-1 leading-relaxed">{m.blurb}</p>
+
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {m.youtube && (
+                          <a
+                            href={m.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 transition-all text-xs"
+                            aria-label={`${m.name} on YouTube`}
+                          >
+                            <FaYoutube />
+                          </a>
+                        )}
+                        {m.twitch && (
+                          <a
+                            href={m.twitch}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 transition-all text-xs"
+                            aria-label={`${m.name} on Twitch`}
+                          >
+                            <FaTwitch />
+                          </a>
+                        )}
+                        {m.wiki && (
+                          <a
+                            href={m.wiki}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-[color:var(--gold)] hover:border-[color:var(--gold)]/50 transition-all text-xs"
+                            aria-label={`${m.name} on Wikipedia`}
+                          >
+                            <FaWikipediaW />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

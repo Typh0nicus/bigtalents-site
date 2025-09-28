@@ -47,76 +47,57 @@ export default function TournamentsPage() {
   const [sort, setSort] = useState<SortKey>("date");
   const [dir, setDir] = useState<"desc" | "asc">("desc");
 
+  // Only count ARCHIVED tournaments for total prize pool
   const total = useMemo(
-    () => TOURNAMENTS.reduce((acc, t) => acc + (t.prizeUsd ?? 0), 0),
+    () => TOURNAMENTS
+      .filter(t => t.archived) // Only count finalized/archived tournaments
+      .reduce((acc, t) => acc + (t.prizeUsd ?? 0), 0),
     []
   );
 
-  // Separate upcoming and finalized tournaments
-  const { upcomingTournaments, finalizedTournaments } = useMemo(() => {
-    const upcoming = TOURNAMENTS.filter(t => !t.archived);
-    const finalized = TOURNAMENTS.filter(t => t.archived);
-    return { upcomingTournaments: upcoming, finalizedTournaments: finalized };
-  }, []);
-
-  // Apply filtering to ALL tournaments
-  const { filteredUpcoming, filteredFinalized } = useMemo(() => {
+  // Apply filtering and sorting to ALL tournaments together
+  const filteredTournaments = useMemo(() => {
     const s = q.trim().toLowerCase();
     
-    // Filter upcoming
-    let upcomingList = !s
-      ? upcomingTournaments
-      : upcomingTournaments.filter(
+    // Filter all tournaments
+    let tournaments = !s
+      ? TOURNAMENTS
+      : TOURNAMENTS.filter(
           (t) =>
             t.title.toLowerCase().includes(s) ||
             (t.date?.toLowerCase().includes(s) ?? false)
         );
 
-    // Filter finalized
-    let finalizedList = !s
-      ? finalizedTournaments
-      : finalizedTournaments.filter(
-          (t) =>
-            t.title.toLowerCase().includes(s) ||
-            (t.date?.toLowerCase().includes(s) ?? false)
-        );
-
-    // Sort function - YOUR ORIGINAL LOGIC
-    const sortTournaments = (list: typeof TOURNAMENTS) => {
-      return [...list].sort((a, b) => {
-        switch (sort) {
-          case "title": {
-            const A = a.title.toLowerCase();
-            const B = b.title.toLowerCase();
-            return A === B ? 0 : A < B ? -1 : 1;
-          }
-          case "prize": {
-            const A = a.prizeUsd ?? -Infinity;
-            const B = b.prizeUsd ?? -Infinity;
-            return A - B;
-          }
-          case "date":
-          default: {
-            const A = parseWhen(a.date);
-            const B = parseWhen(b.date);
-            return A - B;
-          }
+    // Sort tournaments
+    tournaments = [...tournaments].sort((a, b) => {
+      switch (sort) {
+        case "title": {
+          const A = a.title.toLowerCase();
+          const B = b.title.toLowerCase();
+          return A === B ? 0 : A < B ? -1 : 1;
         }
-      });
-    };
-
-    upcomingList = sortTournaments(upcomingList);
-    finalizedList = sortTournaments(finalizedList);
+        case "prize": {
+          const A = a.prizeUsd ?? -Infinity;
+          const B = b.prizeUsd ?? -Infinity;
+          return A - B;
+        }
+        case "date":
+        default: {
+          const A = parseWhen(a.date);
+          const B = parseWhen(b.date);
+          return A - B;
+        }
+      }
+    });
 
     if (dir === "desc") {
-      upcomingList.reverse();
-      finalizedList.reverse();
+      tournaments.reverse();
     }
 
-    return { filteredUpcoming: upcomingList, filteredFinalized: finalizedList };
-  }, [q, sort, dir, upcomingTournaments, finalizedTournaments]);
+    return tournaments;
+  }, [q, sort, dir]);
 
-  const hasResults = filteredUpcoming.length > 0 || filteredFinalized.length > 0;
+  const hasResults = filteredTournaments.length > 0;
 
   return (
     <motion.section
@@ -125,7 +106,7 @@ export default function TournamentsPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: EASE_OUT }}
     >
-      {/* Header / controls - YOUR ORIGINAL ANIMATION */}
+      {/* Header / controls - RESTORED original better layout */}
       <motion.div
         className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-12"
         initial={{ opacity: 0 }}
@@ -142,14 +123,14 @@ export default function TournamentsPage() {
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="caption">
+            <label htmlFor="sort" className="caption whitespace-nowrap">
               Sort
             </label>
             <select
               id="sort"
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              className="rounded-xl border border-white/15 bg-transparent px-3 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
+              className="rounded-xl border border-white/15 bg-black px-3 py-2 text-sm outline-none focus:border-[color:var(--gold)]"
             >
               {SORTS.map((s) => (
                 <option key={s.key} value={s.key} className="bg-black">
@@ -184,9 +165,6 @@ export default function TournamentsPage() {
                 Clear
               </button>
             )}
-            <a href="https://discord.gg/bgt" className="btn btn-outline rounded-xl">
-              Join Big Talents
-            </a>
           </div>
         </div>
       </motion.div>
@@ -213,45 +191,18 @@ export default function TournamentsPage() {
           </button>
         </motion.div>
       ) : (
-        <>
-          {/* Upcoming Tournaments Section */}
-          {filteredUpcoming.length > 0 && (
-            <div className="mb-16">
-              <h2 className="text-2xl font-bold mb-8 text-[var(--gold)]">Upcoming Tournaments</h2>
-              <motion.div
-                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
-                variants={gridStagger}
-                initial="hidden"
-                animate="show"
-              >
-                {filteredUpcoming.map((t) => (
-                  <motion.div key={t.slug} variants={itemUp}>
-                    <TournamentCard t={t} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          )}
-
-          {/* Finalized Tournaments Section */}
-          {filteredFinalized.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold mb-8">Finalized Tournaments</h2>
-              <motion.div
-                className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
-                variants={gridStagger}
-                initial="hidden"
-                animate="show"
-              >
-                {filteredFinalized.map((t) => (
-                  <motion.div key={t.slug} variants={itemUp}>
-                    <TournamentCard t={t} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          )}
-        </>
+        <motion.div
+          className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          variants={gridStagger}
+          initial="hidden"
+          animate="show"
+        >
+          {filteredTournaments.map((t, index) => (
+            <motion.div key={t.slug} variants={itemUp}>
+              <TournamentCard t={t} index={index} />
+            </motion.div>
+          ))}
+        </motion.div>
       )}
     </motion.section>
   );

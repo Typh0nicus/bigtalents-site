@@ -197,8 +197,7 @@ export const TOURNAMENTS: Tournament[] = [
   // Future placeholder tournaments for upcoming section
   {
     title: "Silver Talent League #1",
-    date: "Sat, Nov 15, 2025 6:00PM GMT+1",
-    prizeUsd: 500.0,
+    date: "Coming Soon",
     url: "https://matcherino.com",
     slug: "stl-1-coming-soon",
     image: "/images/logo/wordmark.webp",
@@ -206,11 +205,19 @@ export const TOURNAMENTS: Tournament[] = [
     archived: false // These will show in upcoming
   },
   {
-    title: "Winter Championship 2025",
-    date: "Sat, Dec 14, 2025 7:00PM GMT+1",
-    prizeUsd: 1000.0,
+    title: "Wildcard Weekend #4",
+    date: "Coming Soon",
     url: "https://matcherino.com",
-    slug: "winter-championship-2025",
+    slug: "WW4",
+    image: "/images/logo/wordmark.webp",
+    region: "EU",
+    archived: false // These will show in upcoming
+  },
+    {
+    title: "Wildcard Weekend #5",
+    date: "Coming Soon",
+    url: "https://matcherino.com",
+    slug: "ww5",
     image: "/images/logo/wordmark.webp",
     region: "EU",
     archived: false // These will show in upcoming

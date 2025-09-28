@@ -147,9 +147,11 @@ html {
   text-wrap: balance;
 }
 
+/* FIXED: Added standard line-clamp properties for compatibility */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -157,6 +159,7 @@ html {
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -489,4 +492,8 @@ input:focus, textarea:focus, select:focus {
   .no-print {
     display: none !important;
   }
+}
+
+:root {
+  --glass-gold: color-mix(in srgb, var(--gold) 25%, transparent);
 }

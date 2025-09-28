@@ -3,30 +3,54 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { TOURNAMENTS } from "@/data/tournaments"; // Import TOURNAMENTS array directly
+import { TOURNAMENTS } from "@/data/tournaments";
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
 
 function parseWhen(s?: string): number {
   if (!s) return 0;
-  const t = Date.parse(s.replace("GMT+1", "GMT+0100").replace("GMT", "GMT+0000"));
-  return Number.isNaN(t) ? 0 : t;
+  
+  let dateStr = s;
+  
+  if (dateStr.includes("GMT+1")) {
+    dateStr = dateStr.replace("GMT+1", "+01:00");
+  } else if (dateStr.includes("GMT")) {
+    dateStr = dateStr.replace("GMT", "+00:00");
+  }
+  
+  const parsed = Date.parse(dateStr);
+  
+  if (Number.isNaN(parsed)) {
+    const cleanDateStr = dateStr.replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s*/, '');
+    const altParsed = Date.parse(cleanDateStr);
+    return Number.isNaN(altParsed) ? 0 : altParsed;
+  }
+  
+  return parsed;
 }
 
 export function FeaturedTournaments() {
   const featuredTournaments = useMemo(() => {
-    const now = Date.now();
+    console.log("=== FeaturedTournaments Debug ===");
     
-    // Get upcoming tournaments (not archived and future dates)
-    const upcoming = TOURNAMENTS.filter(t => {
-      if (t.archived) return false; // Skip archived tournaments
-      const tournamentDate = parseWhen(t.date);
-      return tournamentDate > now; // Only future tournaments
-    });
+    // Get tournaments marked as upcoming (archived: false)
+    const upcomingTournaments = TOURNAMENTS.filter(t => !t.archived);
+    console.log("Upcoming tournaments found:", upcomingTournaments.map(t => ({
+      title: t.title,
+      date: t.date,
+      archived: t.archived
+    })));
 
-    // Sort by date (soonest first) and take top 3
-    return upcoming
-      .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
-      .slice(0, 3);
+    if (upcomingTournaments.length > 0) {
+      const sorted = upcomingTournaments
+        .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
+        .slice(0, 3);
+      
+      console.log("Returning:", sorted.map(t => t.title));
+      return sorted;
+    }
+    
+    console.log("No upcoming tournaments, returning empty array");
+    return [];
   }, []);
 
   return (
@@ -80,9 +104,7 @@ export function FeaturedTournaments() {
                   ease: [0.22, 1, 0.36, 1] 
                 }}
               >
-                <TournamentCard 
-                  t={tournament} // Use 't' prop as expected by TournamentCard
-                />
+                <TournamentCard t={tournament} index={index} />
               </motion.div>
             ))
           ) : (
@@ -101,7 +123,7 @@ export function FeaturedTournaments() {
                 <p className="text-white/60 mb-6">Check back soon for new tournament announcements!</p>
                 <Link 
                   href="/tournaments"
-                  className="btn btn-outline rounded-2xl px-6 py-3"
+                  className="btn btn-outline rounded-xl"
                 >
                   View All Tournaments
                 </Link>
@@ -110,7 +132,7 @@ export function FeaturedTournaments() {
           )}
         </div>
 
-        {/* CTA Section */}
+        {/* CTA Section - FIXED: Professional button styling */}
         {featuredTournaments.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -121,7 +143,7 @@ export function FeaturedTournaments() {
           >
             <Link 
               href="/tournaments"
-              className="btn btn-primary rounded-2xl px-8 py-4 text-lg hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300"
+              className="btn btn-outline rounded-xl"
             >
               View All Tournaments
             </Link>

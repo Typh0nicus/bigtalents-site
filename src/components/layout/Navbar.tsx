@@ -16,20 +16,12 @@ type NavItem = {
   special?: boolean; // For Club styling
 };
 
-// Navigation model with dropdowns (for mobile)
+// Navigation model - MOBILE ORDER: Home, Tournaments, Club, News, Creator Program, Company
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/news", label: "News" },
   { href: "/tournaments", label: "Tournaments" },
-  { 
-    href: "/rosters", 
-    label: "Rosters",
-    dropdown: [
-      { href: "/rosters/creators", label: "Creators" },
-      { href: "/rosters/players", label: "Players" }
-    ]
-  },
   { href: "/club", label: "Club", special: true },
+  { href: "/news", label: "News" },
   { 
     href: "/creator-program", 
     label: "Creator Program",
@@ -49,7 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   }
 ];
 
-// Desktop layout - Left side (farthest to closest to logo)
+// Desktop layout - Left side (closest to farthest from logo: Company, Creator Program, News)
 const LEFT_NAV_ITEMS: NavItem[] = [
   { 
     href: "/company", 
@@ -370,7 +362,7 @@ function MobileMenu({
               </motion.nav>
             </div>
 
-            {/* Footer - Fixed at bottom */}
+            {/* Footer - Fixed at bottom with social links and View Tournaments CTA */}
             <motion.div 
               variants={itemVariants}
               className="flex-shrink-0 p-6 border-t border-white/10"

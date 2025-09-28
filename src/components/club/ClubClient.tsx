@@ -19,7 +19,7 @@ const ELITE_MEMBERS = [
     name: "HMB | Boss",
     image: "/images/club/boss.jpg",
     title: "World Champion",
-    achievements: ["2024 BSC World Champion", "Multiple Championship Finals"],
+    achievements: ["2024 BSC World Champion", "2025 Brawl Cup Champion"],
     description: "The reigning world champion brings unparalleled competitive experience.",
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
@@ -41,6 +41,16 @@ const ELITE_MEMBERS = [
     achievements: ["200K Trophy Milestone", "1.9M YouTube Subscribers", "Top 1 Ladder All-Time"],
     description: "The ultimate trophy pusher with unmatched dedication across all brawlers.",
     youtube: "https://www.youtube.com/@Hyra",
+  },
+  {
+    name: "ELV | DiegoGamer", 
+    image: "/images/club/diego.webp",
+    title: "NA Worlds Finalist",
+    achievements: ["Top 2 in North America", "Worlds Finalist", "Multiple Finals Champion"],
+    description: "Esports Prowess, Unmatched.",
+    youtube: "https://www.youtube.com/@DiegogamerCR_",
+    twitch: "https://www.twitch.tv/diegogamercr",
+    wiki: "https://liquipedia.net/brawlstars/Diegogamer",
   },
   {
     name: "Trebor",
@@ -198,48 +208,52 @@ export default function ClubClient() {
                 className={`grid gap-8 lg:grid-cols-3 items-center`}
               >
                 <div className={i % 2 === 1 ? 'lg:order-3' : ''}>
-                  <div className="relative group">
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden">
+                  <div className="relative group overflow-hidden">
+                    {/* FIXED: Proper hover container with unified scaling */}
+                    <div className="aspect-[4/3] rounded-2xl overflow-hidden relative group-hover:scale-105 transition-transform duration-500">
                       <Image
                         src={member.image}
                         alt={member.name}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 33vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    </div>
-                    
-                    <div className="absolute bottom-4 left-4 flex gap-2">
-                      {member.youtube && (
-                        <a
-                          href={member.youtube}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-black/70 rounded-lg text-red-400 hover:bg-red-400 hover:text-white transition-all"
-                        >
-                          <FaYoutube />
-                        </a>
-                      )}
-                      {member.twitch && (
-                        <a
-                          href={member.twitch}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-black/70 rounded-lg text-purple-400 hover:bg-purple-400 hover:text-white transition-all"
-                        >
-                          <FaTwitch />
-                        </a>
-                      )}
-                      {member.wiki && (
-                        <a
-                          href={member.wiki}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-black/70 rounded-lg text-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-black transition-all"
-                        >
-                          <FaWikipediaW />
-                        </a>
-                      )}
+                      {/* FIXED: Overlay now scales with the container */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      
+                      {/* Social links positioned over the scaled content */}
+                      <div className="absolute bottom-4 left-4 flex gap-2">
+                        {member.youtube && (
+                          <a
+                            href={member.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-red-400 hover:bg-red-400 hover:text-white transition-all duration-200"
+                          >
+                            <FaYoutube />
+                          </a>
+                        )}
+                        {member.twitch && (
+                          <a
+                            href={member.twitch}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-200"
+                          >
+                            <FaTwitch />
+                          </a>
+                        )}
+                        {member.wiki && (
+                          <a
+                            href={member.wiki}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-black transition-all duration-200"
+                          >
+                            <FaWikipediaW />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -262,7 +276,7 @@ export default function ClubClient() {
                       <ul className="grid gap-1 sm:grid-cols-2">
                         {member.achievements.map((achievement, j) => (
                           <li key={j} className="flex items-center gap-2 text-sm text-white/70">
-                            <FaStar className="text-[color:var(--gold)] text-xs" />
+                            <FaStar className="text-[color:var(--gold)] text-xs flex-shrink-0" />
                             {achievement}
                           </li>
                         ))}
@@ -299,10 +313,10 @@ export default function ClubClient() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
-                className={`relative p-8 rounded-2xl border ${
+                className={`relative p-8 rounded-2xl border transition-all duration-300 hover:scale-105 ${
                   tier.popular 
                     ? 'border-[color:var(--gold)]/40 bg-gradient-to-b from-[color:var(--gold)]/10 to-[color:var(--gold)]/5 scale-105' 
-                    : 'border-white/15 bg-white/[0.03]'
+                    : 'border-white/15 bg-white/[0.03] hover:border-white/25'
                 }`}
               >
                 {tier.popular && (

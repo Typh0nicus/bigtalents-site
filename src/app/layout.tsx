@@ -15,17 +15,17 @@ const heading = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bigtalents.org"),
-  title: { default: "BGT — Big Talents Esports", template: "%s — BGT" },
+  title: { default: "BGT — Big Talents", template: "%s — BGT" },
   description:
-    "Community-driven esports tournaments. $6,900+ awarded across NA & EU. Join the next BGT event.",
+    "Big Talents, Bigger Stages. $6,900+ awarded across NA & EU. Join the next BGT event.",
   alternates: { canonical: "https://bigtalents.org" },
   openGraph: {
-    title: "BGT — Big Talents Esports",
+    title: "Home — Big Talents",
     description:
       "Community-driven esports tournaments. $6,900+ awarded across NA & EU.",
     url: "https://bigtalents.org",
     siteName: "Big Talents",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "BGT — Big Talents Esports" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Home — Big Talents" }],
     locale: "en_US",
     type: "website",
   },
@@ -42,7 +42,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0a0a0a",
+  themeColor: "#B8941C",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FiExternalLink, FiCalendar, FiAward, FiUsers, FiDollarSign } from "react-icons/fi";
+import { FiExternalLink, FiCalendar, FiAward, FiUsers } from "react-icons/fi";
 import { Tournament } from "@/data/tournaments";
 
 interface TournamentCardProps {
@@ -12,10 +12,11 @@ interface TournamentCardProps {
 
 export function TournamentCard({ t, featured = false, index = 0 }: TournamentCardProps) {
   const formatPrize = (usd: number) => 
-    usd.toLocaleString(undefined, { maximumFractionDigits: 2 }); // Removed $ here since we add it in the badge
+    `$${usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}`; // Include $ in formatting
 
   const hasMatcherino = !!t.url && t.url !== "#";
   const hasLiqui = !!t.liquipedia;
+  const isUpcoming = !t.archived;
 
   return (
     <motion.article
@@ -52,37 +53,46 @@ export function TournamentCard({ t, featured = false, index = 0 }: TournamentCar
           </div>
         )}
         
-        {/* Region badge - top left - NO BLUR */}
-        {t.region && (
-          <div className="absolute top-3 left-3">
-            <span className="px-2 py-1 bg-black/70 text-white text-xs rounded-full font-bold shadow-lg">
-              {t.region}
+        {/* Upcoming badge - top left */}
+        {isUpcoming ? (
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
+            <span className="inline-flex px-2 py-1 rounded-full text-white text-xs font-bold bg-[var(--glass-gold)] supports-[backdrop-filter]:backdrop-blur-md ring-1 ring-white/20 shadow-lg shadow-black/20 supports-[backdrop-filter]:backdrop-blur-md backdrop-saturate-150
+ring-1 ring-white/25 animate-pulse" >
+              UPCOMING
             </span>
           </div>
+        ) : (
+          /* Region badge for archived tournaments */
+          t.region && (
+            <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
+              <span className="inline-flex px-2 py-1 rounded-full text-white text-xs font-bold bg-black/35 supports-[backdrop-filter]:backdrop-blur-md ring-1 ring-white/20 shadow-lg shadow-black/25">
+                {t.region}
+              </span>
+            </div>
+          )
         )}
 
-        {/* Prize pool - top right - WITH BLUR */}
+        {/* Prize pool - top right - FIXED: Clean text-only design */}
         {t.prizeUsd && t.prizeUsd > 0 && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-black/70 backdrop-blur-sm text-white text-sm rounded-full font-bold shadow-lg">
-            <FiDollarSign size={14} />
-            ${formatPrize(t.prizeUsd)}
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 px-2 sm:px-3 py-1 bg-black/70 text-white text-xs sm:text-sm rounded-full font-bold shadow-lg">
+            <span className="whitespace-nowrap">{formatPrize(t.prizeUsd)}</span>
           </div>
         )}
       </div>
 
       {/* Content */}
-      <div className="p-5 flex-1 flex flex-col">
+      <div className="p-4 sm:p-5 flex-1 flex flex-col">
         {/* Title */}
-        <h3 className="font-bold text-xl mb-3 line-clamp-2 transition-colors">
+        <h3 className="font-bold text-lg sm:text-xl mb-3 line-clamp-2 transition-colors">
           {t.title}
         </h3>
 
         {/* Meta information */}
-        <div className="flex flex-col gap-3 mb-5 text-sm">
+        <div className="flex flex-col gap-2 sm:gap-3 mb-4 sm:mb-5 text-sm">
           {t.date && (
             <div className="flex items-center gap-2 text-white/80">
               <FiCalendar className="text-[var(--gold)] flex-shrink-0" size={16} />
-              <span>{t.date}</span>
+              <span className="truncate">{t.date}</span>
             </div>
           )}
           
@@ -94,21 +104,22 @@ export function TournamentCard({ t, featured = false, index = 0 }: TournamentCar
           )}
         </div>
 
-        {/* CTAs - YOUR ORIGINAL BUTTON STRUCTURE */}
-        <div className={`mt-auto pt-4 grid gap-2 ${hasLiqui ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+        {/* CTAs - Improved mobile layout */}
+        <div className={`mt-auto pt-4 flex flex-col gap-2 ${hasLiqui ? 'sm:grid sm:grid-cols-2 sm:gap-2' : ''}`}>
           {hasMatcherino ? (
             <a
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full text-sm sm:text-base py-2.5 sm:py-3"
               href={t.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${t.title} on Matcherino`}
             >
-              Open on Matcherino
+              <span className="hidden sm:inline">Open on Matcherino</span>
+              <span className="sm:hidden">Matcherino</span>
             </a>
           ) : (
             <span
-              className="btn btn-outline w-full cursor-default select-none"
+              className="btn btn-outline w-full cursor-default select-none text-sm sm:text-base py-2.5 sm:py-3"
               aria-disabled="true"
             >
               Private Event
@@ -117,13 +128,15 @@ export function TournamentCard({ t, featured = false, index = 0 }: TournamentCar
 
           {hasLiqui && (
             <a
-              className="btn btn-outline w-full"
+              className="btn btn-outline w-full text-sm sm:text-base py-2.5 sm:py-3"
               href={t.liquipedia}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`View ${t.title} on Liquipedia`}
             >
-              Liquipedia <FiExternalLink className="ml-1 -mr-1 inline align-[-2px]" />
+              <span className="flex items-center justify-center gap-1">
+                Liquipedia <FiExternalLink className="inline align-[-2px] w-3 h-3 sm:w-4 sm:h-4" />
+              </span>
             </a>
           )}
         </div>
