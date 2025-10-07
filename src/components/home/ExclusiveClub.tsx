@@ -48,7 +48,7 @@ const MEMBERS: Member[] = [
     youtube: "https://www.youtube.com/@Hyra",
   },
   {
-    name: "Trebor",
+    name: "Heretics Trebor",
     image: "/images/club/trebor.jpg",
     blurb: "Pro Player • 1.75M YouTube • 725K Twitch",
     youtube: "https://www.youtube.com/@TreborBS",
@@ -62,7 +62,7 @@ const MEMBERS: Member[] = [
     youtube: "https://www.youtube.com/@VITALxSHARK",
   },
   {
-    name: "Sniperbs_",
+    name: "Sniper BS",
     image: "/images/club/sniperbs_.jpg",
     blurb: "Pro Player • 800K Youtube",
     youtube: "https://www.youtube.com/@Sniperbs_",

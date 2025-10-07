@@ -200,25 +200,25 @@ export const TOURNAMENTS: Tournament[] = [
     date: "Coming Soon",
     url: "https://matcherino.com",
     slug: "stl-1-coming-soon",
-    image: "/images/logo/wordmark.webp",
+    image: "/images/tournaments/stl1.png",
     region: "EU",
     archived: false // These will show in upcoming
   },
   {
     title: "Wildcard Weekend #4",
     date: "Coming Soon",
-    url: "https://matcherino.com",
+    url: "https://matcherino.com/t/ww4/overview",
     slug: "WW4",
-    image: "/images/logo/wordmark.webp",
+    image: "/images/tournaments/ww4.png",
     region: "EU",
     archived: false // These will show in upcoming
   },
     {
     title: "Wildcard Weekend #5",
     date: "Coming Soon",
-    url: "https://matcherino.com",
+    url: "https://matcherino.com/t/ww5/overview",
     slug: "ww5",
-    image: "/images/logo/wordmark.webp",
+    image: "/images/tournaments/ww5.png",
     region: "EU",
     archived: false // These will show in upcoming
   }

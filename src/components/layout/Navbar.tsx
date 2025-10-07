@@ -41,8 +41,16 @@ const NAV_ITEMS: NavItem[] = [
   }
 ];
 
-// Desktop layout - Left side (closest to farthest from logo: Company, Creator Program, News)
+// FIXED: Desktop layout - Left side (closest to farthest from logo: News, Creator Program, Company)
 const LEFT_NAV_ITEMS: NavItem[] = [
+  { 
+    href: "/creator-program", 
+    label: "Creator Program",
+    dropdown: [
+      { href: "/creator-program", label: "Overview" },
+      { href: "/creator-program/apply", label: "Apply Now" }
+    ]
+  },
   { 
     href: "/company", 
     label: "Company",
@@ -50,14 +58,6 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
       { href: "/brand-guidelines", label: "Brand Guidelines" }
-    ]
-  },
-  { 
-    href: "/creator-program", 
-    label: "Creator Program",
-    dropdown: [
-      { href: "/creator-program", label: "Overview" },
-      { href: "/creator-program/apply", label: "Apply Now" }
     ]
   },
   { href: "/news", label: "News" }
@@ -128,17 +128,17 @@ function DesktopLink({
     };
   }, []);
 
-  // Different styling for Club
+  // Better Club styling that's more distinct from active state
   const baseClasses = special 
-    ? "group relative px-3 py-2 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide border border-[var(--gold)] rounded-lg bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20"
+    ? "group relative px-3 py-2 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide border border-[var(--gold)]/60 rounded-lg bg-[var(--gold)]/5 hover:bg-[var(--gold)]/15 hover:border-[var(--gold)]"
     : "group relative px-4 py-3 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide";
   
   const activeClasses = special 
-    ? "text-[var(--gold)]"
+    ? "text-[var(--gold)] border-[var(--gold)] bg-[var(--gold)]/20"
     : "text-[var(--gold)]";
     
   const inactiveClasses = special
-    ? "text-[var(--gold)] hover:text-[var(--gold)]"
+    ? "text-[var(--gold)]/90"
     : "text-white/90 hover:text-[var(--gold)]";
 
   return (
@@ -255,7 +255,7 @@ function MobileMenu({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] lg:hidden"
             onClick={onClose}
           />
 
@@ -265,7 +265,8 @@ function MobileMenu({
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-50 lg:hidden flex flex-col"
+            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[101] lg:hidden flex flex-col"
+            style={{ position: 'fixed' }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
@@ -297,9 +298,9 @@ function MobileMenu({
                           onClick={onClose}
                           className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
                             item.special 
-                              ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/30' 
+                              ? 'text-[var(--gold)] bg-[var(--gold)]/8 border border-[var(--gold)]/40' 
                               : item.active 
-                                ? 'text-[var(--gold)] bg-[var(--gold)]/10 border border-[var(--gold)]/20' 
+                                ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
                                 : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
                           }`}
                         >
@@ -362,48 +363,40 @@ function MobileMenu({
               </motion.nav>
             </div>
 
-            {/* Footer - Fixed at bottom with social links and View Tournaments CTA */}
+            {/* Footer with only social links, compact design */}
             <motion.div 
               variants={itemVariants}
-              className="flex-shrink-0 p-6 border-t border-white/10"
+              className="flex-shrink-0 p-4 border-t border-white/10"
             >
-              <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="flex items-center justify-center gap-3">
                 <a
                   href="https://discord.gg/bgt"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
                   aria-label="Discord"
                 >
-                  <FaDiscord size={20} />
+                  <FaDiscord size={18} />
                 </a>
                 <a
                   href="https://x.com/bgtalents"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
                   aria-label="Twitter"
                 >
-                  <FaTwitter size={20} />
+                  <FaTwitter size={18} />
                 </a>
                 <a
                   href="https://instagram.com/bigtalents_org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 text-white/70 hover:text-[var(--gold)] transition-colors"
+                  className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
                   aria-label="Instagram"
                 >
-                  <FaInstagram size={20} />
+                  <FaInstagram size={18} />
                 </a>
               </div>
-              
-              <Link
-                href="/tournaments"
-                onClick={onClose}
-                className="block w-full text-center py-3 bg-[var(--gold)] text-black font-bold rounded-xl hover:bg-[var(--gold-600)] transition-colors"
-              >
-                View Tournaments
-              </Link>
             </motion.div>
           </motion.div>
         </>
@@ -485,7 +478,7 @@ export function Navbar() {
       <nav className="container flex items-center justify-center py-4 relative">
         {/* Left Navigation - Close to logo */}
         <div className="hidden lg:flex items-center absolute right-1/2 mr-20">
-          {leftItems.reverse().map((item) => (
+          {leftItems.map((item) => (
             <DesktopLink
               key={item.href}
               href={item.href}

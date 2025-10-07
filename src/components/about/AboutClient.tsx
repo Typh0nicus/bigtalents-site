@@ -1,16 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
-import { FaTrophy, FaUsers, FaRocket, FaHeart, FaDiscord, FaYoutube } from "react-icons/fa";
-import { FiArrowRight, FiTarget, FiGlobe, FiAward } from "react-icons/fi";
+import { FaTrophy, FaUsers, FaRocket, FaCalendar, FaDiscord, FaYoutube } from "react-icons/fa";
+import { FiArrowRight, FiTarget, FiGlobe, FiAward, FiZap } from "react-icons/fi";
 
 const STATS = [
   { icon: FaTrophy, value: "14+", label: "Tournaments Hosted" },
-  { icon: FaUsers, value: "4,300+", label: "Players Competed" },
-  { icon: FaRocket, value: "$6,947", label: "Prize Pool Awarded" },
-  { icon: FaHeart, value: "6+", label: "Years Running" },
+  { icon: FaUsers, value: "4,600+", label: "Teams Competed" },
+  { icon: FaRocket, value: "$6,931", label: "Prizes Awarded" },
+  { icon: FaCalendar, value: "7+", label: "Months Running" },
 ];
 
 const VALUES = [
@@ -28,35 +27,35 @@ const VALUES = [
   },
   {
     icon: FiAward,
-    title: "Excellence",
+    title: "Quality Standards",
     description:
-      "Setting the highest standards for tournament production and player development.",
+      "Maintaining high standards for tournament organization, production, and player support.",
   },
   {
-    icon: FaHeart,
-    title: "Passion-Driven",
+    icon: FiZap,
+    title: "Opportunity-Driven",
     description:
-      "Built by fans, for fans. Our love for Brawl Stars drives everything we do.",
+      "Creating competitive opportunities for players of all skill levels to shine.",
   },
 ];
 
-const TEAM_HIGHLIGHTS = [
+const HIGHLIGHTS = [
   {
-    name: "World Champions",
+    name: "Proven Tournament Platform",
     description:
-      "Home to 2024 BSC World Champion Boss and multiple championship finalists",
+      "Successfully organized 14+ competitive tournaments across NA and EU regions with professional production quality and reliable execution.",
     icon: FaTrophy,
   },
   {
-    name: "Top Global Players",
-    description: "Featuring #1 ranked Angelboy and 200K trophy legend Hyra",
-    icon: FaUsers,
+    name: "Growing Prize Pools",
+    description: "Awarded nearly $7,000 in total prizes with consistently growing prize pools and expanding sponsorship support for our events.",
+    icon: FaRocket,
   },
   {
-    name: "Content Creators",
+    name: "Thriving Community",
     description:
-      "Partnered with creators boasting millions of subscribers across platforms",
-    icon: FaYoutube,
+      "Built an engaged community of 4,600+ competing teams with regular tournaments, active Discord server, and growing creator collaborations.",
+    icon: FaUsers,
   },
 ];
 
@@ -89,9 +88,9 @@ export default function AboutClient() {
             </h1>
 
             <p className="text-xl text-white/80 mb-8 leading-relaxed max-w-3xl mx-auto">
-              We&apos;re the premier destination for competitive Brawl Stars esports.
-              For over 6 years, we&apos;ve been creating opportunities for players to compete
-              at the highest level while building the most passionate community in the game.
+              We&apos;re a dedicated tournament organization for competitive Brawl Stars. 
+              Since early 2025, we&apos;ve been creating opportunities for players to compete, 
+              improve, and showcase their skills in professional-grade tournaments.
             </p>
 
             {/* Stats */}
@@ -116,8 +115,8 @@ export default function AboutClient() {
               <Link href="/tournaments" className="btn btn-primary rounded-2xl px-8 py-4 text-lg">
                 View Tournaments <FiArrowRight className="ml-2" />
               </Link>
-              <Link href="/club" className="btn btn-outline rounded-2xl px-8 py-4 text-lg">
-                Join Elite Club
+              <Link href="/creator-program" className="btn btn-outline rounded-2xl px-8 py-4 text-lg">
+                Join Creator Program
               </Link>
             </div>
           </motion.div>
@@ -140,21 +139,21 @@ export default function AboutClient() {
 
               <div className="space-y-4 text-white/80 leading-relaxed">
                 <p>
-                  Big Talents was born from a simple belief: every player deserves a chance to compete
-                  on bigger stages. What started as a small community tournament has grown into the
-                  most respected esports organization in Brawl Stars.
+                  Big Talents was founded with a clear mission: create accessible, high-quality 
+                  competitive opportunities for the Brawl Stars community. We believe every player, 
+                  regardless of skill level, deserves a chance to compete in well-organized tournaments.
                 </p>
 
                 <p>
-                  Over the years, we&apos;ve hosted 14+ major tournaments, awarded nearly $7,000 in prizes,
-                  and created opportunities for over 4,300 players to showcase their skills. From
-                  grassroots competitions to championship-level events, we&apos;ve been there every step of the way.
+                  In just 7 months, we&apos;ve organized 14+ major tournaments, bringing together over 
+                  4,600 teams from NA and EU regions. With nearly $7,000 awarded in prize pools, 
+                  we&apos;ve built a reputation for reliable, professionally-run competitive events.
                 </p>
 
                 <p>
-                  Today, we&apos;re home to world champions, top global players, and the biggest content creators
-                  in the scene. But our mission remains the same: creating opportunities for big talents
-                  to shine on bigger stages.
+                  From weekly grassroots competitions to championship-level events with substantial 
+                  prize pools, we&apos;re committed to growing the competitive Brawl Stars scene and 
+                  providing consistent opportunities for players to compete and improve.
                 </p>
               </div>
             </motion.div>
@@ -166,13 +165,10 @@ export default function AboutClient() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden">
-                <Image
-                  src="/images/about/story.jpg"
-                  alt="Big Talents Story"
-                  fill
-                  className="object-cover"
-                />
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[color:var(--gold)]/10 to-transparent border border-[color:var(--gold)]/20">
+                <div className="w-full h-full flex items-center justify-center">
+                  <FaTrophy className="text-[color:var(--gold)]/30 text-[120px]" />
+                </div>
               </div>
             </motion.div>
           </div>
@@ -217,7 +213,7 @@ export default function AboutClient() {
         </div>
       </section>
 
-      {/* What Makes Us Special */}
+      {/* What Makes Us Different */}
       <section className="py-16 md:py-24">
         <div className="container">
           <motion.div
@@ -227,15 +223,15 @@ export default function AboutClient() {
             className="text-center mb-16"
           >
             <h2 className="h2 mb-4">
-              What Makes Us <span className="text-[color:var(--gold)]">Special</span>
+              What Makes Us <span className="text-[color:var(--gold)]">Different</span>
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              We&apos;re more than just tournaments - we&apos;re a complete ecosystem for competitive Brawl Stars
+              Our commitment to quality tournaments and community growth sets us apart
             </p>
           </motion.div>
 
           <div className="grid gap-8 lg:gap-12">
-            {TEAM_HIGHLIGHTS.map((highlight, idx) => (
+            {HIGHLIGHTS.map((highlight, idx) => (
               <motion.div
                 key={highlight.name}
                 initial={{ opacity: 0, y: 30 }}
@@ -259,7 +255,7 @@ export default function AboutClient() {
                 </div>
 
                 <div className={idx % 2 === 1 ? "lg:order-1" : ""}>
-                  <div className="aspect-[4/3] rounded-2xl bg-white/5 border border-white/10">
+                  <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[color:var(--gold)]/10 to-transparent border border-[color:var(--gold)]/20">
                     <div className="w-full h-full flex items-center justify-center">
                       <highlight.icon className="text-[color:var(--gold)]/20 text-6xl" />
                     </div>
@@ -281,20 +277,20 @@ export default function AboutClient() {
             className="max-w-3xl mx-auto"
           >
             <h2 className="text-4xl font-bold mb-6">
-              Ready to Join <span className="text-[color:var(--gold)]">Big Talents?</span>
+              Ready to <span className="text-[color:var(--gold)]">Compete?</span>
             </h2>
 
             <p className="text-xl text-white/80 mb-8">
-              Whether you&apos;re a competitive player, content creator, or passionate fan,
-              there&apos;s a place for you in our community.
+              Whether you&apos;re a competitive player looking to test your skills or a content 
+              creator wanting to collaborate, join our growing community today.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/tournaments" className="btn btn-primary rounded-2xl px-8 py-4 text-lg">
-                Compete in Tournaments
+                Browse Tournaments
               </Link>
               <Link href="/creator-program" className="btn btn-outline rounded-2xl px-8 py-4 text-lg">
-                Join Creator Program
+                Creator Program
               </Link>
             </div>
 
@@ -304,6 +300,7 @@ export default function AboutClient() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-white/10 rounded-xl text-white/70 hover:text-indigo-400 hover:bg-white/20 transition-all"
+                aria-label="Join our Discord"
               >
                 <FaDiscord size={24} />
               </a>
@@ -312,6 +309,7 @@ export default function AboutClient() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-white/10 rounded-xl text-white/70 hover:text-red-400 hover:bg-white/20 transition-all"
+                aria-label="Subscribe on YouTube"
               >
                 <FaYoutube size={24} />
               </a>
