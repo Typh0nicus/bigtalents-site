@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTrophy, FaStar } from "react-icons/fa";
 import { FiUsers, FiChevronDown } from "react-icons/fi";
@@ -8,7 +8,7 @@ import type { BracketData, Placement } from "@/types/bracket";
 
 interface TournamentBracketProps {
   tournamentSlug: string;
-  isLive?: boolean;
+  isLive: boolean;
 }
 
 const PLACEMENT_CONFIG = {
@@ -18,40 +18,51 @@ const PLACEMENT_CONFIG = {
   4: { color: "text-[#CD7F32]", bgColor: "bg-[#CD7F32]/5", borderColor: "border-[#CD7F32]/20", title: "🥉 Semi-Finalist" }
 };
 
-export function TournamentBracket({ tournamentSlug }: TournamentBracketProps) {
+export function TournamentBracket({ tournamentSlug, isLive = false }: TournamentBracketProps) {
   const [data, setData] = useState<BracketData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/tournaments/${tournamentSlug}/bracket`);
-      const json = await res.json();
-      if (!json.success) throw new Error(json.error || "Unknown error");
-      setData(json.data);
-    } catch (e: unknown) {
-      const error = e as Error;
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [tournamentSlug]);
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const res = await fetch(`/api/tournaments/${tournamentSlug}/bracket`, {
+          cache: 'no-store',
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to fetch bracket data');
+        }
+
+        const bracketData = await res.json();
+        console.log("🎯 Bracket data received:", bracketData);
+        
+        setData(bracketData);
+      } catch (err) {
+        console.error("❌ Bracket fetch error:", err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
-  }, [fetchData]);
+  }, [tournamentSlug]);
 
   if (loading) {
     return (
-      <div className="container px-6 py-20">
+      <div className="container px-4 sm:px-6 py-20">
         <div className="text-center py-20">
           <motion.div
             className="inline-block w-16 h-16 border-4 border-[#D4AF37]/20 border-t-[#D4AF37] rounded-full"
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-          <p className="text-white/60 mt-4 text-lg">Loading results...</p>
+          <p className="text-white/60 mt-4 text-base sm:text-lg">Loading results...</p>
         </div>
       </div>
     );
@@ -68,24 +79,24 @@ export function TournamentBracket({ tournamentSlug }: TournamentBracketProps) {
   const fourth = placements.find(p => p.place === 4);
 
   return (
-    <div className="container px-6 py-20 select-none">
+    <div className="container px-4 sm:px-6 py-12 sm:py-20 select-none">
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-12 sm:mb-16"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
         <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Final Standings</h2>
-        <p className="text-white/60 mb-8 text-base md:text-lg max-w-2xl mx-auto">
+        <p className="text-white/60 mb-8 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
           Congratulations to all teams who competed in this tournament
         </p>
       </motion.div>
 
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-6 sm:gap-8">
           
-          <div className="flex flex-col md:flex-row items-end justify-center gap-6 w-full">
+          <div className="flex flex-col md:flex-row items-end justify-center gap-4 sm:gap-6 w-full">
             {second && <PlacementCard placement={second} config={PLACEMENT_CONFIG[2]} delay={0.2} />}
             {first && <PlacementCard placement={first} config={PLACEMENT_CONFIG[1]} delay={0.1} isFirst />}
             {third && <PlacementCard placement={third} config={PLACEMENT_CONFIG[3]} delay={0.3} />}
@@ -113,11 +124,11 @@ function PlacementCard({ placement, config, delay, isFirst }: PlacementCardProps
   const [showMembers, setShowMembers] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   
-  const cardSize = isFirst ? "w-full md:w-80 p-10" : "w-full md:w-64 p-8";
-  const iconSize = isFirst ? "w-28 h-28" : "w-20 h-20";
-  const iconTextSize = isFirst ? "text-5xl" : "text-4xl";
-  const titleSize = isFirst ? "text-xl" : "text-lg";
-  const nameSize = isFirst ? "text-3xl md:text-4xl" : "text-xl md:text-2xl";
+  const cardSize = isFirst ? "w-full md:w-80 p-8 sm:p-10" : "w-full md:w-64 p-6 sm:p-8";
+  const iconSize = isFirst ? "w-20 h-20 sm:w-28 sm:h-28" : "w-16 h-16 sm:w-20 sm:h-20";
+  const iconTextSize = isFirst ? "text-4xl sm:text-5xl" : "text-3xl sm:text-4xl";
+  const titleSize = isFirst ? "text-lg sm:text-xl" : "text-base sm:text-lg";
+  const nameSize = isFirst ? "text-2xl sm:text-3xl md:text-4xl" : "text-xl sm:text-2xl";
   const hasMembers = placement.members && placement.members.length > 0;
 
   return (
@@ -130,83 +141,84 @@ function PlacementCard({ placement, config, delay, isFirst }: PlacementCardProps
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      {/* Trophy with Hover Effects */}
-      <div className="relative">
-        <div className={`mx-auto ${iconSize} ${config.bgColor} rounded-full flex items-center justify-center mb-4 relative`}>
+{/* Trophy with Hover Effects - FIXED */}
+<div className="relative">
+  <div className={`mx-auto ${iconSize} ${config.bgColor} rounded-full flex items-center justify-center mb-4 relative`}>
+    <motion.div
+      animate={isHovered ? { 
+        rotate: 360,
+        scale: 1.15,
+        y: -5
+      } : {
+        rotate: 0,
+        scale: 1,
+        y: 0
+      }}
+      transition={{ 
+        rotate: { duration: 0.6, ease: "easeInOut" },
+        scale: { duration: 0.3 },
+        y: { duration: 0.3 }
+      }}
+    >
+      <motion.div
+        animate={{ 
+          rotate: [0, -10, 10, -10, 0],
+          y: [0, -5, 0, -3, 0]
+        }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <FaTrophy className={`${iconTextSize} ${config.color}`} />
+      </motion.div>
+    </motion.div>
+
+    {/* FIXED: Sparkles OUTSIDE the rotating div */}
+    {isFirst && (
+      <>
+        {[...Array(3)].map((_, i) => (
           <motion.div
-            animate={isHovered ? { 
-              rotate: 360,
-              scale: 1.15,
-              y: -5
-            } : {
-              rotate: 0,
-              scale: 1,
-              y: 0
+            key={i}
+            className="absolute"
+            style={{
+              top: i === 0 ? '-8px' : i === 1 ? 'calc(100% + 4px)' : '-4px',
+              right: i === 0 ? '-8px' : 'auto',
+              left: i === 1 ? '-8px' : i === 2 ? '-12px' : 'auto'
             }}
-            transition={{ 
-              rotate: { duration: 0.6, ease: "easeInOut" },
-              scale: { duration: 0.3 },
-              y: { duration: 0.3 }
+            animate={{
+              scale: [1, 1.5, 1],
+              y: [0, -8, 0],
+              opacity: [0.5, 1, 0.5]
+            }}
+            transition={{
+              duration: 2 + i * 0.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.5
             }}
           >
-            <motion.div
-              animate={{ 
-                rotate: [0, -10, 10, -10, 0],
-                y: [0, -5, 0, -3, 0]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <FaTrophy className={`${iconTextSize} ${config.color}`} />
-            </motion.div>
+            <FaStar className="text-[#FFD700] text-xs" />
           </motion.div>
+        ))}
+      </>
+    )}
+  </div>
+</div>
 
-          {/* Sparkles for 1st place - Outside trophy container */}
-          {isFirst && (
-            <>
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute"
-                  style={{
-                    top: i === 0 ? '-8px' : i === 1 ? 'calc(100% + 4px)' : '-4px',
-                    right: i === 0 ? '-8px' : 'auto',
-                    left: i === 1 ? '-8px' : i === 2 ? '-12px' : 'auto'
-                  }}
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    y: [0, -8, 0],
-                    opacity: [0.5, 1, 0.5]
-                  }}
-                  transition={{
-                    duration: 2 + i * 0.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.5
-                  }}
-                >
-                  <FaStar className="text-[#FFD700] text-xs" />
-                </motion.div>
-              ))}
-            </>
-          )}
-        </div>
-      </div>
 
       <h3 className={`${titleSize} font-bold ${config.color} mb-3`}>
         {config.title}
       </h3>
 
-      <p className={`${nameSize} font-black text-white mb-2 break-words`}>
+      <p className={`${nameSize} font-black text-white mb-2 break-words leading-tight`}>
         {placement.teamName}
       </p>
 
       {placement.prize && (
-        <p className="text-sm text-white/60 font-semibold mb-3">
+        <p className="text-xs sm:text-sm text-white/60 font-semibold mb-3">
           {placement.prize}
         </p>
       )}
 
-      {/* Smart Team Members Dropdown */}
+      {/* Team Members Dropdown */}
       {hasMembers && (
         <div className="mt-4 border-t border-white/10 pt-4">
           <button
@@ -257,13 +269,13 @@ function PlacementCard({ placement, config, delay, isFirst }: PlacementCardProps
 
 function EmptyState() {
   return (
-    <div className="container px-6 py-20">
+    <div className="container px-4 sm:px-6 py-20">
       <div className="text-center py-20">
-        <div className="inline-flex items-center justify-center w-24 h-24 bg-white/5 rounded-full mb-6">
-          <FiUsers className="text-5xl text-white/20" />
+        <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-white/5 rounded-full mb-6">
+          <FiUsers className="text-4xl sm:text-5xl text-white/20" />
         </div>
-        <h3 className="text-2xl font-bold text-white mb-3">Results Coming Soon</h3>
-        <p className="text-white/60">Tournament standings will be displayed here once the event concludes.</p>
+        <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Results Coming Soon</h3>
+        <p className="text-white/60 text-sm sm:text-base px-4">Tournament standings will be displayed here once the event concludes.</p>
       </div>
     </div>
   );

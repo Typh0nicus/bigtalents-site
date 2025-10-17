@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import Link from "next/link";
@@ -5,19 +7,22 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail } from "react-icons/fi";
 import { FaDiscord, FaTwitter, FaInstagram, FaCrown } from "react-icons/fa";
 
-// Type for navigation items
 type NavItem = {
   href: string;
   label: string;
-  dropdown?: { href: string; label: string }[];
+  dropdown?: { 
+    href: string; 
+    label: string;
+    icon?: any;
+    description?: string;
+  }[];
   special?: boolean;
   preventNavigation?: boolean;
 };
 
-// Navigation model
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/tournaments", label: "Tournaments" },
@@ -28,8 +33,18 @@ const NAV_ITEMS: NavItem[] = [
     label: "Creator Program",
     preventNavigation: true,
     dropdown: [
-      { href: "/creator-program/overview", label: "Overview" },
-      { href: "/creator-program/apply", label: "Apply Now" }
+      { 
+        href: "/creator-program/overview", 
+        label: "Overview",
+        icon: FiInfo,
+        description: "Learn about our creator benefits"
+      },
+      { 
+        href: "/creator-program/apply", 
+        label: "Apply Now",
+        icon: FiStar,
+        description: "Join the BGT family"
+      }
     ]
   },
   { 
@@ -37,9 +52,24 @@ const NAV_ITEMS: NavItem[] = [
     label: "Company",
     preventNavigation: true,
     dropdown: [
-      { href: "/about", label: "About" },
-      { href: "/contact", label: "Contact" },
-      { href: "/brand-guidelines", label: "Brand Guidelines" }
+      { 
+        href: "/about", 
+        label: "About",
+        icon: FiInfo,
+        description: "Our story and mission"
+      },
+      { 
+        href: "/contact", 
+        label: "Contact",
+        icon: FiMail,
+        description: "Get in touch with us"
+      },
+      { 
+        href: "/brand-guidelines", 
+        label: "Brand Guidelines",
+        icon: FiFileText,
+        description: "Download our brand assets"
+      }
     ]
   }
 ];
@@ -50,8 +80,18 @@ const LEFT_NAV_ITEMS: NavItem[] = [
     label: "Creator Program",
     preventNavigation: true,
     dropdown: [
-      { href: "/creator-program/overview", label: "Overview" },
-      { href: "/creator-program/apply", label: "Apply Now" }
+      { 
+        href: "/creator-program/overview", 
+        label: "Overview",
+        icon: FiInfo,
+        description: "Learn about our creator benefits"
+      },
+      { 
+        href: "/creator-program/apply", 
+        label: "Apply Now",
+        icon: FiStar,
+        description: "Join the BGT family"
+      }
     ]
   },
   { 
@@ -59,9 +99,24 @@ const LEFT_NAV_ITEMS: NavItem[] = [
     label: "Company",
     preventNavigation: true,
     dropdown: [
-      { href: "/about", label: "About" },
-      { href: "/contact", label: "Contact" },
-      { href: "/brand-guidelines", label: "Brand Guidelines" }
+      { 
+        href: "/about", 
+        label: "About",
+        icon: FiInfo,
+        description: "Our story and mission"
+      },
+      { 
+        href: "/contact", 
+        label: "Contact",
+        icon: FiMail,
+        description: "Get in touch with us"
+      },
+      { 
+        href: "/brand-guidelines", 
+        label: "Brand Guidelines",
+        icon: FiFileText,
+        description: "Download our brand assets"
+      }
     ]
   },
   { href: "/news", label: "News" }
@@ -78,11 +133,9 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-// Global state for managing single dropdown
 const globalSetters: { [key: string]: (isOpen: boolean, isLocked: boolean) => void } = {};
 let globalOpenDropdown: string | null = null;
 
-// Desktop link component
 function DesktopLink({
   href,
   label,
@@ -94,12 +147,13 @@ function DesktopLink({
   href: string;
   label: string;
   active: boolean;
-  dropdown?: { href: string; label: string }[];
+  dropdown?: { href: string; label: string; icon?: any; description?: string }[];
   special?: boolean;
   preventNavigation?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const prefersReduced = useReducedMotion();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -108,6 +162,9 @@ function DesktopLink({
       globalSetters[href] = (open: boolean, locked: boolean) => {
         setIsOpen(open);
         setIsLocked(locked);
+        if (!open) {
+          setIsHovered(false);
+        }
       };
       
       return () => {
@@ -131,16 +188,19 @@ function DesktopLink({
     }
     setIsOpen(false);
     setIsLocked(false);
+    setIsHovered(false);
   };
 
   const handleMouseEnter = useCallback(() => {
     if (!dropdown || isLocked) return;
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsHovered(true);
     openThisDropdown(false);
   }, [dropdown, isLocked]);
 
   const handleMouseLeave = useCallback(() => {
     if (!dropdown || isLocked) return;
+    setIsHovered(false);
     timeoutRef.current = setTimeout(() => {
       if (!isLocked) closeThisDropdown();
     }, 150);
@@ -148,9 +208,11 @@ function DesktopLink({
 
   const handleDropdownEnter = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsHovered(true);
   }, []);
 
   const handleDropdownLeave = useCallback(() => {
+    setIsHovered(false);
     if (!isLocked) closeThisDropdown();
   }, [isLocked]);
 
@@ -160,8 +222,18 @@ function DesktopLink({
       if (isLocked) {
         closeThisDropdown();
       } else {
+        setIsHovered(true);
         openThisDropdown(true);
       }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') closeThisDropdown();
+    if ((e.key === 'Enter' || e.key === ' ') && dropdown) {
+      e.preventDefault();
+      setIsHovered(true);
+      openThisDropdown(true);
     }
   };
 
@@ -182,7 +254,7 @@ function DesktopLink({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isLocked]);
+  }, [isLocked, href]);
 
   useEffect(() => {
     return () => {
@@ -191,7 +263,7 @@ function DesktopLink({
   }, []);
 
   const baseClasses = special 
-    ? "group relative px-4 py-3 text-sm font-bold transition-all duration-300 ease-out flex items-center gap-2 uppercase tracking-wide border-2 border-[var(--gold)] rounded-xl bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 hover:from-[var(--gold)]/30 hover:via-[var(--gold)]/20 hover:to-[var(--gold)]/30 shadow-lg shadow-[var(--gold)]/20 hover:shadow-xl hover:shadow-[var(--gold)]/30 hover:scale-105"
+    ? "group relative px-4 py-3 text-sm font-bold transition-all duration-300 ease-out flex items-center gap-2 uppercase tracking-wide border-2 border-[var(--gold)] rounded-xl bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 hover:from-[var(--gold)]/30 hover:via-[var(--gold)]/20 hover:to-[var(--gold)]/30 shadow-lg shadow-[var(--gold)]/20 hover:shadow-xl hover:shadow-[var(--gold)]/30"
     : "group relative px-4 py-3 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide";
   
   const activeClasses = special 
@@ -208,41 +280,66 @@ function DesktopLink({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {preventNavigation && dropdown ? (
-        <button
-          onClick={handleClick}
-          className={`${baseClasses} ${active ? activeClasses : inactiveClasses} ${isLocked ? 'text-[var(--gold)]' : ''}`}
-          aria-expanded={dropdown ? isOpen : undefined}
-        >
-          {special && <FaCrown className="text-[var(--gold)]" size={14} />}
-          {label}
-          {dropdown && (
-            <motion.div
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FiChevronDown size={12} />
-            </motion.div>
-          )}
-        </button>
-      ) : (
-        <Link
-          href={href}
-          className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}
-          aria-expanded={dropdown ? isOpen : undefined}
-        >
-          {special && <FaCrown className="text-[var(--gold)]" size={14} />}
-          {label}
-          {dropdown && (
-            <motion.div
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FiChevronDown size={12} />
-            </motion.div>
-          )}
-        </Link>
-      )}
+      <motion.div
+        className="relative"
+        whileHover={special ? { scale: 1.05 } : undefined}
+        transition={{ duration: 0.2 }}
+      >
+        {!special && (
+          <motion.div
+            className="absolute -inset-2 bg-[var(--gold)]/20 blur-xl rounded-xl pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: (isHovered || isOpen) ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+
+        {active && !special && (
+          <motion.div
+            layoutId="activeIndicator"
+            className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--gold)] rounded-full shadow-lg shadow-[var(--gold)]/60"
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          />
+        )}
+
+        {preventNavigation && dropdown ? (
+          <button
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            className={`relative ${baseClasses} ${active ? activeClasses : inactiveClasses} ${isLocked ? 'text-[var(--gold)]' : ''}`}
+            aria-expanded={dropdown ? isOpen : undefined}
+          >
+            {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+            {label}
+            {dropdown && (
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FiChevronDown size={12} />
+              </motion.div>
+            )}
+          </button>
+        ) : (
+          <Link
+            href={href}
+            onKeyDown={handleKeyDown}
+            className={`relative ${baseClasses} ${active ? activeClasses : inactiveClasses}`}
+            aria-expanded={dropdown ? isOpen : undefined}
+          >
+            {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+            {label}
+            {dropdown && (
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FiChevronDown size={12} />
+              </motion.div>
+            )}
+          </Link>
+        )}
+      </motion.div>
         
       {!special && (
         <motion.div
@@ -260,19 +357,35 @@ function DesktopLink({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: prefersReduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute top-full left-0 mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/20 rounded-xl p-2 shadow-2xl z-50"
+            className="absolute top-full left-0 mt-2 min-w-[280px] max-w-[320px] bg-black/95 backdrop-blur-2xl backdrop-saturate-150 border border-white/20 rounded-xl p-2 shadow-2xl z-[10000]"
             onMouseEnter={handleDropdownEnter}
             onMouseLeave={handleDropdownLeave}
           >
-            {dropdown.map((item) => (
-              <Link
+            {dropdown.map((item, idx) => (
+              <motion.div
                 key={item.href}
-                href={item.href}
-                className="block px-4 py-3 text-sm font-medium text-white/90 hover:text-[var(--gold)] hover:bg-white/10 rounded-lg transition-all duration-150"
-                onClick={() => closeThisDropdown()}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.05 }}
               >
-                {item.label}
-              </Link>
+                <Link
+                  href={item.href}
+                  className="group flex items-start gap-3 px-4 py-3 hover:bg-white/10 rounded-lg transition-all duration-150"
+                  onClick={() => closeThisDropdown()}
+                >
+                  {item.icon && (
+                    <item.icon className="text-[var(--gold)] mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" size={18} />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-bold text-sm text-white group-hover:text-[var(--gold)] transition-colors">
+                      {item.label}
+                    </div>
+                    {item.description && (
+                      <p className="text-xs text-white/50 mt-0.5 leading-tight">{item.description}</p>
+                    )}
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </motion.div>
         )}
@@ -281,7 +394,6 @@ function DesktopLink({
   );
 }
 
-// FIXED Mobile menu component
 function MobileMenu({ 
   isOpen, 
   onClose, 
@@ -328,25 +440,22 @@ function MobileMenu({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* FIXED: Backdrop with proper z-index */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[998] lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] lg:hidden"
             onClick={onClose}
           />
 
-          {/* FIXED: Menu Panel - now properly positioned */}
           <motion.div
             variants={menuVariants}
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[999] lg:hidden flex flex-col shadow-2xl"
+            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-2xl backdrop-saturate-150 border-l border-white/10 z-[9999] lg:hidden flex flex-col shadow-2xl"
           >
-            {/* Header - FIXED */}
             <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
               <Image
                 src="/images/logo/bgt-logo.png"
@@ -364,11 +473,15 @@ function MobileMenu({
               </button>
             </div>
 
-            {/* FIXED: Scrollable content with proper overflow */}
             <div className="flex-1 overflow-y-auto overscroll-contain">
               <nav className="flex flex-col p-6 space-y-2">
-                {items.map((item) => (
-                  <div key={item.href}>
+                {items.map((item, idx) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
                     <div className="flex items-center justify-between">
                       {item.preventNavigation && item.dropdown ? (
                         <button
@@ -408,7 +521,7 @@ function MobileMenu({
                       {item.dropdown && (
                         <button
                           onClick={() => toggleExpanded(item.href)}
-                          className="p-2 ml-2 text-white/60 hover:text-[var(--gold)] transition-colors"
+                          className="p-2 ml-2 text-white/60 hover:text-[var(--gold)] transition-colors flex-shrink-0"
                           aria-expanded={expandedItem === item.href}
                           aria-label={`Toggle ${item.label} menu`}
                         >
@@ -432,29 +545,46 @@ function MobileMenu({
                           className="overflow-hidden"
                         >
                           <div className="ml-4 mt-2 space-y-1 pb-2">
-                            {item.dropdown.map((subItem) => (
-                              <Link
+                            {item.dropdown.map((subItem, subIdx) => (
+                              <motion.div
                                 key={subItem.href}
-                                href={subItem.href}
-                                onClick={onClose}
-                                className="block px-4 py-3 text-sm text-white/60 hover:text-[var(--gold)] hover:bg-white/5 rounded-lg transition-all duration-150"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: subIdx * 0.05 }}
                               >
-                                {subItem.label}
-                              </Link>
+                                <Link
+                                  href={subItem.href}
+                                  onClick={onClose}
+                                  className="group flex items-start gap-3 px-4 py-3 hover:bg-white/5 rounded-lg transition-all duration-150"
+                                >
+                                  {subItem.icon && (
+                                    <subItem.icon className="text-[var(--gold)] mt-0.5 flex-shrink-0 text-sm" />
+                                  )}
+                                  <div>
+                                    <div className="text-sm font-medium text-white/80 group-hover:text-[var(--gold)] transition-colors">
+                                      {subItem.label}
+                                    </div>
+                                    {subItem.description && (
+                                      <p className="text-xs text-white/40 mt-0.5">{subItem.description}</p>
+                                    )}
+                                  </div>
+                                </Link>
+                              </motion.div>
                             ))}
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 ))}
               </nav>
             </div>
 
-            {/* Footer */}
             <div className="flex-shrink-0 p-4 border-t border-white/10">
               <div className="flex justify-center gap-4">
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
                   href="https://discord.gg/bgt"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -462,8 +592,10 @@ function MobileMenu({
                   aria-label="Discord"
                 >
                   <FaDiscord size={18} />
-                </a>
-                <a
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, rotate: -5 }}
+                  whileTap={{ scale: 0.95 }}
                   href="https://x.com/bgtalents"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -471,8 +603,10 @@ function MobileMenu({
                   aria-label="Twitter"
                 >
                   <FaTwitter size={18} />
-                </a>
-                <a
+                </motion.a>
+                <motion.a
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
                   href="https://instagram.com/bigtalents_org"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -480,7 +614,7 @@ function MobileMenu({
                   aria-label="Instagram"
                 >
                   <FaInstagram size={18} />
-                </a>
+                </motion.a>
               </div>
             </div>
           </motion.div>
@@ -494,11 +628,20 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const { scrollY } = useScroll();
   const prefersReduced = useReducedMotion();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
+    
+    if (latest > lastScrollY && latest > 100) {
+      setIsHidden(true);
+    } else {
+      setIsHidden(false);
+    }
+    setLastScrollY(latest);
   });
 
   const leftItems = useMemo(
@@ -545,19 +688,22 @@ export function Navbar() {
   return (
     <motion.nav
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ 
-        duration: prefersReduced ? 0 : 0.6,
-        ease: [0.22, 1, 0.36, 1],
-        delay: 0.1
+      animate={{ 
+        y: isHidden ? -100 : 0,
+        opacity: isHidden ? 0 : 1
       }}
-      className={`fixed top-0 left-0 right-0 z-[997] transition-all duration-300 ${
+      transition={{ 
+        duration: prefersReduced ? 0 : 0.3,
+        ease: [0.22, 1, 0.36, 1]
+      }}
+      className={`fixed top-0 left-0 right-0 z-[9997] border-b transition-all duration-300 ${
         isScrolled 
-          ? 'bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-2xl' 
-          : 'bg-transparent'
+          ? 'bg-black/70 backdrop-blur-2xl backdrop-saturate-150 border-white/10 shadow-2xl shadow-black/50' 
+          : 'bg-transparent border-transparent'
       }`}
+      style={{ overflow: 'visible' }}
     >
-      <div className="container">
+      <div className="container" style={{ overflow: 'visible' }}>
         <div className="flex items-center justify-between h-16 lg:h-20">
           <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end mr-8">
             {leftItems.map((item) => (
@@ -570,14 +716,19 @@ export function Navbar() {
           </div>
 
           <Link href="/" className="flex-shrink-0">
-            <Image
-              src="/images/logo/bgt-logo.png"
-              alt="Big Talents"
-              width={120}
-              height={30}
-              className="h-8 w-auto"
-              priority
-            />
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Image
+                src="/images/logo/bgt-logo.png"
+                alt="Big Talents"
+                width={120}
+                height={30}
+                className="h-8 w-auto"
+                priority
+              />
+            </motion.div>
           </Link>
 
           <div className="hidden lg:flex items-center space-x-4 flex-1 ml-8">
@@ -590,13 +741,15 @@ export function Navbar() {
             ))}
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
             className="lg:hidden p-2 text-white/80 hover:text-[var(--gold)] transition-colors"
             aria-label="Open menu"
           >
             <FiMenu size={24} />
-          </button>
+          </motion.button>
         </div>
       </div>
 

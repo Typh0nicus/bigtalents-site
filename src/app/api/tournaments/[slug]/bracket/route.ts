@@ -1,54 +1,80 @@
 import { NextRequest, NextResponse } from "next/server";
 import { TOURNAMENTS } from "@/data/tournaments";
 import { parseMatcherino } from "@/lib/parseMatcherino";
-import type { BracketData } from "@/types/bracket";
 
-const cache = new Map<string, { data: BracketData; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(
-  _req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { slug } = await params;
-  const tournament = TOURNAMENTS.find(t => t.slug === slug);
-  if (!tournament) {
-    return NextResponse.json({ success: false, error: "Tournament not found" }, { status: 404 });
-  }
-
-  // Return cache if fresh
-  const cached = cache.get(slug);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    return NextResponse.json({ success: true, data: cached.data, cached: true });
-  }
-
   try {
-    if (!tournament.matcherinoId) {
-      throw new Error("Missing matcherinoId");
+    // FIXED: Await params in Next.js 15
+    const { slug } = await params;
+    console.log(`📡 Bracket API called for slug: ${slug}`);
+
+    const tournament = TOURNAMENTS.find((t) => t.slug === slug);
+
+    if (!tournament) {
+      console.error(`❌ Tournament not found: ${slug}`);
+      return NextResponse.json(
+        { error: "Tournament not found" },
+        { status: 404 }
+      );
     }
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/matcherino/${tournament.matcherinoId}`, {
-      cache: "no-store"
-    });
-    if (!res.ok) throw new Error(`Matcherino API failed: ${res.status}`);
-    const json = await res.json();
-    const bracketData = parseMatcherino(json);
-    cache.set(slug, { data: bracketData, timestamp: Date.now() });
-    return NextResponse.json({ success: true, data: bracketData, cached: false });
-  } catch (error) {
-    console.error(`Bracket API error for ${slug}:`, error);
-    // Fallback to mock bracket
-    const mock: BracketData = {
-      matches: [],
-      participants: [],
-      metadata: {
-        tournamentId: tournament.slug,
-        title: tournament.title,
-        bracketType: "single",
-        totalRounds: 1,
-        isLive: !tournament.archived,
-        lastUpdated: new Date().toISOString()
+
+    if (!tournament.matcherinoId) {
+      console.error(`❌ Missing matcherinoId for: ${slug}`);
+      return NextResponse.json(
+        { error: "Missing matcherinoId" },
+        { status: 400 }
+      );
+    }
+
+    console.log(`✅ Fetching matcherino data for ID: ${tournament.matcherinoId}`);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/api/matcherino/${tournament.matcherinoId}`,
+      {
+        cache: "no-store",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        }
       }
-    };
-    return NextResponse.json({ success: true, data: mock, fallback: true });
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`❌ Matcherino API error:`, errorText);
+      throw new Error(`Matcherino API failed: ${res.status}`);
+    }
+
+    const matcherinoData = await res.json();
+    console.log(`📦 Matcherino data received, parsing...`);
+
+    const bracketData = parseMatcherino(matcherinoData);
+    console.log(`✅ Parsed bracket data:`, {
+      placements: bracketData.placements?.length || 0,
+      participants: bracketData.participants?.length || 0,
+    });
+
+    return NextResponse.json(bracketData, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    });
+  } catch (error) {
+    // FIXED: Get slug safely
+    const resolvedParams = await params;
+    const slug = resolvedParams?.slug || 'unknown';
+    console.error(`Bracket API error for ${slug}:`, error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to fetch bracket data" },
+      { status: 500 }
+    );
   }
 }

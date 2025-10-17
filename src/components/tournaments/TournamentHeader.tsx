@@ -70,9 +70,9 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
         </motion.div>
       )}
 
-      <div className="container relative z-10 px-6 text-center max-w-7xl">
+      <div className="container relative z-10 px-4 sm:px-6 text-center max-w-7xl pb-20">
         
-        {/* Status Badge - Region Only in Badge */}
+        {/* Status Badge */}
         <motion.div 
           className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-sm border border-[#D4AF37]/40 rounded-full mb-6"
           initial={{ opacity: 0, y: -20 }}
@@ -80,14 +80,14 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <FaTrophy className="text-[#D4AF37] text-sm" />
-          <span className="font-bold text-sm uppercase text-white">
+          <span className="font-bold text-xs sm:text-sm uppercase text-white">
             {tournament.archived ? 'Tournament Complete' : 'Live Tournament'}
           </span>
         </motion.div>
 
-        {/* Tournament Title - No Overflow, Proper Word Wrap */}
+        {/* Tournament Title */}
         <motion.h1 
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white leading-tight mb-6 break-words px-4"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-tight mb-6 break-words px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -97,7 +97,7 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
 
         {/* Date */}
         <motion.div 
-          className="text-white/80 mb-12 text-base md:text-lg"
+          className="text-white/80 mb-12 text-sm sm:text-base md:text-lg"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
@@ -107,9 +107,9 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
           )}
         </motion.div>
 
-        {/* Premium Action Buttons */}
+        {/* Action Buttons */}
         <motion.div 
-          className="flex flex-wrap items-center justify-center gap-4 mb-16"
+          className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
@@ -118,9 +118,9 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
             href={tournament.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#D4AF37] to-[#E9B84F] text-black font-bold text-lg rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-[#D4AF37]/30"
+            className="group relative overflow-hidden px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#D4AF37] to-[#E9B84F] text-black font-bold text-base sm:text-lg rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl hover:shadow-[#D4AF37]/30"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <span>View Tournament</span>
               <FiExternalLink className="transition-transform duration-200 group-hover:translate-x-1" />
             </div>
@@ -131,9 +131,9 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
               href={tournament.liquipedia}
               target="_blank"
               rel="noopener noreferrer"
-              className="group px-8 py-4 bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white font-bold text-lg rounded-xl transition-all duration-200 hover:bg-white/20 hover:border-[#D4AF37]/50 hover:scale-105"
+              className="group px-6 sm:px-8 py-3 sm:py-4 bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white font-bold text-base sm:text-lg rounded-xl transition-all duration-200 hover:bg-white/20 hover:border-[#D4AF37]/50 hover:scale-105"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <span>Statistics</span>
                 <FiExternalLink className="transition-transform duration-200 group-hover:translate-x-1" />
               </div>
@@ -142,7 +142,7 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
 
           <button
             onClick={handleShare}
-            className="relative p-4 bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white rounded-xl transition-all duration-200 hover:bg-white/20 hover:border-[#D4AF37]/50 hover:scale-105 group"
+            className="relative p-3 sm:p-4 bg-white/10 backdrop-blur-xl border-2 border-white/20 text-white rounded-xl transition-all duration-200 hover:bg-white/20 hover:border-[#D4AF37]/50 hover:scale-105 group"
           >
             <motion.div
               initial={false}
@@ -152,29 +152,28 @@ export function TournamentHeader({ tournament }: TournamentHeaderProps) {
               {copied ? <FiCheck className="text-[#D4AF37]" /> : <FiShare2 />}
             </motion.div>
             
-            {/* Tooltip */}
             <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-2 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               <span className="text-sm text-white">{copied ? 'Link Copied!' : 'Share Link'}</span>
             </div>
           </button>
         </motion.div>
-
-        {/* Scroll Indicator with Fade */}
-        <motion.div 
-          className="text-white/60"
-          style={{ opacity }}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-sm uppercase tracking-wider font-medium">Scroll to explore</span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <FiChevronDown className="w-6 h-6" />
-            </motion.div>
-          </div>
-        </motion.div>
       </div>
+
+      {/* FIXED: Scroll Indicator - Now positioned absolutely to prevent layout shift */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 pointer-events-none"
+        style={{ opacity }}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-xs sm:text-sm uppercase tracking-wider font-medium whitespace-nowrap">Scroll to explore</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <FiChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }

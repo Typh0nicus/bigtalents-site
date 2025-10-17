@@ -519,3 +519,9 @@ input:focus, textarea:focus, select:focus {
 :root {
   --glass-gold: color-mix(in srgb, var(--gold) 25%, transparent);
 }
+/* Force navbar to allow dropdowns to overflow */
+nav, 
+nav > div,
+.dropdown-container {
+  overflow: visible !important;
+}
