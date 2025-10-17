@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export function AboutBGT() {
   return (
@@ -20,13 +21,12 @@ export function AboutBGT() {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href="/tournaments" className="btn btn-primary rounded-xl">
+            <Link href="/tournaments" className="btn btn-primary rounded-xl">
               Join the Next Bracket
-            </a>
-            {/* Was “Join .bgt” — replaced with a non-Discord action */}
-            <a href="/about" className="btn btn-outline rounded-xl">
+            </Link>
+            <Link href="/about" className="btn btn-outline rounded-xl">
               Learn More
-            </a>
+            </Link>
           </div>
         </motion.div>
 

@@ -1,5 +1,6 @@
 "use client";
 import { useMemo } from "react";
+import Link from "next/link";
 import { TOURNAMENTS } from "@/data/tournaments";
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
 
@@ -7,23 +8,24 @@ function parseWhen(s?: string): number {
   if (!s) return 0;
   
   // Handle various date formats more robustly
-  let dateStr = s;
+  const dateStr = s;
   
   // Convert timezone formats to standard ISO format
+  let cleanDateStr = dateStr;
   if (dateStr.includes("GMT+1")) {
-    dateStr = dateStr.replace("GMT+1", "+01:00");
+    cleanDateStr = dateStr.replace("GMT+1", "+01:00");
   } else if (dateStr.includes("GMT")) {
-    dateStr = dateStr.replace("GMT", "+00:00");
+    cleanDateStr = dateStr.replace("GMT", "+00:00");
   }
   
   // Try to parse the date
-  const parsed = Date.parse(dateStr);
+  const parsed = Date.parse(cleanDateStr);
   
   // If parsing failed, try alternative parsing
   if (Number.isNaN(parsed)) {
     // Try removing day names and parsing again
-    const cleanDateStr = dateStr.replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s*/, '');
-    const altParsed = Date.parse(cleanDateStr);
+    const altDateStr = cleanDateStr.replace(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s*/, '');
+    const altParsed = Date.parse(altDateStr);
     return Number.isNaN(altParsed) ? 0 : altParsed;
   }
   
@@ -75,7 +77,9 @@ export function FeaturedSlice() {
     <section className="container py-10 md:py-14">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <h2 className="h2 text-center sm:text-left">Featured Tournaments</h2>
-        <a href="/tournaments" className="btn btn-outline self-center sm:self-auto">See All</a>
+        <Link href="/tournaments" className="btn btn-outline self-center sm:self-auto">
+          See All
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3">
