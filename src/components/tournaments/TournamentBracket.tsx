@@ -1,0 +1,270 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaTrophy, FaStar } from "react-icons/fa";
+import { FiUsers, FiChevronDown } from "react-icons/fi";
+import type { BracketData, Placement } from "@/types/bracket";
+
+interface TournamentBracketProps {
+  tournamentSlug: string;
+  isLive?: boolean;
+}
+
+const PLACEMENT_CONFIG = {
+  1: { color: "text-[#FFD700]", bgColor: "bg-[#FFD700]/5", borderColor: "border-[#FFD700]/20", title: "🥇 Champion" },
+  2: { color: "text-[#C0C0C0]", bgColor: "bg-[#C0C0C0]/5", borderColor: "border-[#C0C0C0]/20", title: "🥈 Runner-up" },
+  3: { color: "text-[#CD7F32]", bgColor: "bg-[#CD7F32]/5", borderColor: "border-[#CD7F32]/20", title: "🥉 Semi-Finalist" },
+  4: { color: "text-[#CD7F32]", bgColor: "bg-[#CD7F32]/5", borderColor: "border-[#CD7F32]/20", title: "🥉 Semi-Finalist" }
+};
+
+export function TournamentBracket({ tournamentSlug }: TournamentBracketProps) {
+  const [data, setData] = useState<BracketData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/tournaments/${tournamentSlug}/bracket`);
+      const json = await res.json();
+      if (!json.success) throw new Error(json.error || "Unknown error");
+      setData(json.data);
+    } catch (e: unknown) {
+      const error = e as Error;
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [tournamentSlug]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) {
+    return (
+      <div className="container px-6 py-20">
+        <div className="text-center py-20">
+          <motion.div
+            className="inline-block w-16 h-16 border-4 border-[#D4AF37]/20 border-t-[#D4AF37] rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p className="text-white/60 mt-4 text-lg">Loading results...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data || !data.placements || data.placements.length === 0) {
+    return <EmptyState />;
+  }
+
+  const placements = data.placements.slice(0, 4);
+  const first = placements.find(p => p.place === 1);
+  const second = placements.find(p => p.place === 2);
+  const third = placements.find(p => p.place === 3);
+  const fourth = placements.find(p => p.place === 4);
+
+  return (
+    <div className="container px-6 py-20 select-none">
+      <motion.div 
+        className="text-center mb-16"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Final Standings</h2>
+        <p className="text-white/60 mb-8 text-base md:text-lg max-w-2xl mx-auto">
+          Congratulations to all teams who competed in this tournament
+        </p>
+      </motion.div>
+
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col items-center gap-8">
+          
+          <div className="flex flex-col md:flex-row items-end justify-center gap-6 w-full">
+            {second && <PlacementCard placement={second} config={PLACEMENT_CONFIG[2]} delay={0.2} />}
+            {first && <PlacementCard placement={first} config={PLACEMENT_CONFIG[1]} delay={0.1} isFirst />}
+            {third && <PlacementCard placement={third} config={PLACEMENT_CONFIG[3]} delay={0.3} />}
+          </div>
+
+          {fourth && (
+            <div className="flex justify-center w-full">
+              <PlacementCard placement={fourth} config={PLACEMENT_CONFIG[4]} delay={0.4} />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface PlacementCardProps {
+  placement: Placement;
+  config: typeof PLACEMENT_CONFIG[1];
+  delay: number;
+  isFirst?: boolean;
+}
+
+function PlacementCard({ placement, config, delay, isFirst }: PlacementCardProps) {
+  const [showMembers, setShowMembers] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const cardSize = isFirst ? "w-full md:w-80 p-10" : "w-full md:w-64 p-8";
+  const iconSize = isFirst ? "w-28 h-28" : "w-20 h-20";
+  const iconTextSize = isFirst ? "text-5xl" : "text-4xl";
+  const titleSize = isFirst ? "text-xl" : "text-lg";
+  const nameSize = isFirst ? "text-3xl md:text-4xl" : "text-xl md:text-2xl";
+  const hasMembers = placement.members && placement.members.length > 0;
+
+  return (
+    <motion.div
+      className={`relative ${cardSize} ${config.bgColor} backdrop-blur-xl border ${config.borderColor} rounded-2xl text-center transition-all duration-300 hover:border-[#D4AF37]/30 hover:bg-white/[0.08] hover:scale-105 hover:shadow-xl hover:shadow-[#D4AF37]/5`}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      {/* Trophy with Hover Effects */}
+      <div className="relative">
+        <div className={`mx-auto ${iconSize} ${config.bgColor} rounded-full flex items-center justify-center mb-4 relative`}>
+          <motion.div
+            animate={isHovered ? { 
+              rotate: 360,
+              scale: 1.15,
+              y: -5
+            } : {
+              rotate: 0,
+              scale: 1,
+              y: 0
+            }}
+            transition={{ 
+              rotate: { duration: 0.6, ease: "easeInOut" },
+              scale: { duration: 0.3 },
+              y: { duration: 0.3 }
+            }}
+          >
+            <motion.div
+              animate={{ 
+                rotate: [0, -10, 10, -10, 0],
+                y: [0, -5, 0, -3, 0]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <FaTrophy className={`${iconTextSize} ${config.color}`} />
+            </motion.div>
+          </motion.div>
+
+          {/* Sparkles for 1st place - Outside trophy container */}
+          {isFirst && (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute"
+                  style={{
+                    top: i === 0 ? '-8px' : i === 1 ? 'calc(100% + 4px)' : '-4px',
+                    right: i === 0 ? '-8px' : 'auto',
+                    left: i === 1 ? '-8px' : i === 2 ? '-12px' : 'auto'
+                  }}
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    y: [0, -8, 0],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 2 + i * 0.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.5
+                  }}
+                >
+                  <FaStar className="text-[#FFD700] text-xs" />
+                </motion.div>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+
+      <h3 className={`${titleSize} font-bold ${config.color} mb-3`}>
+        {config.title}
+      </h3>
+
+      <p className={`${nameSize} font-black text-white mb-2 break-words`}>
+        {placement.teamName}
+      </p>
+
+      {placement.prize && (
+        <p className="text-sm text-white/60 font-semibold mb-3">
+          {placement.prize}
+        </p>
+      )}
+
+      {/* Smart Team Members Dropdown */}
+      {hasMembers && (
+        <div className="mt-4 border-t border-white/10 pt-4">
+          <button
+            onClick={() => setShowMembers(!showMembers)}
+            className="w-full flex items-center justify-center gap-2 text-xs font-semibold text-white/60 hover:text-white transition-colors group"
+          >
+            <FiUsers className="text-sm group-hover:scale-110 transition-transform" />
+            <span>{showMembers ? 'Hide' : 'Show'} Team Roster ({placement.members?.length || 0})</span>
+            <motion.div
+              animate={{ rotate: showMembers ? 180 : 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <FiChevronDown className="text-sm" />
+            </motion.div>
+          </button>
+          
+          <AnimatePresence>
+            {showMembers && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 12 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="space-y-2 overflow-hidden"
+              >
+                {placement.members?.map((member: string, idx: number) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="text-xs text-white/70 px-3 py-2 bg-white/5 rounded-lg backdrop-blur-sm border border-white/5"
+                  >
+                    {member}
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37]/0 via-[#D4AF37]/3 to-[#D4AF37]/0 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </motion.div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="container px-6 py-20">
+      <div className="text-center py-20">
+        <div className="inline-flex items-center justify-center w-24 h-24 bg-white/5 rounded-full mb-6">
+          <FiUsers className="text-5xl text-white/20" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-3">Results Coming Soon</h3>
+        <p className="text-white/60">Tournament standings will be displayed here once the event concludes.</p>
+      </div>
+    </div>
+  );
+}

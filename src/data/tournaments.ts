@@ -20,12 +20,12 @@ export const TOURNAMENTS: Tournament[] = [
     date: "Mon, Mar 3, 2025 12:00AM GMT",
     prizeUsd: 518.0,
     url: "https://matcherino.com/supercell/tournaments/145019",
-    slug: "145019-eternal-bgt-march-madness",
+    slug: "145019",
     image: "/images/tournaments/145019.AVIF",
     liquipedia: "https://liquipedia.net/brawlstars/Eternal_x_BigTipper/March_Madness/Tournament/1",
     matcherinoId: 145019,
     participants: 226,
-    region: "NA", // 12:00AM GMT+1 time
+    region: "NA",
     archived: true
   },
   {
@@ -90,7 +90,7 @@ export const TOURNAMENTS: Tournament[] = [
     liquipedia: "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper",
     matcherinoId: 145690,
     participants: 439,
-    region: "NA", // 10:00PM GMT time
+    region: "NA",
     archived: true
   },
   {
@@ -113,10 +113,10 @@ export const TOURNAMENTS: Tournament[] = [
     url: "https://matcherino.com/supercell/tournaments/149584",
     slug: "149584-tog-x-bgt-brawl-ball",
     image: "/images/tournaments/149584.jpg",
-    liquipedia: "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper_Tournament_(Brawl_Ball_Only)",
+    liquipedia: "https://liquipedia.net/brawlstars/TOG_x_Big_Tipper_(Brawl_Ball_Only)",
     matcherinoId: 149584,
     participants: 387,
-    region: "NA", // As requested
+    region: "NA",
     archived: true
   },
   {
@@ -132,6 +132,7 @@ export const TOURNAMENTS: Tournament[] = [
     region: "EU",
     archived: true
   },
+  // ❌ NO matcherinoId for this one
   {
     title: "Haneki x Big Talents Tournament",
     date: "Thu, Jun 26, 2025 7:00PM GMT+1",
@@ -166,7 +167,7 @@ export const TOURNAMENTS: Tournament[] = [
     image: "/images/tournaments/165244.WEBP",
     matcherinoId: 165244,
     participants: 8,
-    region: "NA", // 10:00PM GMT+1 time
+    region: "NA",
     archived: true
   },
   {
@@ -186,24 +187,15 @@ export const TOURNAMENTS: Tournament[] = [
     date: "Sat, Sep 6, 2025 7:30PM GMT+1",
     prizeUsd: 139.72,
     url: "https://matcherino.com/t/ww3/overview",
-    slug: "wildcard-weekend-3",
+    slug: "ww3",
     image: "/images/tournaments/ww3.WEBP",
     liquipedia: "https://liquipedia.net/brawlstars/Wildcard_Weekend/3",
-    matcherinoSlug: "ww3",
+    matcherinoId: 165776,
     participants: 427,
     region: "EU",
     archived: true
   },
-  // Future placeholder tournaments for upcoming section
-  {
-    title: "Silver Talent League #1",
-    date: "Coming Soon",
-    url: "https://matcherino.com",
-    slug: "stl-1-coming-soon",
-    image: "/images/tournaments/stl1.png",
-    region: "EU",
-    archived: false // These will show in upcoming
-  },
+  // Future tournaments - no matcherinoId yet
   {
     title: "Wildcard Weekend #4",
     date: "Coming Soon",
@@ -211,15 +203,33 @@ export const TOURNAMENTS: Tournament[] = [
     slug: "WW4",
     image: "/images/tournaments/ww4.png",
     region: "EU",
-    archived: false // These will show in upcoming
+    archived: false
   },
-    {
+  {
+    title: "Silver Talents League #1",
+    date: "Coming Soon",
+    url: "https://matcherino.com",
+    slug: "stl1",
+    image: "/images/tournaments/stl1.png",
+    region: "EU",
+    archived: false
+  },
+  {
+    title: "Octonoob",
+    date: "Coming Soon",
+    url: "https://matcherino.com",
+    slug: "octonoob",
+    image: "/images/tournaments/octonoob.png",
+    region: "NA",
+    archived: false
+  },
+  {
     title: "Wildcard Weekend #5",
     date: "Coming Soon",
     url: "https://matcherino.com/t/ww5/overview",
     slug: "ww5",
     image: "/images/tournaments/ww5.png",
     region: "EU",
-    archived: false // These will show in upcoming
+    archived: false
   }
 ];

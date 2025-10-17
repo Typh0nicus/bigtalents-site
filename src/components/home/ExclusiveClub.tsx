@@ -4,7 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW } from "react-icons/fa";
-import { FiCheck, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiStar, FiUsers, FiZap } from "react-icons/fi";
+import { useState } from "react";
 
 /* ======================= Types ======================= */
 type Member = {
@@ -14,6 +15,20 @@ type Member = {
   youtube?: string;
   twitch?: string;
   wiki?: string;
+};
+
+type Benefit = {
+  title: string;
+  desc: string;
+  icon: React.ComponentType<{ className?: string }>; 
+};
+
+type PricingTier = {
+  period: string;
+  price: string;
+  duration: string;
+  popular?: boolean;
+  savings?: string;
 };
 
 /* ======================= Data ======================= */
@@ -36,7 +51,7 @@ const MEMBERS: Member[] = [
   {
     name: "ELV | DiegoGamer",
     image: "/images/club/diego.webp",
-    blurb: " NA Pro Player • Worlds Finalist",
+    blurb: "NA Pro Player • Worlds Finalist",
     youtube: "https://www.youtube.com/@DiegogamerCR_",
     twitch: "https://www.twitch.tv/diegogamercr",
     wiki: "https://liquipedia.net/brawlstars/Diegogamer",
@@ -70,303 +85,385 @@ const MEMBERS: Member[] = [
   },
 ];
 
-/* ======================= Component ======================= */
-export function ExclusiveClub() {
-  // Split
-  const firstRow = MEMBERS.slice(0, 4); // First members
-  const secondRow = MEMBERS.slice(4);   // Remaining members
+const BENEFITS: Benefit[] = [
+  { icon: FiZap, title: "Pro insights", desc: "Learn from world champions" },
+  { icon: FiUsers, title: "Real-time games", desc: "Play alongside the elite" },
+  { icon: FiStar, title: "Private club chat", desc: "Direct access to pros" },
+];
+
+const PRICING_TIERS: PricingTier[] = [
+  { period: "Daily", price: "3.99", duration: "24 hours" },
+  { period: "Weekly", price: "19.99", duration: "7 days", popular: true, savings: "Save 30%" },
+  { period: "Monthly", price: "69.99", duration: "30 days", savings: "Best Value" },
+];
+
+// Deterministic particle positions
+const PARTICLE_POSITIONS = Array.from({ length: 15 }, (_, i) => ({
+  left: (i * 6.66) % 100,
+  top: (i * 9.23) % 100,
+}));
+
+/* ======================= Sub-Components ======================= */
+function MemberCard({ member, index }: { member: Member; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section className="relative overflow-hidden">
-      {/* Ambient accents */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `
-            radial-gradient(1200px 600px at 15% -10%, rgba(212,175,55,.12), transparent 60%), 
-            radial-gradient(1000px 500px at 85% 10%, rgba(224,184,79,.08), transparent 60%),
-            radial-gradient(800px 400px at 50% 100%, rgba(212,175,55,.06), transparent 50%)
-          `,
-        }}
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="relative card overflow-hidden group select-none"
+    >
+      {/* Hover particles - subtle */}
+      {isHovered && (
+        <div className="absolute inset-0 pointer-events-none z-20">
+          {PARTICLE_POSITIONS.slice(0, 6).map((pos, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-0.5 h-0.5 rounded-full bg-[#D4AF37]"
+              style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: [0, 0.6, 0],
+                scale: [0, 1.2, 0],
+                y: [0, -30],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: "easeOut"
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="relative w-full aspect-[4/3] overflow-hidden">
+        <Image
+          src={member.image}
+          alt={member.name}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 640px) 50vw, 25vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        
+        {/* Subtle gold border on hover */}
+        <motion.div
+          className="absolute inset-0 border border-[#D4AF37]/50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
+      </div>
+
+      <div className="p-4 relative z-10">
+        <h4 className="font-bold text-sm group-hover:text-[#D4AF37] transition-colors duration-200">
+          {member.name}
+        </h4>
+        <p className="text-xs text-white/70 mt-1 leading-relaxed">{member.blurb}</p>
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {member.youtube && (
+            <motion.a
+              href={member.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 hover:bg-red-500/10 transition-all duration-200"
+              aria-label={`${member.name} on YouTube`}
+            >
+              <FaYoutube size={14} />
+            </motion.a>
+          )}
+          {member.twitch && (
+            <motion.a
+              href={member.twitch}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 hover:bg-purple-500/10 transition-all duration-200"
+              aria-label={`${member.name} on Twitch`}
+            >
+              <FaTwitch size={14} />
+            </motion.a>
+          )}
+          {member.wiki && (
+            <motion.a
+              href={member.wiki}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-[#D4AF37] hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 transition-all duration-200"
+              aria-label={`${member.name} on Liquipedia`}
+            >
+              <FaWikipediaW size={14} />
+            </motion.a>
+          )}
+        </div>
+      </div>
+
+      {/* Subtle card glow on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-[#D4AF37]/0 pointer-events-none"
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
       />
+    </motion.article>
+  );
+}
+
+/* ======================= Main Component ======================= */
+export function ExclusiveClub() {
+  const firstRow = MEMBERS.slice(0, 4);
+  const secondRow = MEMBERS.slice(4);
+
+  return (
+    <section className="relative overflow-hidden select-none">
+      {/* Animated background */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              'radial-gradient(1200px 600px at 20% -10%, rgba(212,175,55,.12), transparent 60%), radial-gradient(1000px 500px at 80% 10%, rgba(224,184,79,.08), transparent 60%)',
+              'radial-gradient(1200px 600px at 80% -10%, rgba(212,175,55,.12), transparent 60%), radial-gradient(1000px 500px at 20% 10%, rgba(224,184,79,.08), transparent 60%)',
+              'radial-gradient(1200px 600px at 20% -10%, rgba(212,175,55,.12), transparent 60%), radial-gradient(1000px 500px at 80% 10%, rgba(224,184,79,.08), transparent 60%)',
+            ]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 opacity-20">
+          {PARTICLE_POSITIONS.map((pos, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-0.5 h-0.5 bg-[#D4AF37] rounded-full"
+              style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
+              animate={{
+                y: [0, -25, 0],
+                opacity: [0.2, 0.6, 0.2],
+              }}
+              transition={{
+                duration: 2.5 + (i % 3),
+                repeat: Infinity,
+                delay: i * 0.15,
+              }}
+            />
+          ))}
+        </div>
+      </div>
 
       <div className="container relative z-10 py-16 md:py-24">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-4xl"
         >
-          {/* Title row with Limited badge */}
-          <div className="flex flex-wrap items-center gap-3">
-            <h2 className="h2 bg-gradient-to-r from-white to-[color:var(--gold)] bg-clip-text text-transparent">
+          {/* Title with FIXED badge */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
               BGT Elite Club
             </h2>
-            <span className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs tracking-wide text-white/85 backdrop-blur">
-              <span className="rounded-full bg-[color:var(--gold)]/20 px-2 py-0.5 text-[11px] font-bold text-[color:var(--gold)]">
+            
+            {/* FIXED: Subtle badge */}
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 backdrop-blur-sm">
+              <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black text-black uppercase">
                 Limited
               </span>
-              <span>Only 3 fans can join at a time</span>
+              <span className="text-xs font-semibold text-white whitespace-nowrap">Only 3 fans at a time</span>
             </span>
           </div>
 
-          <p className="lead mt-4 text-white/85 max-w-2xl">
-            Play, chat, and level up with esports world champions and top creators. Get real-time games,
-            insider insights, and private club chat access with the best players in the world.
-          </p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl"
+          >
+            Play, chat, and level up with esports <span className="text-[#D4AF37] font-semibold">world champions</span> and top creators. 
+            Get real-time games, insider insights, and private club chat access with the best players in the world.
+          </motion.p>
 
           {/* Benefits */}
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {[
-              { title: "Pro insights", desc: "Learn from world champions" },
-              { title: "Real-time games", desc: "Play alongside the elite" },
-              { title: "Private club chat", desc: "Direct access to pros" },
-            ].map((b: { title: string; desc: string }, i: number) => (
-              <motion.div
-                key={b.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.35 }}
-                className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4"
-              >
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--gold)]/20 mt-0.5">
-                  <FiCheck className="text-[color:var(--gold)] text-sm" />
-                </span>
-                <div>
-                  <div className="font-medium text-white">{b.title}</div>
-                  <div className="text-sm text-white/70">{b.desc}</div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {BENEFITS.map((benefit, i) => {
+              const IconComponent = benefit.icon;
+              return (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
+                  whileHover={{ y: -4 }}
+                  className="relative group rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:border-[#D4AF37]/30 hover:bg-white/[0.06] transition-all duration-300 cursor-default"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#D4AF37]/20 group-hover:bg-[#D4AF37]/30 transition-colors duration-300">
+                      <IconComponent className="text-[#D4AF37] text-base" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-white mb-1">{benefit.title}</div>
+                      <div className="text-sm text-white/60">{benefit.desc}</div>
+                    </div>
+                  </div>
+                  
+                  {/* Hover effect */}
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-[#D4AF37]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                </motion.div>
+              );
+            })}
           </div>
 
-          {/* Pricing — floating cards */}
-          <div className="mt-6">
-            <div className="mb-3 flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-bold text-white">Membership Options</h3>
-                <p className="text-xs text-white/60">Choose your access level</p>
-              </div>
-              <Link
-                href="/club"
-                className="text-sm text-[color:var(--gold)] hover:text-[color:var(--gold)]/80 inline-flex items-center gap-1 transition-colors"
+          {/* Pricing */}
+          <div className="mt-10">
+            <div className="mb-4 flex items-center justify-between">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
               >
-                View Full Club <FiArrowRight />
-              </Link>
+                <h3 className="text-xl font-black text-white mb-1">Membership Options</h3>
+                <p className="text-sm text-white/60">Choose your access level</p>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+              >
+                <Link
+                  href="/club"
+                  className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
+                >
+                  View Full Club 
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
+                </Link>
+              </motion.div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                { period: "Daily", price: "4.99", duration: "24 hours" },
-                { period: "Weekly", price: "29.99", duration: "7 days", popular: true },
-                { period: "Monthly", price: "99.99", duration: "30 days" },
-              ].map(
-                (
-                  tier: { period: string; price: string; duration: string; popular?: boolean },
-                  idx: number
-                ) => (
-                  <motion.div
-                    key={tier.period}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
-                    whileHover={{ y: -4 }}
-                    className={`relative rounded-xl border p-5 text-center shadow-sm ${
-                      tier.popular ? "border-[color:var(--gold)]/40 bg-white/[0.04]" : "border-white/15 bg-white/[0.03]"
-                    }`}
-                  >
-                    {tier.popular && (
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-[color:var(--gold)] px-3 py-0.5 text-xs font-bold text-black">
-                        POPULAR
-                      </div>
-                    )}
-                    <div className="mb-1 text-sm font-bold text-[color:var(--gold)]">{tier.period}</div>
-                    <div className="text-[26px] font-extrabold leading-tight text-white">${tier.price}</div>
-                    <div className="mt-1 text-[11px] tracking-wide text-white/70">{tier.duration}</div>
-                  </motion.div>
-                )
-              )}
+            <div className="grid gap-4 sm:grid-cols-3">
+              {PRICING_TIERS.map((tier, idx) => (
+                <motion.div
+                  key={tier.period}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8 + idx * 0.1, duration: 0.4 }}
+                  whileHover={{ y: -6 }}
+                  className={`relative rounded-2xl border p-6 text-center transition-all duration-300 cursor-default ${
+                    tier.popular 
+                      ? "border-[#D4AF37]/50 bg-[#D4AF37]/5 shadow-lg shadow-[#D4AF37]/10" 
+                      : "border-white/15 bg-white/[0.03] hover:border-white/25"
+                  }`}
+                >
+                  {tier.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] px-3 py-1 text-[10px] font-black text-black shadow-lg uppercase tracking-wide">
+                      Popular
+                    </div>
+                  )}
+                  
+                  <div className="mb-2 text-sm font-bold text-[#D4AF37] uppercase tracking-wide">
+                    {tier.period}
+                  </div>
+                  
+                  <div className="mb-1">
+                    <span className="text-4xl font-black text-white">${tier.price}</span>
+                  </div>
+                  
+                  <div className="text-xs text-white/60 mb-3">{tier.duration}</div>
+                  
+                  {tier.savings && (
+                    <div className="text-xs font-semibold text-green-400 bg-green-500/10 rounded-full px-3 py-1 inline-block">
+                      {tier.savings}
+                    </div>
+                  )}
+                </motion.div>
+              ))}
             </div>
           </div>
 
           {/* CTAs */}
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1.1 }}
+            className="mt-10 flex flex-col sm:flex-row gap-4"
+          >
             <motion.a
               href="https://discord.gg/bgt?utm_source=site&utm_medium=exclusive_club&utm_campaign=apply"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="btn btn-primary rounded-2xl px-8 py-4 text-lg shadow-lg hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300"
+              className="relative btn btn-primary rounded-2xl px-10 py-5 text-lg shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 inline-flex items-center justify-center gap-2.5 overflow-hidden group"
             >
-              <FaDiscord className="mr-2" /> Apply on Discord
+              {/* Shine effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.6 }}
+              />
+              
+              <FaDiscord className="relative z-10 group-hover:scale-110 transition-transform duration-200" size={20} />
+              <span className="relative z-10 font-bold">Apply on Discord</span>
             </motion.a>
 
-            <Link
-              href="/contact"
-              className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[color:var(--gold)] hover:text-black transition-all duration-300"
-            >
-              Business / Media
-            </Link>
-          </div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/contact"
+                className="btn btn-outline rounded-2xl px-10 py-5 text-lg hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300 font-semibold"
+              >
+                Business / Media
+              </Link>
+            </motion.div>
+          </motion.div>
         </motion.div>
 
-        {/* Members - FIXED: 2-row layout, centralized */}
-        <div className="mt-16">
-          <motion.h3
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-2xl font-bold text-center mb-2"
+        {/* Members Section */}
+        <div className="mt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            className="text-center mb-12"
           >
-            Train with <span className="text-[color:var(--gold)]">Legends</span>
-          </motion.h3>
-          <p className="text-center text-white/70 mb-8">World champions, top global players, and biggest creators</p>
+            <h3 className="text-3xl md:text-4xl font-black mb-3">
+              Train with <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Legends</span>
+            </h3>
+            <p className="text-white/70 text-lg">World champions, top global players, and biggest creators</p>
+          </motion.div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             {/* First Row - 4 members */}
             <div className="flex justify-center">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl">
-                {firstRow.map((m: Member, i: number) => (
-                  <motion.article
-                    key={m.name}
-                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    whileHover={{ scale: 1.03 }}
-                    className="card overflow-hidden group"
-                  >
-                    <div className="relative w-full aspect-[4/3] overflow-hidden">
-                      <Image
-                        src={m.image}
-                        alt={m.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 640px) 50vw, 25vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                    </div>
-
-                    <div className="p-4">
-                      <h4 className="font-semibold text-sm group-hover:text-[color:var(--gold)] transition-colors">
-                        {m.name}
-                      </h4>
-                      <p className="text-xs text-white/70 mt-1 leading-relaxed">{m.blurb}</p>
-
-                      <div className="mt-3 flex flex-wrap gap-1">
-                        {m.youtube && (
-                          <a
-                            href={m.youtube}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 transition-all text-xs"
-                            aria-label={`${m.name} on YouTube`}
-                          >
-                            <FaYoutube />
-                          </a>
-                        )}
-                        {m.twitch && (
-                          <a
-                            href={m.twitch}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 transition-all text-xs"
-                            aria-label={`${m.name} on Twitch`}
-                          >
-                            <FaTwitch />
-                          </a>
-                        )}
-                        {m.wiki && (
-                          <a
-                            href={m.wiki}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-[color:var(--gold)] hover:border-[color:var(--gold)]/50 transition-all text-xs"
-                            aria-label={`${m.name} on Wikipedia`}
-                          >
-                            <FaWikipediaW />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </motion.article>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-5xl">
+                {firstRow.map((member, i) => (
+                  <MemberCard key={member.name} member={member} index={i} />
                 ))}
               </div>
             </div>
 
             {/* Second Row - 3 members centered */}
             <div className="flex justify-center">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl">
-                {secondRow.map((m: Member, i: number) => (
-                  <motion.article
-                    key={m.name}
-                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: (i + 4) * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    whileHover={{ scale: 1.03 }}
-                    className="card overflow-hidden group"
-                  >
-                    <div className="relative w-full aspect-[4/3] overflow-hidden">
-                      <Image
-                        src={m.image}
-                        alt={m.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 640px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                    </div>
-
-                    <div className="p-4">
-                      <h4 className="font-semibold text-sm group-hover:text-[color:var(--gold)] transition-colors">
-                        {m.name}
-                      </h4>
-                      <p className="text-xs text-white/70 mt-1 leading-relaxed">{m.blurb}</p>
-
-                      <div className="mt-3 flex flex-wrap gap-1">
-                        {m.youtube && (
-                          <a
-                            href={m.youtube}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-red-400 hover:border-red-400/50 transition-all text-xs"
-                            aria-label={`${m.name} on YouTube`}
-                          >
-                            <FaYoutube />
-                          </a>
-                        )}
-                        {m.twitch && (
-                          <a
-                            href={m.twitch}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-purple-400 hover:border-purple-400/50 transition-all text-xs"
-                            aria-label={`${m.name} on Twitch`}
-                          >
-                            <FaTwitch />
-                          </a>
-                        )}
-                        {m.wiki && (
-                          <a
-                            href={m.wiki}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg border border-white/10 text-white/70 hover:text-[color:var(--gold)] hover:border-[color:var(--gold)]/50 transition-all text-xs"
-                            aria-label={`${m.name} on Wikipedia`}
-                          >
-                            <FaWikipediaW />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </motion.article>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl">
+                {secondRow.map((member, i) => (
+                  <MemberCard key={member.name} member={member} index={i + 4} />
                 ))}
               </div>
             </div>
@@ -378,7 +475,8 @@ export function ExclusiveClub() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="caption mt-12 text-center text-white/50"
+          transition={{ delay: 0.5 }}
+          className="mt-16 text-center text-sm text-white/50 max-w-2xl mx-auto leading-relaxed"
         >
           Availability limited. Access rotates as seats open. Content creator &amp; pro lineup subject to change.
         </motion.p>

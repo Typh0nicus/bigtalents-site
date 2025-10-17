@@ -38,16 +38,19 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico" },
 };
 
+// FIXED: Mobile viewport issues
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
   themeColor: "#B8941C",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={heading.variable}>
+    <html lang="en" className={`${heading.variable}`}>
       <body className="safe-areas">
         <Navbar />
         {children}

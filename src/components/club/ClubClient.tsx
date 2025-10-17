@@ -84,7 +84,7 @@ const ELITE_MEMBERS = [
 const MEMBERSHIP_TIERS = [
   {
     name: "Daily Access",
-    price: "$4.99",
+    price: "$3.99",
     duration: "24 hours",
     features: [
       "Club chat access",
@@ -95,7 +95,7 @@ const MEMBERSHIP_TIERS = [
   },
   {
     name: "Weekly Access", 
-    price: "$29.99",
+    price: "$19.99",
     duration: "7 days",
     features: [
       "Everything in Daily",
@@ -107,7 +107,7 @@ const MEMBERSHIP_TIERS = [
   },
   {
     name: "Monthly VIP",
-    price: "$99.99", 
+    price: "$69.99", 
     duration: "30 days",
     features: [
       "Everything in Weekly",

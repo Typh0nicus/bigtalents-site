@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
-import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaDiscord, FaTwitter, FaInstagram, FaCrown } from "react-icons/fa";
 
 // Type for navigation items
 type NavItem = {
@@ -14,6 +14,7 @@ type NavItem = {
   label: string;
   dropdown?: { href: string; label: string }[];
   special?: boolean; // For Club styling
+  preventNavigation?: boolean; // For dropdowns only
 };
 
 // Navigation model - MOBILE ORDER: Home, Tournaments, Club, News, Creator Program, Company
@@ -25,14 +26,16 @@ const NAV_ITEMS: NavItem[] = [
   { 
     href: "/creator-program", 
     label: "Creator Program",
+    preventNavigation: true,
     dropdown: [
-      { href: "/creator-program", label: "Overview" },
+      { href: "/creator-program/overview", label: "Overview" },
       { href: "/creator-program/apply", label: "Apply Now" }
     ]
   },
   { 
     href: "/company", 
     label: "Company",
+    preventNavigation: true,
     dropdown: [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
@@ -41,19 +44,21 @@ const NAV_ITEMS: NavItem[] = [
   }
 ];
 
-// FIXED: Desktop layout - Left side (closest to farthest from logo: News, Creator Program, Company)
+// FIXED: Desktop layout - Left side (CORRECT ORDER: Creator Program closest, Company, News farthest)
 const LEFT_NAV_ITEMS: NavItem[] = [
   { 
     href: "/creator-program", 
     label: "Creator Program",
+    preventNavigation: true,
     dropdown: [
-      { href: "/creator-program", label: "Overview" },
+      { href: "/creator-program/overview", label: "Overview" },
       { href: "/creator-program/apply", label: "Apply Now" }
     ]
   },
   { 
     href: "/company", 
     label: "Company",
+    preventNavigation: true,
     dropdown: [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
@@ -63,17 +68,10 @@ const LEFT_NAV_ITEMS: NavItem[] = [
   { href: "/news", label: "News" }
 ];
 
-// Desktop layout - Right side (closest to farthest from logo)
+// Desktop layout - Right side, Rosters as direct link
 const RIGHT_NAV_ITEMS: NavItem[] = [
   { href: "/tournaments", label: "Tournaments" },
-  { 
-    href: "/rosters", 
-    label: "Rosters",
-    dropdown: [
-      { href: "/rosters/creators", label: "Creators" },
-      { href: "/rosters/players", label: "Players" }
-    ]
-  },
+  { href: "/rosters", label: "Rosters" },
   { href: "/club", label: "Club", special: true }
 ];
 
@@ -82,44 +80,116 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-// Enhanced desktop link with dropdown support and special Club styling
+// FIXED: Global state for managing single dropdown
+let globalOpenDropdown: string | null = null;
+const globalSetters: { [key: string]: (isOpen: boolean, isLocked: boolean) => void } = {};
+
+// Enhanced desktop link with hover + click-to-lock functionality
 function DesktopLink({
   href,
   label,
   active,
   dropdown,
   special = false,
+  preventNavigation = false,
 }: {
   href: string;
   label: string;
   active: boolean;
   dropdown?: { href: string; label: string }[];
   special?: boolean;
+  preventNavigation?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const prefersReduced = useReducedMotion();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Enhanced hover logic with delay for better UX
-  const handleMouseEnter = useCallback(() => {
-    if (!dropdown) return;
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  // FIXED: Register this component for global dropdown management
+  useEffect(() => {
+    if (dropdown) {
+      globalSetters[href] = (open: boolean, locked: boolean) => {
+        setIsOpen(open);
+        setIsLocked(locked);
+      };
+      
+      return () => {
+        delete globalSetters[href];
+      };
+    }
+  }, [href, dropdown]);
+
+  // FIXED: Close other dropdowns when opening this one
+  const openThisDropdown = (lock: boolean = false) => {
+    if (globalOpenDropdown && globalOpenDropdown !== href && globalSetters[globalOpenDropdown]) {
+      globalSetters[globalOpenDropdown](false, false);
+    }
+    globalOpenDropdown = href;
     setIsOpen(true);
-  }, [dropdown]);
+    setIsLocked(lock);
+  };
+
+  const closeThisDropdown = () => {
+    if (globalOpenDropdown === href) {
+      globalOpenDropdown = null;
+    }
+    setIsOpen(false);
+    setIsLocked(false);
+  };
+
+  // Hover to show + Click to lock logic
+  const handleMouseEnter = useCallback(() => {
+    if (!dropdown || isLocked) return;
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    openThisDropdown(false);
+  }, [dropdown, isLocked]);
 
   const handleMouseLeave = useCallback(() => {
-    if (!dropdown) return;
-    // Add a small delay before closing to allow moving to dropdown
-    timeoutRef.current = setTimeout(() => setIsOpen(false), 150);
-  }, [dropdown]);
+    if (!dropdown || isLocked) return;
+    timeoutRef.current = setTimeout(() => {
+      if (!isLocked) closeThisDropdown();
+    }, 150);
+  }, [dropdown, isLocked]);
 
   const handleDropdownEnter = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
   }, []);
 
   const handleDropdownLeave = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+    if (!isLocked) closeThisDropdown();
+  }, [isLocked]);
+
+  // Click to toggle lock state
+  const handleClick = (e: React.MouseEvent) => {
+    if (dropdown && preventNavigation) {
+      e.preventDefault();
+      if (isLocked) {
+        closeThisDropdown();
+      } else {
+        openThisDropdown(true);
+      }
+    }
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.dropdown-container')) {
+        if (globalOpenDropdown === href) {
+          closeThisDropdown();
+        }
+      }
+    };
+
+    if (isLocked) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLocked]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -128,52 +198,72 @@ function DesktopLink({
     };
   }, []);
 
-  // Better Club styling that's more distinct from active state
+  // Club styling
   const baseClasses = special 
-    ? "group relative px-3 py-2 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide border border-[var(--gold)]/60 rounded-lg bg-[var(--gold)]/5 hover:bg-[var(--gold)]/15 hover:border-[var(--gold)]"
+    ? "group relative px-4 py-3 text-sm font-bold transition-all duration-300 ease-out flex items-center gap-2 uppercase tracking-wide border-2 border-[var(--gold)] rounded-xl bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 hover:from-[var(--gold)]/30 hover:via-[var(--gold)]/20 hover:to-[var(--gold)]/30 shadow-lg shadow-[var(--gold)]/20 hover:shadow-xl hover:shadow-[var(--gold)]/30 hover:scale-105"
     : "group relative px-4 py-3 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide";
   
   const activeClasses = special 
-    ? "text-[var(--gold)] border-[var(--gold)] bg-[var(--gold)]/20"
+    ? "text-[var(--gold)] border-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/30 via-[var(--gold)]/20 to-[var(--gold)]/30 shadow-xl shadow-[var(--gold)]/40 scale-105"
     : "text-[var(--gold)]";
     
   const inactiveClasses = special
-    ? "text-[var(--gold)]/90"
+    ? "text-[var(--gold)]"
     : "text-white/90 hover:text-[var(--gold)]";
 
   return (
     <div 
-      className="relative"
+      className="relative dropdown-container"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link
-        href={href}
-        className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}
-        aria-expanded={dropdown ? isOpen : undefined}
-      >
-        {label}
-        {dropdown && (
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <FiChevronDown size={12} />
-          </motion.div>
-        )}
+      {preventNavigation && dropdown ? (
+        <button
+          onClick={handleClick}
+          className={`${baseClasses} ${active ? activeClasses : inactiveClasses} ${isLocked ? 'text-[var(--gold)]' : ''}`}
+          aria-expanded={dropdown ? isOpen : undefined}
+        >
+          {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+          {label}
+          {dropdown && (
+            <motion.div
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <FiChevronDown size={12} />
+            </motion.div>
+          )}
+        </button>
+      ) : (
+        <Link
+          href={href}
+          className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}
+          aria-expanded={dropdown ? isOpen : undefined}
+        >
+          {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+          {label}
+          {dropdown && (
+            <motion.div
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <FiChevronDown size={12} />
+            </motion.div>
+          )}
+        </Link>
+      )}
         
-        {/* Underline effect - only for non-special items */}
-        {!special && (
-          <motion.div
-            className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: active || isOpen ? "calc(100% - 2rem)" : 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          />
-        )}
-      </Link>
+      {/* Underline effect - only for non-special items */}
+      {!special && (
+        <motion.div
+          className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: active || isOpen ? "calc(100% - 2rem)" : 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        />
+      )}
 
-      {/* Dropdown Menu - Enhanced with proper hover handling */}
+      {/* Dropdown without blur overlay */}
       <AnimatePresence>
         {dropdown && isOpen && (
           <motion.div
@@ -190,7 +280,7 @@ function DesktopLink({
                 key={item.href}
                 href={item.href}
                 className="block px-4 py-3 text-sm font-medium text-white/90 hover:text-[var(--gold)] hover:bg-white/10 rounded-lg transition-all duration-150"
-                onClick={() => setIsOpen(false)}
+                onClick={() => closeThisDropdown()}
               >
                 {item.label}
               </Link>
@@ -202,7 +292,7 @@ function DesktopLink({
   );
 }
 
-// Enhanced mobile menu with animations and proper scrolling
+// Enhanced mobile menu (unchanged)
 function MobileMenu({ 
   isOpen, 
   onClose, 
@@ -245,6 +335,15 @@ function MobileMenu({
     setExpandedItem(expandedItem === href ? null : href);
   };
 
+  const handleMobileClick = (item: NavItem & { active: boolean }, e: React.MouseEvent) => {
+    if (item.dropdown && item.preventNavigation) {
+      e.preventDefault();
+      toggleExpanded(item.href);
+    } else if (!item.dropdown) {
+      onClose();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -266,7 +365,6 @@ function MobileMenu({
             animate="open"
             exit="closed"
             className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[101] lg:hidden flex flex-col"
-            style={{ position: 'fixed' }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
@@ -293,19 +391,40 @@ function MobileMenu({
                   <motion.div key={item.href} variants={itemVariants}>
                     <div className="flex flex-col">
                       <div className="flex items-center justify-between">
-                        <Link
-                          href={item.href}
-                          onClick={onClose}
-                          className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
-                            item.special 
-                              ? 'text-[var(--gold)] bg-[var(--gold)]/8 border border-[var(--gold)]/40' 
-                              : item.active 
-                                ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
-                                : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
-                          }`}
-                        >
-                          {item.label}
-                        </Link>
+                        {item.preventNavigation && item.dropdown ? (
+                          <button
+                            onClick={(e) => handleMobileClick(item, e)}
+                            className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 text-left ${
+                              item.special 
+                                ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
+                                : item.active 
+                                  ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
+                                  : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                              {item.label}
+                            </div>
+                          </button>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            onClick={(e) => handleMobileClick(item, e)}
+                            className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
+                              item.special 
+                                ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
+                                : item.active 
+                                  ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
+                                  : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                              {item.label}
+                            </div>
+                          </Link>
+                        )}
                         
                         {/* Dropdown toggle for items with dropdowns */}
                         {item.dropdown && (
@@ -364,11 +483,11 @@ function MobileMenu({
             </div>
 
             {/* Footer with only social links, compact design */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex-shrink-0 p-4 border-t border-white/10"
             >
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex justify-center gap-4">
                 <a
                   href="https://discord.gg/bgt"
                   target="_blank"
@@ -461,7 +580,7 @@ export function Navbar() {
   }, [isOpen]);
 
   return (
-    <motion.header
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ 
@@ -475,91 +594,55 @@ export function Navbar() {
           : 'bg-transparent'
       }`}
     >
-      <nav className="container flex items-center justify-center py-4 relative">
-        {/* Left Navigation - Close to logo */}
-        <div className="hidden lg:flex items-center absolute right-1/2 mr-20">
-          {leftItems.map((item) => (
-            <DesktopLink
-              key={item.href}
-              href={item.href}
-              label={item.label}
-              active={item.active}
-              dropdown={item.dropdown}
-              special={item.special}
+      <div className="container">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* FIXED: Left Navigation with CORRECT ORDER */}
+          <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end mr-8">
+            {leftItems.map((item) => (
+              <DesktopLink
+                key={item.href}
+                {...item}
+                preventNavigation={item.preventNavigation}
+              />
+            ))}
+          </div>
+
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <Image
+              src="/images/logo/bgt-logo.png"
+              alt="Big Talents"
+              width={120}
+              height={30}
+              className="h-8 w-auto"
+              priority
             />
-          ))}
-        </div>
+          </Link>
 
-        {/* Centered Logo */}
-        <Link href="/" className="flex items-center gap-3 group z-10">
-          <Image
-            src="/images/logo/bgt-logo.png"
-            alt="Big Talents"
-            width={120}
-            height={30}
-            priority
-            className="h-8 w-auto transition-transform duration-200 group-hover:scale-105"
-          />
-        </Link>
+          {/* Right Navigation */}
+          <div className="hidden lg:flex items-center space-x-4 flex-1 ml-8">
+            {rightItems.map((item) => (
+              <DesktopLink
+                key={item.href}
+                {...item}
+                preventNavigation={item.preventNavigation}
+              />
+            ))}
+          </div>
 
-        {/* Right Navigation - Close to logo */}
-        <div className="hidden lg:flex items-center absolute left-1/2 ml-20">
-          {rightItems.map((item) => (
-            <DesktopLink
-              key={item.href}
-              href={item.href}
-              label={item.label}
-              active={item.active}
-              dropdown={item.dropdown}
-              special={item.special}
-            />
-          ))}
-        </div>
-        
-        {/* Social Icons - Far right edge */}
-        <div className="hidden lg:flex items-center absolute right-0 gap-2">
-          <a
-            href="https://discord.gg/bgt"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
-            aria-label="Discord"
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="lg:hidden p-2 text-white/80 hover:text-[var(--gold)] transition-colors"
+            aria-label="Open menu"
           >
-            <FaDiscord size={18} />
-          </a>
-          <a
-            href="https://x.com/bgtalents"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
-            aria-label="Twitter"
-          >
-            <FaTwitter size={18} />
-          </a>
-          <a
-            href="https://instagram.com/bigtalents_org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 text-white/70 hover:text-[var(--gold)] transition-colors"
-            aria-label="Instagram"
-          >
-            <FaInstagram size={18} />
-          </a>
+            <FiMenu size={24} />
+          </button>
         </div>
+      </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(true)}
-          className="lg:hidden absolute right-0 p-2 text-white/85 hover:text-[var(--gold)] transition-colors"
-          aria-label="Open menu"
-          aria-expanded={isOpen}
-        >
-          <FiMenu size={24} />
-        </button>
-
-        {/* Mobile Menu */}
-        <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
-      </nav>
-    </motion.header>
+      {/* Mobile Menu */}
+      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
+    </motion.nav>
   );
 }

@@ -3,19 +3,17 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { FiClock } from "react-icons/fi";
 import { TOURNAMENTS } from "@/data/tournaments";
 import { TournamentCard } from "@/components/tournaments/TournamentCard";
 
+/* ======================= Utilities ======================= */
 function parseWhen(s?: string): number {
   if (!s) return 0;
   
-  let dateStr = s;
-  
-  if (dateStr.includes("GMT+1")) {
-    dateStr = dateStr.replace("GMT+1", "+01:00");
-  } else if (dateStr.includes("GMT")) {
-    dateStr = dateStr.replace("GMT", "+00:00");
-  }
+  const dateStr = s
+    .replace("GMT+1", "+01:00")
+    .replace("GMT", "+00:00");
   
   const parsed = Date.parse(dateStr);
   
@@ -28,33 +26,52 @@ function parseWhen(s?: string): number {
   return parsed;
 }
 
+/* ======================= Empty State Component ======================= */
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="col-span-full text-center py-16 select-none"
+    >
+      <div className="max-w-md mx-auto">
+        <motion.div 
+          className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <FiClock className="w-10 h-10 text-white/40" />
+        </motion.div>
+        <h3 className="text-xl font-bold mb-3 text-white">No Upcoming Tournaments</h3>
+        <p className="text-white/60 mb-6 text-sm">
+          Check back soon for new tournament announcements and registration details
+        </p>
+        <Link 
+          href="/tournaments"
+          className="btn btn-outline rounded-xl inline-block hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300"
+        >
+          View Past Tournaments
+        </Link>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ======================= Main Component ======================= */
 export function FeaturedTournaments() {
   const featuredTournaments = useMemo(() => {
-    console.log("=== FeaturedTournaments Debug ===");
-    
-    // Get tournaments marked as upcoming (archived: false)
     const upcomingTournaments = TOURNAMENTS.filter(t => !t.archived);
-    console.log("Upcoming tournaments found:", upcomingTournaments.map(t => ({
-      title: t.title,
-      date: t.date,
-      archived: t.archived
-    })));
 
-    if (upcomingTournaments.length > 0) {
-      const sorted = upcomingTournaments
-        .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
-        .slice(0, 3);
-      
-      console.log("Returning:", sorted.map(t => t.title));
-      return sorted;
-    }
-    
-    console.log("No upcoming tournaments, returning empty array");
-    return [];
+    if (upcomingTournaments.length === 0) return [];
+
+    return upcomingTournaments
+      .sort((a, b) => parseWhen(a.date) - parseWhen(b.date))
+      .slice(0, 3);
   }, []);
 
   return (
-    <section className="relative py-16 md:py-24">
+    <section className="relative py-16 md:py-24 select-none">
       {/* Background Effects */}
       <div
         aria-hidden
@@ -76,15 +93,20 @@ export function FeaturedTournaments() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs tracking-wide text-white/85 backdrop-blur mb-4">
-            <span className="rounded-full bg-[color:var(--gold)]/20 px-2 py-0.5 text-[11px] font-bold text-[color:var(--gold)]">
-              LIVE
-            </span>
-            <span>Upcoming Competitions</span>
-          </div>
+          {featuredTournaments.length > 0 && (
+            <div className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs tracking-wide text-white/85 backdrop-blur mb-4">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#D4AF37]"></span>
+              </span>
+              <span>Upcoming Competitions</span>
+            </div>
+          )}
           
-          <h2 className="h2 mb-4">Featured <span className="text-[color:var(--gold)]">Tournaments</span></h2>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto">
+          <h2 className="h2 mb-4">
+            Featured <span className="text-[#D4AF37]">Tournaments</span>
+          </h2>
+          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
             Join the most competitive Brawl Stars tournaments and prove your skills on the biggest stages
           </p>
         </motion.div>
@@ -108,31 +130,11 @@ export function FeaturedTournaments() {
               </motion.div>
             ))
           ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="col-span-full text-center py-16"
-            >
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white">No Upcoming Tournaments</h3>
-                <p className="text-white/60 mb-6">Check back soon for new tournament announcements!</p>
-                <Link 
-                  href="/tournaments"
-                  className="btn btn-outline rounded-xl"
-                >
-                  View All Tournaments
-                </Link>
-              </div>
-            </motion.div>
+            <EmptyState />
           )}
         </div>
 
-        {/* CTA Section - FIXED: Professional button styling */}
+        {/* CTA Section */}
         {featuredTournaments.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -143,7 +145,7 @@ export function FeaturedTournaments() {
           >
             <Link 
               href="/tournaments"
-              className="btn btn-outline rounded-xl"
+              className="btn btn-outline rounded-xl inline-block hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300"
             >
               View All Tournaments
             </Link>
