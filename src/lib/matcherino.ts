@@ -55,7 +55,6 @@ type CacheRecord<T> = { data: T; timestamp: number; ttl: number };
 
 class MatcherinoAPIClient {
   private readonly baseUrl = "https://api.matcherino.com/__api";
-  // Use unknown for data; cast at read site per endpoint generic
   private cache = new Map<string, CacheRecord<unknown>>();
 
   private getCacheKey(endpoint: string, params?: Record<string, unknown>): string {
@@ -99,7 +98,6 @@ class MatcherinoAPIClient {
 
       const data: T = (await response.json()) as T;
 
-      // Cache the successful response
       this.cache.set(cacheKey, {
         data,
         timestamp: Date.now(),
@@ -108,7 +106,6 @@ class MatcherinoAPIClient {
 
       return data;
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(`Matcherino API request failed for ${endpoint}:`, error);
       throw error;
     }
@@ -118,10 +115,8 @@ class MatcherinoAPIClient {
     return this.request<MatcherinoTournament>(`/bounties/findById`, { id });
   }
 
-  // orgId parameter removed (it wasn’t used)
   async getOrganizationTournaments(): Promise<MatcherinoTournament[]> {
     try {
-      // BGT tournament IDs from your existing data
       const bgtTournamentIds = [
         145019, 145309, 145395, 145402, 145404, 145690, 144717, 149584, 152394, 156361, 165244, 165521,
       ];
@@ -136,7 +131,6 @@ class MatcherinoAPIClient {
         .map((r) => r.value)
         .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("Failed to fetch organization tournaments:", error);
       throw error;
     }
@@ -152,6 +146,7 @@ class MatcherinoAPIClient {
     try {
       const tournaments = await Promise.allSettled(tournamentIds.map((id) => this.getTournament(id)));
 
+      // FIXED: Typo PromissFulfilledResult -> PromiseFulfilledResult
       const validTournaments = tournaments
         .filter(
           (result): result is PromiseFulfilledResult<MatcherinoTournament> => result.status === "fulfilled"
@@ -166,7 +161,6 @@ class MatcherinoAPIClient {
       const totalTournaments = validTournaments.length;
       const averagePrizePool = totalTournaments > 0 ? totalPrizePool / totalTournaments : 0;
 
-      // Calculate recent growth (last 3 months vs previous 3 months)
       const now = new Date();
       const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
       const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
@@ -189,21 +183,29 @@ class MatcherinoAPIClient {
         recentGrowth,
       };
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("Failed to calculate tournament stats:", error);
       throw error;
     }
   }
 
-  // Clear cache when needed
   clearCache(): void {
     this.cache.clear();
   }
 
-  // Get cache size for monitoring
   getCacheSize(): number {
     return this.cache.size;
   }
 }
 
 export const matcherinoAPI = new MatcherinoAPIClient();
+
+// Export fetchMatcherino function
+export async function fetchMatcherino(matcherinoId: string | number): Promise<MatcherinoTournament | null> {
+  try {
+    const id = typeof matcherinoId === 'string' ? parseInt(matcherinoId, 10) : matcherinoId;
+    return await matcherinoAPI.getTournament(id);
+  } catch (error) {
+    console.error(`Failed to fetch Matcherino tournament ${matcherinoId}:`, error);
+    return null;
+  }
+}

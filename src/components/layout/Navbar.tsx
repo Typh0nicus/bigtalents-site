@@ -294,12 +294,20 @@ function DesktopLink({
           />
         )}
 
-        {active && !special && (
-          <motion.div
-            layoutId="activeIndicator"
-            className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--gold)] rounded-full shadow-lg shadow-[var(--gold)]/60"
-            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          />
+        {/* FIXED: Changed to use AnimatePresence for proper mount/unmount */}
+        {!special && (
+          <AnimatePresence>
+            {active && (
+              <motion.div
+                layoutId="activeIndicator"
+                className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--gold)] rounded-full shadow-lg shadow-[var(--gold)]/60 z-10"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            )}
+          </AnimatePresence>
         )}
 
         {preventNavigation && dropdown ? (
