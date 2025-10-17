@@ -35,26 +35,27 @@ export function TournamentStats({ participants, prizePool, region }: TournamentS
   const visibleCards = statCards.filter(card => getValue(card.key));
 
   return (
-    <div className="container px-6 pt-32 pb-20">
+    <div className="container px-4 sm:px-6 pt-20 sm:pt-32 pb-12 sm:pb-20">
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-12 sm:mb-16"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 sm:mb-4">
           Tournament Overview
         </h2>
-        <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto">
+        <p className="text-white/60 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
           Comprehensive stats and information about this competitive event
         </p>
       </motion.div>
 
-      <div className={`grid gap-6 ${
-        visibleCards.length === 4 ? 'grid-cols-2 md:grid-cols-4' :
-        visibleCards.length === 3 ? 'grid-cols-1 md:grid-cols-3' :
-        visibleCards.length === 2 ? 'grid-cols-1 md:grid-cols-2' :
+      {/* FIXED: Mobile-first grid with proper spacing */}
+      <div className={`grid gap-3 sm:gap-4 lg:gap-6 ${
+        visibleCards.length === 4 ? 'grid-cols-2 lg:grid-cols-4' :
+        visibleCards.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+        visibleCards.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
         'grid-cols-1'
       }`}>
         {visibleCards.map((stat, i) => {
@@ -64,7 +65,7 @@ export function TournamentStats({ participants, prizePool, region }: TournamentS
           return (
             <motion.div
               key={stat.key}
-              className="group relative bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-8 transition-all duration-300 hover:border-[#D4AF37]/30 hover:bg-white/[0.12] hover:scale-105 hover:shadow-2xl hover:shadow-[#D4AF37]/10 select-none"
+              className="group relative bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 transition-all duration-300 hover:border-[#D4AF37]/30 hover:bg-white/[0.12] hover:scale-105 hover:shadow-2xl hover:shadow-[#D4AF37]/10 select-none"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -74,27 +75,27 @@ export function TournamentStats({ participants, prizePool, region }: TournamentS
                 ease: [0.22, 1, 0.36, 1]
               }}
             >
-              {/* Icon Container with Rotation */}
+              {/* Icon Container - Smaller on mobile */}
               <motion.div 
-                className="inline-flex items-center justify-center w-14 h-14 bg-[#D4AF37]/10 rounded-xl mb-4 transition-all duration-300 group-hover:bg-[#D4AF37]/20"
+                className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-[#D4AF37]/10 rounded-lg sm:rounded-xl mb-3 sm:mb-4 transition-all duration-300 group-hover:bg-[#D4AF37]/20"
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
               >
-                <Icon className="text-[#D4AF37] text-2xl" />
+                <Icon className="text-[#D4AF37] text-lg sm:text-xl lg:text-2xl" />
               </motion.div>
 
-              {/* Label */}
-              <p className="text-white/60 text-sm uppercase tracking-wider mb-2 font-semibold">
+              {/* Label - Smaller text on mobile */}
+              <p className="text-white/60 text-[10px] sm:text-xs uppercase tracking-wider mb-1 sm:mb-2 font-semibold">
                 {stat.label}
               </p>
 
-              {/* Value - FIXED: Added line-height and padding to prevent clipping */}
-              <p className="text-3xl md:text-4xl font-black text-white pb-1 leading-[1.2]">
+              {/* Value - FIXED: Responsive sizing with proper line-height and word-break */}
+              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-tight break-words">
                 {value}
               </p>
 
               {/* Hover Glow Effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D4AF37]/0 via-[#D4AF37]/5 to-[#D4AF37]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#D4AF37]/0 via-[#D4AF37]/5 to-[#D4AF37]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             </motion.div>
           );
         })}

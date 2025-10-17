@@ -13,11 +13,11 @@ type NavItem = {
   href: string;
   label: string;
   dropdown?: { href: string; label: string }[];
-  special?: boolean; // For Club styling
-  preventNavigation?: boolean; // For dropdowns only
+  special?: boolean;
+  preventNavigation?: boolean;
 };
 
-// Navigation model - MOBILE ORDER: Home, Tournaments, Club, News, Creator Program, Company
+// Navigation model
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/tournaments", label: "Tournaments" },
@@ -44,7 +44,6 @@ const NAV_ITEMS: NavItem[] = [
   }
 ];
 
-// FIXED: Desktop layout - Left side (CORRECT ORDER: Creator Program closest, Company, News farthest)
 const LEFT_NAV_ITEMS: NavItem[] = [
   { 
     href: "/creator-program", 
@@ -68,7 +67,6 @@ const LEFT_NAV_ITEMS: NavItem[] = [
   { href: "/news", label: "News" }
 ];
 
-// Desktop layout - Right side, Rosters as direct link
 const RIGHT_NAV_ITEMS: NavItem[] = [
   { href: "/tournaments", label: "Tournaments" },
   { href: "/rosters", label: "Rosters" },
@@ -80,11 +78,11 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-// FIXED: Global state for managing single dropdown
-let globalOpenDropdown: string | null = null;
+// Global state for managing single dropdown
 const globalSetters: { [key: string]: (isOpen: boolean, isLocked: boolean) => void } = {};
+let globalOpenDropdown: string | null = null;
 
-// Enhanced desktop link with hover + click-to-lock functionality
+// Desktop link component
 function DesktopLink({
   href,
   label,
@@ -105,7 +103,6 @@ function DesktopLink({
   const prefersReduced = useReducedMotion();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // FIXED: Register this component for global dropdown management
   useEffect(() => {
     if (dropdown) {
       globalSetters[href] = (open: boolean, locked: boolean) => {
@@ -119,7 +116,6 @@ function DesktopLink({
     }
   }, [href, dropdown]);
 
-  // FIXED: Close other dropdowns when opening this one
   const openThisDropdown = (lock: boolean = false) => {
     if (globalOpenDropdown && globalOpenDropdown !== href && globalSetters[globalOpenDropdown]) {
       globalSetters[globalOpenDropdown](false, false);
@@ -137,7 +133,6 @@ function DesktopLink({
     setIsLocked(false);
   };
 
-  // Hover to show + Click to lock logic
   const handleMouseEnter = useCallback(() => {
     if (!dropdown || isLocked) return;
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -159,7 +154,6 @@ function DesktopLink({
     if (!isLocked) closeThisDropdown();
   }, [isLocked]);
 
-  // Click to toggle lock state
   const handleClick = (e: React.MouseEvent) => {
     if (dropdown && preventNavigation) {
       e.preventDefault();
@@ -171,7 +165,6 @@ function DesktopLink({
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -191,14 +184,12 @@ function DesktopLink({
     };
   }, [isLocked]);
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
-  // Club styling
   const baseClasses = special 
     ? "group relative px-4 py-3 text-sm font-bold transition-all duration-300 ease-out flex items-center gap-2 uppercase tracking-wide border-2 border-[var(--gold)] rounded-xl bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 hover:from-[var(--gold)]/30 hover:via-[var(--gold)]/20 hover:to-[var(--gold)]/30 shadow-lg shadow-[var(--gold)]/20 hover:shadow-xl hover:shadow-[var(--gold)]/30 hover:scale-105"
     : "group relative px-4 py-3 text-sm font-bold transition-all duration-200 ease-out flex items-center gap-1 uppercase tracking-wide";
@@ -253,7 +244,6 @@ function DesktopLink({
         </Link>
       )}
         
-      {/* Underline effect - only for non-special items */}
       {!special && (
         <motion.div
           className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
@@ -263,7 +253,6 @@ function DesktopLink({
         />
       )}
 
-      {/* Dropdown without blur overlay */}
       <AnimatePresence>
         {dropdown && isOpen && (
           <motion.div
@@ -292,7 +281,7 @@ function DesktopLink({
   );
 }
 
-// Enhanced mobile menu (unchanged)
+// FIXED Mobile menu component
 function MobileMenu({ 
   isOpen, 
   onClose, 
@@ -311,8 +300,6 @@ function MobileMenu({
       transition: {
         duration: prefersReduced ? 0 : 0.3,
         ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-        staggerChildren: 0.05,
-        staggerDirection: -1
       }
     },
     open: {
@@ -320,15 +307,8 @@ function MobileMenu({
       transition: {
         duration: prefersReduced ? 0 : 0.3,
         ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-        staggerChildren: 0.07,
-        delayChildren: 0.1
       }
     }
-  };
-
-  const itemVariants = {
-    closed: { x: 50, opacity: 0 },
-    open: { x: 0, opacity: 1 }
   };
 
   const toggleExpanded = (href: string) => {
@@ -348,25 +328,25 @@ function MobileMenu({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* FIXED: Backdrop with proper z-index */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] lg:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[998] lg:hidden"
             onClick={onClose}
           />
 
-          {/* Menu Panel */}
+          {/* FIXED: Menu Panel - now properly positioned */}
           <motion.div
             variants={menuVariants}
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[101] lg:hidden flex flex-col"
+            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-xl border-l border-white/10 z-[999] lg:hidden flex flex-col shadow-2xl"
           >
-            {/* Header */}
+            {/* Header - FIXED */}
             <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
               <Image
                 src="/images/logo/bgt-logo.png"
@@ -384,109 +364,95 @@ function MobileMenu({
               </button>
             </div>
 
-            {/* Scrollable Navigation Container */}
-            <div className="flex-1 overflow-y-auto">
-              <motion.nav className="flex flex-col p-6 space-y-2">
+            {/* FIXED: Scrollable content with proper overflow */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              <nav className="flex flex-col p-6 space-y-2">
                 {items.map((item) => (
-                  <motion.div key={item.href} variants={itemVariants}>
-                    <div className="flex flex-col">
-                      <div className="flex items-center justify-between">
-                        {item.preventNavigation && item.dropdown ? (
-                          <button
-                            onClick={(e) => handleMobileClick(item, e)}
-                            className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 text-left ${
-                              item.special 
-                                ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
-                                : item.active 
-                                  ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
-                                  : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
-                              {item.label}
-                            </div>
-                          </button>
-                        ) : (
-                          <Link
-                            href={item.href}
-                            onClick={(e) => handleMobileClick(item, e)}
-                            className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
-                              item.special 
-                                ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
-                                : item.active 
-                                  ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
-                                  : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
-                              {item.label}
-                            </div>
-                          </Link>
-                        )}
-                        
-                        {/* Dropdown toggle for items with dropdowns */}
-                        {item.dropdown && (
-                          <button
-                            onClick={() => toggleExpanded(item.href)}
-                            className="p-2 ml-2 text-white/60 hover:text-[var(--gold)] transition-colors"
-                            aria-expanded={expandedItem === item.href}
-                            aria-label={`Toggle ${item.label} menu`}
-                          >
-                            <motion.div
-                              animate={{ rotate: expandedItem === item.href ? 180 : 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <FiChevronDown size={16} />
-                            </motion.div>
-                          </button>
-                        )}
-                      </div>
+                  <div key={item.href}>
+                    <div className="flex items-center justify-between">
+                      {item.preventNavigation && item.dropdown ? (
+                        <button
+                          onClick={(e) => handleMobileClick(item, e)}
+                          className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 text-left ${
+                            item.special 
+                              ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
+                              : item.active 
+                                ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
+                                : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                            {item.label}
+                          </div>
+                        </button>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          onClick={(e) => handleMobileClick(item, e)}
+                          className={`flex-1 px-4 py-4 rounded-xl text-lg font-bold transition-all duration-200 ${
+                            item.special 
+                              ? 'text-[var(--gold)] bg-gradient-to-r from-[var(--gold)]/20 via-[var(--gold)]/10 to-[var(--gold)]/20 border-2 border-[var(--gold)]/60 shadow-lg shadow-[var(--gold)]/20' 
+                              : item.active 
+                                ? 'text-[var(--gold)] bg-[var(--gold)]/15 border border-[var(--gold)]/50' 
+                                : 'text-white/85 hover:text-[var(--gold)] hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                            {item.label}
+                          </div>
+                        </Link>
+                      )}
                       
-                      {/* Mobile dropdown items with smooth expand/collapse */}
-                      <AnimatePresence>
-                        {item.dropdown && expandedItem === item.href && (
+                      {item.dropdown && (
+                        <button
+                          onClick={() => toggleExpanded(item.href)}
+                          className="p-2 ml-2 text-white/60 hover:text-[var(--gold)] transition-colors"
+                          aria-expanded={expandedItem === item.href}
+                          aria-label={`Toggle ${item.label} menu`}
+                        >
                           <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                            className="overflow-hidden"
+                            animate={{ rotate: expandedItem === item.href ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
                           >
-                            <div className="ml-4 mt-2 space-y-1 pb-2">
-                              {item.dropdown.map((subItem) => (
-                                <motion.div
-                                  key={subItem.href}
-                                  initial={{ x: 20, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  exit={{ x: 20, opacity: 0 }}
-                                  transition={{ duration: 0.15, delay: 0.05 }}
-                                >
-                                  <Link
-                                    href={subItem.href}
-                                    onClick={onClose}
-                                    className="block px-4 py-3 text-sm text-white/60 hover:text-[var(--gold)] hover:bg-white/5 rounded-lg transition-all duration-150"
-                                  >
-                                    {subItem.label}
-                                  </Link>
-                                </motion.div>
-                              ))}
-                            </div>
+                            <FiChevronDown size={16} />
                           </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </button>
+                      )}
                     </div>
-                  </motion.div>
+                    
+                    <AnimatePresence>
+                      {item.dropdown && expandedItem === item.href && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="ml-4 mt-2 space-y-1 pb-2">
+                            {item.dropdown.map((subItem) => (
+                              <Link
+                                key={subItem.href}
+                                href={subItem.href}
+                                onClick={onClose}
+                                className="block px-4 py-3 text-sm text-white/60 hover:text-[var(--gold)] hover:bg-white/5 rounded-lg transition-all duration-150"
+                              >
+                                {subItem.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 ))}
-              </motion.nav>
+              </nav>
             </div>
 
-            {/* Footer with only social links, compact design */}
-            <motion.div
-              variants={itemVariants}
-              className="flex-shrink-0 p-4 border-t border-white/10"
-            >
+            {/* Footer */}
+            <div className="flex-shrink-0 p-4 border-t border-white/10">
               <div className="flex justify-center gap-4">
                 <a
                   href="https://discord.gg/bgt"
@@ -516,7 +482,7 @@ function MobileMenu({
                   <FaInstagram size={18} />
                 </a>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </>
       )}
@@ -531,7 +497,6 @@ export function Navbar() {
   const { scrollY } = useScroll();
   const prefersReduced = useReducedMotion();
 
-  // Track scroll position for navbar styling
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
   });
@@ -563,10 +528,8 @@ export function Navbar() {
     [pathname]
   );
 
-  // Close mobile menu on route change
   useEffect(() => setIsOpen(false), [pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -588,7 +551,7 @@ export function Navbar() {
         ease: [0.22, 1, 0.36, 1],
         delay: 0.1
       }}
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[997] transition-all duration-300 ${
         isScrolled 
           ? 'bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-2xl' 
           : 'bg-transparent'
@@ -596,7 +559,6 @@ export function Navbar() {
     >
       <div className="container">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* FIXED: Left Navigation with CORRECT ORDER */}
           <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end mr-8">
             {leftItems.map((item) => (
               <DesktopLink
@@ -607,7 +569,6 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image
               src="/images/logo/bgt-logo.png"
@@ -619,7 +580,6 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Right Navigation */}
           <div className="hidden lg:flex items-center space-x-4 flex-1 ml-8">
             {rightItems.map((item) => (
               <DesktopLink
@@ -630,7 +590,6 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(true)}
             className="lg:hidden p-2 text-white/80 hover:text-[var(--gold)] transition-colors"
@@ -641,7 +600,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
     </motion.nav>
   );
