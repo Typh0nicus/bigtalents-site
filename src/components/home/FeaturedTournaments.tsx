@@ -71,11 +71,11 @@ export function FeaturedTournaments() {
   }, []);
 
   return (
-    <section className="relative py-16 md:py-24 select-none">
+    <section className="relative py-16 md:py-24 select-none overflow-x-hidden w-full">
       {/* Background Effects */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 overflow-hidden"
         style={{
           background: `
             radial-gradient(1000px 500px at 20% -10%, rgba(212,175,55,.06), transparent 60%), 
@@ -84,7 +84,7 @@ export function FeaturedTournaments() {
         }}
       />
 
-      <div className="container relative z-10">
+      <div className="container relative z-10 overflow-x-hidden">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -103,16 +103,16 @@ export function FeaturedTournaments() {
             </div>
           )}
           
-          <h2 className="h2 mb-4">
+          <h2 className="h2 mb-4 px-4">
             Featured <span className="text-[#D4AF37]">Tournaments</span>
           </h2>
-          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto px-4">
             Join the most competitive Brawl Stars tournaments and prove your skills on the biggest stages
           </p>
         </motion.div>
 
         {/* Tournament Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
           {featuredTournaments.length > 0 ? (
             featuredTournaments.map((tournament, index) => (
               <motion.div
@@ -125,6 +125,7 @@ export function FeaturedTournaments() {
                   delay: index * 0.1,
                   ease: [0.22, 1, 0.36, 1] 
                 }}
+                className="w-full"
               >
                 <TournamentCard t={tournament} index={index} />
               </motion.div>
@@ -150,7 +151,7 @@ export function FeaturedTournaments() {
               View All Tournaments
             </Link>
             
-            <p className="text-white/60 text-sm mt-4">
+            <p className="text-white/60 text-sm mt-4 px-4">
               More tournaments available • Register now to secure your spot
             </p>
           </motion.div>

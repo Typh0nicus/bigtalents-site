@@ -16,7 +16,7 @@ export function Footer() {
         <div className="py-16 md:py-20">
           <div className="grid gap-12 lg:grid-cols-3">
             {/* Brand Column */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -33,92 +33,83 @@ export function Footer() {
                   />
                 </Link>
                 
-                <p className="text-white/80 text-lg mb-6 max-w-md">
-                  Join the premier esports organization where legends are born and champions are made.
-                </p>
-
-                {/* Newsletter Signup */}
-                <div className="flex gap-2 mb-6">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="flex-1 px-4 py-2.5 bg-white/5 border border-white/15 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-[color:var(--gold)]/50 focus:bg-white/10 transition-all"
-                    suppressHydrationWarning={true}
-                  />
-                  <button className="btn btn-primary rounded-lg px-6">
-                    Subscribe
-                  </button>
-                </div>
-
-                <p className="text-white/50 text-sm mb-8">
-                  Get tournament updates, exclusive content, and insider news delivered to your inbox.
+                <p className="text-white/80 text-base md:text-lg mb-8 max-w-md leading-relaxed">
+                  Premier esports organization hosting competitive tournaments with professional integrity and community focus.
                 </p>
 
                 {/* Social Links */}
-                <div className="flex gap-4">
-                  <a
+                <div className="flex gap-3">
+                  <motion.a
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     href="https://discord.gg/bgt"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[color:var(--gold)] transition-all duration-200"
+                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
                     aria-label="Discord"
                   >
                     <FaDiscord size={20} />
-                  </a>
-                  <a
+                  </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     href="https://x.com/bgtalents"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[color:var(--gold)] transition-all duration-200"
+                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
                     aria-label="Twitter"
                   >
                     <FaTwitter size={20} />
-                  </a>
-                  <a
+                  </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     href="https://instagram.com/bigtalents_org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[color:var(--gold)] transition-all duration-200"
+                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
                     aria-label="Instagram"
                   >
                     <FaInstagram size={20} />
-                  </a>
-                  <a
+                  </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                     href="https://youtube.com/@bigtalents"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[color:var(--gold)] transition-all duration-200"
+                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
                     aria-label="YouTube"
                   >
                     <FaYoutube size={20} />
-                  </a>
+                  </motion.a>
                 </div>
               </motion.div>
             </div>
 
-            {/* Navigation Column */}
-            <div>
+            {/* Navigation Columns */}
+            <div className="lg:col-span-2">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="grid gap-8 sm:grid-cols-2 lg:grid-cols-1"
+                className="grid gap-8 sm:grid-cols-3"
               >
                 {/* Quick Links */}
                 <div>
-                  <h3 className="font-bold text-white mb-4">Quick Links</h3>
-                  <ul className="space-y-2">
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h3>
+                  <ul className="space-y-3">
                     {[
                       { label: "Tournaments", href: "/tournaments" },
+                      { label: "Rosters", href: "/rosters" },
                       { label: "Club", href: "/club" },
                       { label: "News", href: "/news" },
-                      { label: "Creator Program", href: "/creator-program" },
                     ].map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-white/70 hover:text-[color:var(--gold)] transition-colors duration-200 flex items-center group"
+                          className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
                         >
                           <span>{link.label}</span>
                           <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
@@ -130,21 +121,57 @@ export function Footer() {
 
                 {/* Company */}
                 <div>
-                  <h3 className="font-bold text-white mb-4">Company</h3>
-                  <ul className="space-y-2">
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
+                  <ul className="space-y-3">
                     {[
                       { label: "About", href: "/about" },
                       { label: "Contact", href: "/contact" },
                       { label: "Brand Guidelines", href: "/brand-guidelines" },
+                      { label: "Creator Program", href: "/creator-program" },
                     ].map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-white/70 hover:text-[color:var(--gold)] transition-colors duration-200 flex items-center group"
+                          className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
                         >
                           <span>{link.label}</span>
                           <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
                         </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Community */}
+                <div>
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Community</h3>
+                  <ul className="space-y-3">
+                    {[
+                      { label: "Discord Server", href: "https://discord.gg/bgt", external: true },
+                      { label: "Twitter", href: "https://x.com/bgtalents", external: true },
+                      { label: "Instagram", href: "https://instagram.com/bigtalents_org", external: true },
+                      { label: "YouTube", href: "https://youtube.com/@bigtalents", external: true },
+                    ].map((link) => (
+                      <li key={link.href}>
+                        {link.external ? (
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
+                          >
+                            <span>{link.label}</span>
+                            <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
+                          </a>
+                        ) : (
+                          <Link
+                            href={link.href}
+                            className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
+                          >
+                            <span>{link.label}</span>
+                            <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>

@@ -11,52 +11,51 @@ export type NewsItem = {
 
 export const NEWS: NewsItem[] = [
   {
-    slug: "bsc-world-championship-2024-results",
-    title: "Boss Claims 2024 BSC World Championship Victory",
-    date: "2024-12-15T18:00:00Z",
-    excerpt: "HMB | Boss dominates the 2024 Brawl Stars Championship World Finals, securing his place as world champion in an incredible tournament run.",
-    image: "/images/news/boss-world-champion.jpg",
-    tags: ["World Championship", "Boss", "Results"],
-    featured: true
-  },
-  {
-    slug: "angelboy-reaches-number-one-global",
-    title: "Angelboy Achieves #1 Global Ranking",
-    date: "2024-11-28T14:30:00Z",
-    excerpt: "TTM | Angelboy reaches the pinnacle of competitive Brawl Stars, claiming the #1 global ranking after months of intense gameplay.",
-    image: "/images/news/angelboy-rank-1.jpg",
-    tags: ["Angelboy", "Rankings", "Achievement"]
-  },
-  {
-    slug: "hyra-200k-trophy-milestone",
-    title: "Hyra Breaks 200K Trophy Milestone",
-    date: "2024-11-15T20:15:00Z",
-    excerpt: "Content creator and trophy pushing legend Hyra becomes the first player to reach 200,000 trophies, setting a new world record.",
-    image: "/images/news/hyra-200k.jpg",
-    tags: ["Hyra", "Trophy Pushing", "World Record"]
-  },
-  {
-    slug: "bgt-elite-club-launch",
-    title: "BGT Elite Club Now Open for Applications",
-    date: "2024-10-30T16:00:00Z",
-    excerpt: "Join the most exclusive Brawl Stars community with direct access to world champions, top players, and biggest creators.",
-    image: "/images/news/elite-club-launch.jpg",
-    tags: ["Elite Club", "Community", "Announcement"]
-  },
-  {
-    slug: "creator-program-expansion",
-    title: "BGT Creator Program Welcomes New Talent",
-    date: "2024-10-12T12:00:00Z",
-    excerpt: "Expanding our creator program with new partnerships and opportunities for content creators across multiple platforms.",
-    image: "/images/news/creator-program.jpg",
-    tags: ["Creator Program", "Partnership", "Community"]
-  },
-  {
-    slug: "tournament-series-announcement",
-    title: "2025 Tournament Series Announced",
-    date: "2024-09-25T10:00:00Z",
-    excerpt: "Get ready for our biggest tournament series yet with increased prize pools and expanded regional coverage across NA & EU.",
-    image: "/images/news/tournament-series.jpg",
-    tags: ["Tournaments", "2025", "Announcement"]
+    slug: "bgt-website-launch",
+    title: "Big Talents Website Officially Launches!",
+    date: "2025-11-01T09:00:00Z",
+    excerpt: "We are thrilled to announce the official launch of the Big Talents esports hub on November 1st! Discover tournaments, rosters, news, and the home of the Brawl Stars creator community.",
+    image: "/images/news/website-launch.png",
+    tags: ["Launch","Community"],
+    featured: true,
+    content: `
+Welcome to the official launch of the **Big Talents** website—your new home for Brawl Stars esports!
+
+## What You'll Find Here
+
+The BGT platform brings together everything you need to stay connected with the competitive Brawl Stars scene:
+
+- **Tournament Hub** - Track live and upcoming tournaments with real-time brackets powered by Matcherino
+- **Rosters & Players** - Discover top players, teams, and rising stars from around the globe
+- **Creator Program** - Apply to join our exclusive creator network with revenue sharing and professional support
+- **News & Updates** - Stay informed about tournament results, player achievements, and community announcements
+
+## Join the Community
+
+We've built this platform for players, creators, and fans who share a passion for competitive Brawl Stars. Whether you're here to compete, create content, or just follow the action, there's a place for you in the BGT community.
+
+### Ready to get started?
+
+- Browse our upcoming tournaments at **/tournaments**
+- Check out the **BGT Creator Program** at **/creator-program**
+- Join our **Discord community** to connect with other players and creators
+
+## What's Next?
+
+This is just the beginning. We have exciting plans for 2025 including:
+
+- Expanded tournament series across NA & EU regions
+- New creator partnerships and content collaborations
+- Enhanced community features and player tools
+- Exclusive merchandise and community rewards
+
+Stay tuned for more announcements as we continue to grow!
+
+Thank you for being part of this journey. Let's build something incredible together! 🚀
+
+---
+
+**Have questions?** Join our Discord or reach out to our team. We're here to help you get the most out of the BGT platform.
+    `
   }
 ];

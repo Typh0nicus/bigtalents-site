@@ -93,24 +93,46 @@ export function TournamentBracket({ tournamentSlug, isLive = false }: Tournament
       </motion.div>
 
       <div className="max-w-7xl mx-auto">
-        {/* Podium Layout: 4th | 2nd | 1st (elevated) | 3rd */}
-        <div className="flex flex-col md:flex-row items-end justify-center gap-4 sm:gap-6">
+        {/* MOBILE LAYOUT - Vertical List */}
+        <div className="flex flex-col gap-4 md:hidden">
+          {/* 1st Place */}
+          {first && (
+            <div className="flex justify-center">
+              <PlacementCard placement={first} config={PLACEMENT_CONFIG[1]} delay={0.1} isFirst isMobile />
+            </div>
+          )}
+          {/* 2nd Place */}
+          {second && (
+            <div className="flex justify-center">
+              <PlacementCard placement={second} config={PLACEMENT_CONFIG[2]} delay={0.2} isMobile />
+            </div>
+          )}
+          {/* 3rd Place(s) */}
+          {thirds.map((third, idx) => (
+            <div key={third.teamId} className="flex justify-center">
+              <PlacementCard placement={third} config={PLACEMENT_CONFIG[3]} delay={0.3 + idx * 0.1} isSemi isMobile />
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP LAYOUT - Podium */}
+        <div className="hidden md:flex items-end justify-center gap-4 sm:gap-6">
           {/* 4th Place - Left Semi-Finalist */}
           {thirds[1] && (
             <div className="flex justify-center w-full md:w-auto md:mb-8">
               <PlacementCard placement={thirds[1]} config={PLACEMENT_CONFIG[3]} delay={0.4} isSemi />
             </div>
           )}
-          {/* 1st Place - Gold */}
-          {first && (
-            <div className="flex justify-center w-full md:w-auto">
-              <PlacementCard placement={first} config={PLACEMENT_CONFIG[1]} delay={0.1} isFirst />
-            </div>
-          )}
           {/* 2nd Place - Silver */}
           {second && (
             <div className="flex justify-center w-full md:w-auto md:mb-4">
               <PlacementCard placement={second} config={PLACEMENT_CONFIG[2]} delay={0.2} />
+            </div>
+          )}
+          {/* 1st Place - Gold */}
+          {first && (
+            <div className="flex justify-center w-full md:w-auto">
+              <PlacementCard placement={first} config={PLACEMENT_CONFIG[1]} delay={0.1} isFirst />
             </div>
           )}
           {/* 3rd Place - Right Semi-Finalist */}
@@ -131,42 +153,53 @@ interface PlacementCardProps {
   delay: number;
   isFirst?: boolean;
   isSemi?: boolean;
+  isMobile?: boolean;
 }
 
-function PlacementCard({ placement, config, delay, isFirst, isSemi }: PlacementCardProps) {
+function PlacementCard({ placement, config, delay, isFirst, isSemi, isMobile }: PlacementCardProps) {
   const [showMembers, setShowMembers] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   
-  // Podium sizing: Champion > Runner-up > Semi-Finalists
-  const cardSize = isFirst 
-    ? "w-full md:w-80 p-8 sm:p-10" 
-    : isSemi 
-      ? "w-full md:w-56 p-5 sm:p-6" 
-      : "w-full md:w-64 p-6 sm:p-8";
+  // Mobile uses consistent sizing, desktop uses podium sizing
+  const cardSize = isMobile
+    ? "w-full max-w-md p-6 sm:p-8"
+    : isFirst 
+      ? "w-full md:w-80 p-8 sm:p-10" 
+      : isSemi 
+        ? "w-full md:w-56 p-5 sm:p-6" 
+        : "w-full md:w-64 p-6 sm:p-8";
       
-  const iconSize = isFirst 
-    ? "w-20 h-20 sm:w-28 sm:h-28" 
-    : isSemi 
-      ? "w-14 h-14 sm:w-16 sm:h-16" 
-      : "w-16 h-16 sm:w-20 sm:h-20";
+  const iconSize = isMobile
+    ? "w-16 h-16 sm:w-20 sm:h-20"
+    : isFirst 
+      ? "w-20 h-20 sm:w-28 sm:h-28" 
+      : isSemi 
+        ? "w-14 h-14 sm:w-16 sm:h-16" 
+        : "w-16 h-16 sm:w-20 sm:h-20";
       
-  const iconTextSize = isFirst 
-    ? "text-4xl sm:text-5xl" 
-    : isSemi 
-      ? "text-2xl sm:text-3xl" 
-      : "text-3xl sm:text-4xl";
+  const iconTextSize = isMobile
+    ? "text-3xl sm:text-4xl"
+    : isFirst 
+      ? "text-4xl sm:text-5xl" 
+      : isSemi 
+        ? "text-2xl sm:text-3xl" 
+        : "text-3xl sm:text-4xl";
       
-  const titleSize = isFirst 
-    ? "text-lg sm:text-xl" 
-    : isSemi 
-      ? "text-sm sm:text-base" 
-      : "text-base sm:text-lg";
-      
-  const nameSize = isFirst 
-    ? "text-2xl sm:text-3xl md:text-4xl" 
-    : isSemi 
+  const titleSize = isMobile
+    ? "text-base sm:text-lg"
+    : isFirst 
       ? "text-lg sm:text-xl" 
-      : "text-xl sm:text-2xl";
+      : isSemi 
+        ? "text-sm sm:text-base" 
+        : "text-base sm:text-lg";
+      
+  const nameSize = isMobile
+    ? "text-xl sm:text-2xl"
+    : isFirst 
+      ? "text-2xl sm:text-3xl md:text-4xl" 
+      : isSemi 
+        ? "text-lg sm:text-xl" 
+        : "text-xl sm:text-2xl";
       
   const hasMembers = placement.members && placement.members.length > 0;
 
@@ -210,7 +243,7 @@ function PlacementCard({ placement, config, delay, isFirst, isSemi }: PlacementC
             </motion.div>
           </motion.div>
 
-          {/* Sparkles */}
+          {/* Sparkles - only show on first place */}
           {isFirst && (
             <>
               {[...Array(3)].map((_, i) => (

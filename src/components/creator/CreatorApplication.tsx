@@ -2,31 +2,31 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiCheck, FiUser, FiMessageSquare, FiStar, FiAlertCircle, FiSave } from "react-icons/fi";
+import { FiX, FiCheck, FiUser, FiMessageSquare, FiStar, FiAlertCircle, FiSave, FiLoader } from "react-icons/fi";
 import { FaYoutube, FaTwitch, FaDiscord } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
-import { CreatorTier, Platform } from "@/types/creator";
 import Link from "next/link";
+
+type Platform = "youtube" | "twitch" | "tiktok";
+type CreatorTier = "academy" | "partner" | "elite";
+
+interface PlatformData {
+  platform: Platform;
+  handle: string;
+  url: string;
+  subscribers?: number;
+  followers?: number;
+  views60d?: number;
+  avgCCV?: number;
+  hours60d?: number;
+}
 
 interface FormData {
   name: string;
   email: string;
   discordId: string;
   supercellCreatorCode: string;
-  platforms: {
-    platform: Platform;
-    handle: string;
-    url: string;
-    subscribers?: number;
-    followers?: number;
-    views60d?: number;
-    avgCCV?: number;
-    hours60d?: number;
-  }[];
-  portfolio: {
-    description: string;
-    samples: string[];
-  };
+  platforms: PlatformData[];
   motivation: string;
   availability: string;
   preferredTier: CreatorTier;
@@ -39,10 +39,9 @@ const initialFormData: FormData = {
   discordId: "",
   supercellCreatorCode: "",
   platforms: [],
-  portfolio: { description: "", samples: [] },
   motivation: "",
   availability: "",
-  preferredTier: "academy",
+  preferredTier: "partner",
   agreedToTerms: false,
 };
 
@@ -70,6 +69,30 @@ const PLATFORM_CONFIG = {
   },
 };
 
+const TIER_INFO = {
+  academy: {
+    name: "BGT Academy",
+    description: "Learning & Growth - 5K+ YouTube or 3K+ Twitch or 15K+ TikTok",
+    color: "from-blue-500 to-cyan-500",
+    iconBg: "bg-blue-500/10",
+    iconColor: "text-blue-400",
+  },
+  partner: {
+    name: "BGT Partner",
+    description: "Revenue Sharing - 35K+ YouTube or 10K+ Twitch or 100K+ TikTok",
+    color: "from-[#D4AF37] to-[#FFD700]",
+    iconBg: "bg-[#D4AF37]/10",
+    iconColor: "text-[#D4AF37]",
+  },
+  elite: {
+    name: "BGT Elite",
+    description: "Professional - 100K+ YouTube or 50K+ Twitch or 500K+ TikTok",
+    color: "from-purple-500 to-pink-500",
+    iconBg: "bg-purple-500/10",
+    iconColor: "text-purple-400",
+  },
+};
+
 const STORAGE_KEY = "bgt_creator_application";
 
 export function CreatorApplication() {
@@ -88,7 +111,7 @@ export function CreatorApplication() {
         const parsed = JSON.parse(saved);
         setFormData(parsed);
         setLastSaved(new Date());
-      } catch (e) {
+      } catch {
         console.error("Failed to load saved form data");
       }
     }
@@ -98,7 +121,7 @@ export function CreatorApplication() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
       setLastSaved(new Date());
-    } catch (e) {
+    } catch {
       console.error("Failed to save form data");
     }
   }, [formData]);
@@ -211,15 +234,44 @@ export function CreatorApplication() {
     if (!validateStep(3)) return;
 
     setIsSubmitting(true);
+    setErrors({});
 
     try {
-      // Submit to API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Prepare data for Discord webhook
+      const applicationData = {
+        fullName: formData.name,
+        email: formData.email,
+        discordUsername: formData.discordId,
+        tier: formData.preferredTier,
+        supercellCreator: !!formData.supercellCreatorCode,
+        supercellCode: formData.supercellCreatorCode,
+        platforms: formData.platforms,
+        motivation: formData.motivation,
+        availability: formData.availability,
+      };
+
+      console.log("Submitting application:", applicationData);
+
+      const response = await fetch('/api/creator-program/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(applicationData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit application');
+      }
+
       localStorage.removeItem(STORAGE_KEY);
       setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error("Submission failed:", error);
-      setErrors({ submit: "Submission failed. Please try again." });
+      setErrors({ submit: error instanceof Error ? error.message : "Submission failed. Please try again." });
     } finally {
       setIsSubmitting(false);
     }
@@ -268,12 +320,12 @@ export function CreatorApplication() {
   }
 
   return (
-    <div className="container py-20 select-none">
+    <div className="container py-20 select-none overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-black mb-4">Apply to BGT Creator Program</h1>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed px-4">
             Join the most exclusive creator program in Brawl Stars esports.
             Complete the application below to get started on your journey.
           </p>
@@ -436,7 +488,7 @@ export function CreatorApplication() {
               </motion.div>
             )}
 
-            {/* Step 2 - Platform Info (keeping original logic but with better styling) */}
+            {/* Step 2 - Platform Info */}
             {currentStep === 2 && (
               <motion.div
                 key="step2"
@@ -787,19 +839,82 @@ export function CreatorApplication() {
                     </AnimatePresence>
                   </div>
 
+                  {/* PREMIUM TIER SELECTION - PERFECT QUALITY */}
                   <div>
-                    <label className="block text-sm font-semibold mb-2 text-white/90">Preferred Tier</label>
-                    <select
-                      value={formData.preferredTier}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, preferredTier: e.target.value as CreatorTier }))
-                      }
-                      className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[#D4AF37] focus:outline-none transition-all duration-200"
-                    >
-                      <option value="academy">BGT Academy - Learning & Growth</option>
-                      <option value="partnered">BGT Partnered Creator - Collaboration</option>
-                      <option value="paid">BGT Paid Creator - Professional</option>
-                    </select>
+                    <label className="block text-sm font-semibold mb-4 text-white/90">Preferred Tier *</label>
+                    <div className="grid md:grid-cols-3 gap-4">
+                      {(Object.entries(TIER_INFO) as [CreatorTier, typeof TIER_INFO[CreatorTier]][]).map(([tier, info]) => (
+                        <motion.label
+                          key={tier}
+                          whileHover={{ scale: 1.02, y: -4 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`relative cursor-pointer group rounded-2xl ${
+                            formData.preferredTier === tier ? 'ring-2 ring-[#D4AF37]' : ''
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="tier"
+                            value={tier}
+                            checked={formData.preferredTier === tier}
+                            onChange={() => setFormData((prev) => ({ ...prev, preferredTier: tier }))}
+                            className="sr-only"
+                          />
+                          
+                          {/* Main Card */}
+                          <div className={`
+                            relative p-6 rounded-2xl transition-all duration-300 overflow-hidden h-full
+                            bg-[#0A0A0A] backdrop-blur-xl
+                            ${formData.preferredTier === tier 
+                              ? 'border-2 border-[#D4AF37]/50 shadow-2xl shadow-[#D4AF37]/20' 
+                              : 'border border-white/10 hover:border-[#D4AF37]/30 hover:shadow-lg hover:shadow-[#D4AF37]/10'
+                            }
+                          `}>
+                            {/* Icon */}
+                            <div className={`inline-flex p-4 rounded-xl ${info.iconBg} mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                              <FiStar className={info.iconColor} size={24} />
+                            </div>
+                            
+                            {/* Tier Name */}
+                            <div className={`text-xl font-black mb-2 bg-gradient-to-r ${info.color} bg-clip-text text-transparent`}>
+                              {info.name}
+                            </div>
+                            
+                            {/* Description */}
+                            <div className="text-xs text-white/70 leading-relaxed">
+                              {info.description}
+                            </div>
+                            
+                            {/* Animated gradient background on hover/select */}
+                            <motion.div
+                              className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${info.color} pointer-events-none`}
+                              animate={{ 
+                                opacity: formData.preferredTier === tier ? 0.08 : 0
+                              }}
+                              transition={{ duration: 0.3 }}
+                            />
+                            
+                            {/* Hover glow */}
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                          </div>
+                          
+                          {/* Animated Check Icon */}
+                          <AnimatePresence>
+                            {formData.preferredTier === tier && (
+                              <motion.div
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0, rotate: 180 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                                className="absolute top-3 right-3 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center shadow-xl shadow-[#D4AF37]/60 z-20"
+                              >
+                                <FiCheck className="text-black" size={18} strokeWidth={3} />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.label>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="p-5 bg-white/[0.02] border border-white/10 rounded-xl">
@@ -841,7 +956,7 @@ export function CreatorApplication() {
               type="button"
               onClick={prevStep}
               disabled={currentStep === 1}
-              className="btn btn-outline px-8 py-4 disabled:cursor-not-allowed disabled:opacity-30 hover:bg-white/5 transition-all duration-200"
+              className="btn btn-outline px-8 py-4 disabled:cursor-not-allowed disabled:opacity-30 hover:bg-white/5 transition-all duration-200 rounded-xl"
             >
               Previous
             </button>
@@ -856,7 +971,7 @@ export function CreatorApplication() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="btn btn-primary px-8 py-4 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300"
+                className="btn btn-primary px-8 py-4 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 rounded-xl"
               >
                 Next Step
               </button>
@@ -864,11 +979,11 @@ export function CreatorApplication() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn btn-primary px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 inline-flex items-center gap-2"
+                className="btn btn-primary px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 inline-flex items-center gap-2 rounded-xl"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                    <FiLoader className="animate-spin" size={18} />
                     Submitting...
                   </>
                 ) : (

@@ -5,7 +5,7 @@ import { FiCheck, FiStar, FiAward, FiUsers, FiZap, FiTrendingUp } from "react-ic
 import { FaYoutube, FaTwitch, FaDiscord } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const TIERS = [
   {
@@ -92,13 +92,11 @@ const PERKS = [
   }
 ];
 
-// Pre-generate particle positions to avoid hydration mismatch
 const PARTICLE_POSITIONS = Array.from({ length: 20 }, (_, i) => ({
   left: (i * 5.26315789) % 100,
   top: (i * 7.89473684) % 100,
 }));
 
-// FIXED: Extract PlatformIcon component to use hooks properly
 function PlatformIcon({ platform, index }: { platform: typeof PLATFORMS[0]; index: number }) {
   const controls = useAnimation();
   
@@ -148,17 +146,21 @@ function PlatformIcon({ platform, index }: { platform: typeof PLATFORMS[0]; inde
 
 export function CreatorProgram() {
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
-    <div className="min-h-screen select-none overflow-hidden">
-      {/* Hero Section with Parallax */}
-      <section className="relative py-32 overflow-hidden">
-        {/* Animated Background */}
+    <div className="w-full min-h-screen select-none overflow-x-hidden">
+      {/* Hero Section */}
+      <section className="relative py-32 w-full">
         <motion.div 
-          className="absolute inset-0"
-          style={{ y }}
+          className="absolute inset-0 overflow-hidden"
+          style={{ y: isMounted ? y : 0 }}
         >
           <div
             className="absolute inset-0"
@@ -171,47 +173,48 @@ export function CreatorProgram() {
             }}
           />
           
-          {/* Floating particles effect */}
-          <div className="absolute inset-0 opacity-30">
-            {PARTICLE_POSITIONS.map((pos, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-[#D4AF37] rounded-full"
-                style={{
-                  left: `${pos.left}%`,
-                  top: `${pos.top}%`,
-                }}
-                animate={{
-                  y: [0, -30, 0],
-                  opacity: [0.2, 0.8, 0.2],
-                }}
-                transition={{
-                  duration: 3 + (i % 3),
-                  repeat: Infinity,
-                  delay: i * 0.1,
-                }}
-              />
-            ))}
-          </div>
+          {isMounted && (
+            <div className="absolute inset-0 opacity-30">
+              {PARTICLE_POSITIONS.map((pos, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-[#D4AF37] rounded-full"
+                  style={{
+                    left: `${pos.left}%`,
+                    top: `${pos.top}%`,
+                  }}
+                  animate={{
+                    y: [0, -30, 0],
+                    opacity: [0.2, 0.8, 0.2],
+                  }}
+                  transition={{
+                    duration: 3 + (i % 3),
+                    repeat: Infinity,
+                    delay: i * 0.1,
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </motion.div>
 
-        <div className="container relative z-10">
+        <div className="container relative z-10 px-4 w-full mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 30 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-4xl mx-auto w-full"
           >
-            {/* Animated Badge */}
+            {/* Badge with full ring visible */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: isMounted ? 1 : 0, scale: isMounted ? 1 : 0.8 }}
               transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37]/20 to-purple-500/20 rounded-full mb-8 ring-1 ring-[#D4AF37]/30 backdrop-blur-sm"
             >
               <motion.span 
                 className="relative flex h-2.5 w-2.5"
-                animate={{ scale: [1, 1.2, 1] }}
+                animate={isMounted ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
@@ -222,23 +225,17 @@ export function CreatorProgram() {
               </span>
             </motion.div>
 
-            {/* Title with gradient animation */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
-              <motion.span 
-                className="inline-block bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent"
-                animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                style={{ backgroundSize: "200% 100%" }}
-              >
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight px-4">
+              <span className="bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent">
                 Creator Program
-              </motion.span>
+              </span>
             </h1>
 
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: isMounted ? 1 : 0 }}
               transition={{ delay: 0.5 }}
-              className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg sm:text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed px-4"
             >
               The most <span className="text-[#D4AF37] font-semibold">exclusive creator program</span> in Brawl Stars esports.
               Grow your audience, earn revenue, and collaborate with the best.
@@ -247,18 +244,18 @@ export function CreatorProgram() {
             {/* Perks Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
               transition={{ delay: 0.7 }}
-              className="grid md:grid-cols-3 gap-6 mb-12"
+              className="grid md:grid-cols-3 gap-6 mb-12 w-full"
             >
               {PERKS.map((perk, i) => (
                 <motion.div
                   key={perk.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
                   transition={{ delay: 0.8 + i * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="relative p-6 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 group"
+                  whileHover={isMounted ? { scale: 1.03, y: -5 } : {}}
+                  className="relative p-6 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 group overflow-hidden"
                 >
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-white/5 rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     <perk.icon className={`${perk.color} text-2xl`} />
@@ -266,20 +263,22 @@ export function CreatorProgram() {
                   <h3 className="font-bold text-lg mb-2">{perk.title}</h3>
                   <p className="text-white/60 text-sm leading-relaxed">{perk.description}</p>
                   
-                  {/* Hover glow */}
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* CTAs */}
+            {/* Hero CTAs - Fixed container */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
               transition={{ delay: 1 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full"
             >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <motion.div 
+                whileHover={isMounted ? { scale: 1.02 } : {}} 
+                whileTap={isMounted ? { scale: 0.98 } : {}}
+              >
                 <Link
                   href="/creator-program/apply"
                   className="btn btn-primary rounded-2xl px-10 py-5 text-lg inline-flex items-center justify-center gap-2 shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 group"
@@ -289,7 +288,10 @@ export function CreatorProgram() {
                 </Link>
               </motion.div>
               
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <motion.div 
+                whileHover={isMounted ? { scale: 1.02 } : {}} 
+                whileTap={isMounted ? { scale: 0.98 } : {}}
+              >
                 <a
                   href="https://discord.gg/bgt"
                   target="_blank"
@@ -306,22 +308,22 @@ export function CreatorProgram() {
       </section>
 
       {/* Tiers Section */}
-      <section className="container py-20">
+      <section className="container py-20 px-4 w-full mx-auto overflow-x-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 px-4">
             Choose Your <span className="bg-gradient-to-r from-[#D4AF37] to-purple-400 bg-clip-text text-transparent">Path</span>
           </h2>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed px-4">
             Three distinct tiers designed to support creators at every stage of their journey
           </p>
         </motion.div>
 
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-6xl mx-auto w-full">
           <div className="grid lg:grid-cols-3 gap-8 lg:gap-6">
             {TIERS.map((tier, index) => {
               const IconComponent = tier.icon;
@@ -341,25 +343,19 @@ export function CreatorProgram() {
                   transition={{ delay: index * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   onHoverStart={() => setHoveredTier(index)}
                   onHoverEnd={() => setHoveredTier(null)}
-                  className={`
-                    relative group
-                    ${tier.featured ? 'lg:scale-105' : ''}
-                  `}
+                  className={`relative group w-full ${tier.featured ? 'lg:scale-105' : ''}`}
                 >
                   <motion.div
                     animate={{
-                      scale: isHovered ? 1.02 : 1,
-                      y: isHovered ? -8 : 0,
+                      scale: isHovered && isMounted ? 1.01 : 1,
+                      y: isHovered && isMounted ? -4 : 0,
                     }}
                     transition={{ duration: 0.3 }}
-                    className={`
-                      relative h-full card p-8 backdrop-blur-xl overflow-hidden
-                      ${tier.featured ? 'ring-2 ring-[#D4AF37] shadow-2xl shadow-[#D4AF37]/20' : ''}
-                    `}
+                    className={`relative h-full card p-8 backdrop-blur-xl overflow-hidden ${tier.featured ? 'ring-2 ring-[#D4AF37] shadow-2xl shadow-[#D4AF37]/20' : ''}`}
                   >
-                    {/* Hover Particles */}
-                    {isHovered && (
-                      <div className="absolute inset-0 pointer-events-none">
+                    {/* Particles */}
+                    {isHovered && isMounted && (
+                      <div className="absolute inset-0 pointer-events-none overflow-hidden">
                         {tierParticles.map((pos, i) => (
                           <motion.div
                             key={i}
@@ -399,8 +395,8 @@ export function CreatorProgram() {
                       <p className="text-[#D4AF37] text-sm font-bold mb-3">{tier.tagline}</p>
                       <p className="text-white/60 leading-relaxed text-sm mb-4">{tier.description}</p>
 
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 mb-6">
-                        <FiCheck className="text-[#D4AF37]" size={16} />
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/10 rounded-xl border border-[#D4AF37]/20 mb-6 max-w-full">
+                        <FiCheck className="text-[#D4AF37] flex-shrink-0" size={16} />
                         <p className="text-sm font-semibold text-[#D4AF37]">{tier.requirements}</p>
                       </div>
                     </div>
@@ -424,30 +420,31 @@ export function CreatorProgram() {
                       ))}
                     </div>
 
-                    {/* CTA */}
+                    {/* CTA Button */}
                     <Link
                       href="/creator-program/apply"
-                      className={`
-                        relative w-full inline-block text-center py-3.5 px-6 rounded-xl font-bold transition-all duration-300 overflow-hidden group/btn z-10
-                        ${tier.featured
+                      className={`relative w-full inline-block text-center py-3.5 px-6 rounded-xl font-bold transition-all duration-300 overflow-hidden group/btn z-10 ${
+                        tier.featured
                           ? 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black hover:shadow-xl hover:shadow-[#D4AF37]/50'
                           : 'border-2 border-white/20 hover:bg-white/5 hover:border-[#D4AF37]/50'
-                        }
-                      `}
+                      }`}
                     >
                       <span className="relative z-20">Apply Now</span>
                       
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent z-10"
-                        initial={{ x: '-100%' }}
-                        animate={{ x: isHovered ? '100%' : '-100%' }}
-                        transition={{ duration: 0.6, ease: "easeInOut" }}
-                      />
+                      {isMounted && (
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent z-10"
+                          initial={{ x: '-100%' }}
+                          animate={{ x: isHovered ? '100%' : '-100%' }}
+                          transition={{ duration: 0.6, ease: "easeInOut" }}
+                        />
+                      )}
                     </Link>
 
+                    {/* Background gradient on hover */}
                     <motion.div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tier.color} pointer-events-none`}
-                      animate={{ opacity: isHovered ? 0.05 : 0 }}
+                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tier.color} pointer-events-none z-0`}
+                      animate={{ opacity: isHovered && isMounted ? 0.05 : 0 }}
                       transition={{ duration: 0.3 }}
                     />
                   </motion.div>
@@ -459,7 +456,7 @@ export function CreatorProgram() {
       </section>
 
       {/* Platform Support */}
-      <section className="container py-20">
+      <section className="container py-20 px-4 w-full mx-auto overflow-x-hidden">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -482,7 +479,7 @@ export function CreatorProgram() {
             <h3 className="text-2xl md:text-3xl font-black mb-4">
               Platform <span className="text-[#D4AF37]">Support</span>
             </h3>
-            <p className="text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed px-4">
               All content must be <span className="text-[#D4AF37] font-semibold">Brawl Stars related</span>. 
               Single platform qualification is sufficient. Academy tier requires Supercell Official Creator (T2) status.
             </p>
@@ -497,65 +494,66 @@ export function CreatorProgram() {
       </section>
 
       {/* Final CTA */}
-      <section className="container py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center relative"
-        >
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <motion.div
-              className="w-96 h-96 rounded-full bg-[#D4AF37]/5 blur-3xl"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            />
-          </div>
+      <section className="w-full py-24 px-4 overflow-x-hidden">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center relative max-w-4xl mx-auto"
+          >
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+              <motion.div
+                className="w-96 h-96 rounded-full bg-[#D4AF37]/5 blur-3xl"
+                animate={isMounted ? { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] } : {}}
+                transition={{ duration: 4, repeat: Infinity }}
+              />
+            </div>
 
-          <div className="relative z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="text-3xl md:text-5xl font-black mb-6">
-                Ready to <span className="bg-gradient-to-r from-[#D4AF37] via-purple-400 to-[#D4AF37] bg-clip-text text-transparent">Level Up?</span>
-              </h2>
-              <p className="text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Applications are reviewed within <span className="text-[#D4AF37] font-semibold">10 business days</span>. 
-                Join the elite community of BGT creators today.
-              </p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Link
-                href="/creator-program/apply"
-                className="relative btn btn-primary rounded-2xl px-14 py-6 text-xl hover:shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 inline-flex items-center gap-3 group overflow-hidden"
+            <div className="relative z-10 w-full">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="w-full"
               >
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 px-4">
+                  Ready to <span className="bg-gradient-to-r from-[#D4AF37] via-purple-400 to-[#D4AF37] bg-clip-text text-transparent">Level Up?</span>
+                </h2>
+                <p className="text-lg sm:text-xl text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed px-4">
+                  Applications are reviewed within <span className="text-[#D4AF37] font-semibold">10 business days</span>. 
+                  Join the elite community of BGT creators today.
+                </p>
+              </motion.div>
+
+              {/* Final CTA Button - Fixed container */}
+              <div className="flex justify-center">
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                />
-                
-                <FiZap className="group-hover:rotate-12 transition-transform duration-300 relative z-10" size={24} />
-                <span className="relative z-10">Start Your Application</span>
-                <motion.span
-                  className="relative z-10"
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  whileHover={isMounted ? { scale: 1.02 } : {}}
+                  whileTap={isMounted ? { scale: 0.98 } : {}}
                 >
-                  →
-                </motion.span>
-              </Link>
-            </motion.div>
-          </div>
-        </motion.div>
+                  <Link
+                    href="/creator-program/apply"
+                    className="btn btn-primary rounded-2xl px-8 sm:px-14 py-5 sm:py-6 text-lg sm:text-xl hover:shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 inline-flex items-center gap-3 group"
+                  >
+                    <FiZap className="group-hover:rotate-12 transition-transform duration-300 flex-shrink-0" size={24} />
+                    <span>Start Your Application</span>
+                    {isMounted && (
+                      <motion.span
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="flex-shrink-0"
+                      >
+                        →
+                      </motion.span>
+                    )}
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </section>
     </div>
   );

@@ -294,22 +294,6 @@ function DesktopLink({
           />
         )}
 
-        {/* FIXED: Changed to use AnimatePresence for proper mount/unmount */}
-        {!special && (
-          <AnimatePresence>
-            {active && (
-              <motion.div
-                layoutId="activeIndicator"
-                className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[var(--gold)] rounded-full shadow-lg shadow-[var(--gold)]/60 z-10"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-            )}
-          </AnimatePresence>
-        )}
-
         {preventNavigation && dropdown ? (
           <button
             onClick={handleClick}
@@ -349,6 +333,7 @@ function DesktopLink({
         )}
       </motion.div>
         
+      {/* FIXED: Replaced dot with underline only */}
       {!special && (
         <motion.div
           className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
@@ -453,7 +438,7 @@ function MobileMenu({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReduced ? 0 : 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10001] lg:hidden"
             onClick={onClose}
           />
 
@@ -462,7 +447,7 @@ function MobileMenu({
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-2xl backdrop-saturate-150 border-l border-white/10 z-[9999] lg:hidden flex flex-col shadow-2xl"
+            className="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-black/95 backdrop-blur-2xl backdrop-saturate-150 border-l border-white/10 z-[10002] lg:hidden flex flex-col shadow-2xl"
           >
             <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
               <Image
@@ -694,74 +679,77 @@ export function Navbar() {
   }, [isOpen]);
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ 
-        y: isHidden ? -100 : 0,
-        opacity: isHidden ? 0 : 1
-      }}
-      transition={{ 
-        duration: prefersReduced ? 0 : 0.3,
-        ease: [0.22, 1, 0.36, 1]
-      }}
-      className={`fixed top-0 left-0 right-0 z-[9997] border-b transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-black/70 backdrop-blur-2xl backdrop-saturate-150 border-white/10 shadow-2xl shadow-black/50' 
-          : 'bg-transparent border-transparent'
-      }`}
-      style={{ overflow: 'visible' }}
-    >
-      <div className="container" style={{ overflow: 'visible' }}>
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end mr-8">
-            {leftItems.map((item) => (
-              <DesktopLink
-                key={item.href}
-                {...item}
-                preventNavigation={item.preventNavigation}
-              />
-            ))}
-          </div>
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ 
+          y: isHidden ? -100 : 0,
+          opacity: isHidden ? 0 : 1
+        }}
+        transition={{ 
+          duration: prefersReduced ? 0 : 0.3,
+          ease: [0.22, 1, 0.36, 1]
+        }}
+        className={`fixed top-0 left-0 right-0 z-[9997] border-b transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-black/70 backdrop-blur-2xl backdrop-saturate-150 border-white/10 shadow-2xl shadow-black/50' 
+            : 'bg-transparent border-transparent'
+        }`}
+        style={{ overflow: 'visible' }}
+      >
+        <div className="container" style={{ overflow: 'visible' }}>
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end mr-8">
+              {leftItems.map((item) => (
+                <DesktopLink
+                  key={item.href}
+                  {...item}
+                  preventNavigation={item.preventNavigation}
+                />
+              ))}
+            </div>
 
-          <Link href="/" className="flex-shrink-0">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
+            <Link href="/" className="flex-shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Image
+                  src="/images/logo/bgt-logo.png"
+                  alt="Big Talents"
+                  width={120}
+                  height={30}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </motion.div>
+            </Link>
+
+            <div className="hidden lg:flex items-center space-x-4 flex-1 ml-8">
+              {rightItems.map((item) => (
+                <DesktopLink
+                  key={item.href}
+                  {...item}
+                  preventNavigation={item.preventNavigation}
+                />
+              ))}
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => setIsOpen(true)}
+              className="lg:hidden p-2 text-white/80 hover:text-[var(--gold)] transition-colors"
+              aria-label="Open menu"
             >
-              <Image
-                src="/images/logo/bgt-logo.png"
-                alt="Big Talents"
-                width={120}
-                height={30}
-                className="h-8 w-auto"
-                priority
-              />
-            </motion.div>
-          </Link>
-
-          <div className="hidden lg:flex items-center space-x-4 flex-1 ml-8">
-            {rightItems.map((item) => (
-              <DesktopLink
-                key={item.href}
-                {...item}
-                preventNavigation={item.preventNavigation}
-              />
-            ))}
+              <FiMenu size={24} />
+            </motion.button>
           </div>
-
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsOpen(true)}
-            className="lg:hidden p-2 text-white/80 hover:text-[var(--gold)] transition-colors"
-            aria-label="Open menu"
-          >
-            <FiMenu size={24} />
-          </motion.button>
         </div>
-      </div>
+      </motion.nav>
 
+      {/* FIXED: Mobile menu rendered outside navbar to prevent transform inheritance */}
       <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
-    </motion.nav>
+    </>
   );
 }

@@ -61,7 +61,7 @@ export default function NewsClient() {
 
   return (
     <motion.section
-      className="container py-14"
+      className="container pt-32 pb-20 px-4 overflow-x-hidden"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
@@ -89,12 +89,13 @@ export default function NewsClient() {
               placeholder="Search news..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10 pr-4 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors"
+              className="pl-10 pr-10 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors"
             />
             {query && (
               <button
                 onClick={() => setQuery("")}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                aria-label="Clear search"
               >
                 <FiX />
               </button>
