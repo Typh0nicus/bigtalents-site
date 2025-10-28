@@ -8,11 +8,10 @@ import { Tournament } from "@/data/tournaments";
 
 interface TournamentCardProps {
   t: Tournament;
-  featured?: boolean;
   index?: number;
 }
 
-export function TournamentCard({ t, featured = false, index = 0 }: TournamentCardProps) {
+export function TournamentCard({ t, index = 0 }: TournamentCardProps) {
   const formatPrize = (usd: number) => 
     `$${usd.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 

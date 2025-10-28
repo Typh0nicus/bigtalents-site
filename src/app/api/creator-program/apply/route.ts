@@ -56,7 +56,7 @@ function createDiscordEmbed(data: ApplicationData) {
 
     return {
       name: `${platformEmojis[platform.platform]} ${platform.platform.charAt(0).toUpperCase() + platform.platform.slice(1)}`,
-      value: `[${platform.handle}](${platform.url})\n${stats.join('\n')}`,
+      value: `[${platform.handle}](${platform.url})\n${stats.join('\n') || 'No stats provided'}`,
       inline: false,
     };
   });
@@ -85,12 +85,12 @@ function createDiscordEmbed(data: ApplicationData) {
           ...platformFields,
           {
             name: '💭 Motivation',
-            value: data.motivation.slice(0, 1024),
+            value: data.motivation.slice(0, 1024) || 'No motivation provided',
             inline: false,
           },
           {
             name: '📅 Availability',
-            value: data.availability.slice(0, 1024),
+            value: data.availability.slice(0, 1024) || 'No availability info provided',
             inline: false,
           },
         ],
@@ -105,17 +105,9 @@ function createDiscordEmbed(data: ApplicationData) {
 
 export async function POST(request: NextRequest) {
   try {
-    if (!DISCORD_WEBHOOK_URL) {
-      console.error('Discord webhook URL not configured');
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
-
     const data: ApplicationData = await request.json();
     
-    console.log('Received application data:', data);
+    console.log('Received application data:', JSON.stringify(data, null, 2));
 
     // Validation
     if (!data.fullName || !data.email || !data.discordUsername || !data.tier) {
@@ -140,9 +132,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Handle missing webhook URL (development mode)
+    if (!DISCORD_WEBHOOK_URL) {
+      console.warn('⚠️ Discord webhook URL not configured - Development mode');
+      console.log('📋 Application would be sent to Discord:');
+      console.log(JSON.stringify(createDiscordEmbed(data), null, 2));
+      
+      return NextResponse.json(
+        { 
+          success: true, 
+          message: 'Application received! (Development mode - check console)',
+          dev: true
+        },
+        { status: 200 }
+      );
+    }
+
     const webhookPayload = createDiscordEmbed(data);
     
-    console.log('Sending to Discord:', JSON.stringify(webhookPayload, null, 2));
+    console.log('Sending to Discord webhook...');
     
     const response = await fetch(DISCORD_WEBHOOK_URL, {
       method: 'POST',
@@ -156,12 +164,12 @@ export async function POST(request: NextRequest) {
       const errorText = await response.text();
       console.error('Discord webhook failed:', response.status, errorText);
       return NextResponse.json(
-        { error: 'Failed to submit application' },
+        { error: 'Failed to submit application to Discord' },
         { status: 500 }
       );
     }
 
-    console.log('Application submitted successfully!');
+    console.log('✅ Application submitted successfully to Discord!');
 
     return NextResponse.json(
       { success: true, message: 'Application submitted successfully!' },
@@ -169,9 +177,13 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Application submission error:', error);
+    console.error('❌ Application submission error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: process.env.NODE_ENV === 'development' 
+          ? `Internal server error: ${error instanceof Error ? error.message : 'Unknown error'}` 
+          : 'Internal server error' 
+      },
       { status: 500 }
     );
   }

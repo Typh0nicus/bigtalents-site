@@ -58,7 +58,7 @@ export function FeaturedSlice() {
       <div className="grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full">
         {featured.length > 0 ? (
           featured.map((t, index) => (
-            <TournamentCard key={t.slug} t={t} featured={true} index={index} />
+            <TournamentCard key={t.slug} t={t} index={index} />
           ))
         ) : (
           <div className="col-span-full text-center py-12 rounded-xl border border-white/10">

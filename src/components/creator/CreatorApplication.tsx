@@ -51,21 +51,24 @@ const PLATFORM_CONFIG = {
     color: "text-red-500",
     name: "YouTube",
     fields: ["subscribers", "views60d"],
-    placeholder: "https://youtube.com/@yourhandle"
+    placeholder: "https://youtube.com/@yourhandle",
+    bgColor: "bg-red-500/10",
   },
   twitch: {
     icon: FaTwitch,
     color: "text-purple-500",
     name: "Twitch",
     fields: ["followers", "views60d", "avgCCV", "hours60d"],
-    placeholder: "https://twitch.tv/yourhandle"
+    placeholder: "https://twitch.tv/yourhandle",
+    bgColor: "bg-purple-500/10",
   },
   tiktok: {
     icon: SiTiktok,
     color: "text-white",
     name: "TikTok",
     fields: ["followers", "views60d"],
-    placeholder: "https://tiktok.com/@yourhandle"
+    placeholder: "https://tiktok.com/@yourhandle",
+    bgColor: "bg-white/10",
   },
 };
 
@@ -279,7 +282,7 @@ export function CreatorApplication() {
 
   if (submitted) {
     return (
-      <div className="container py-20">
+      <div className="container py-20 px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -294,11 +297,11 @@ export function CreatorApplication() {
             <FiCheck size={64} />
           </motion.div>
           <h2 className="text-3xl md:text-4xl font-black mb-6">Application Submitted!</h2>
-          <p className="text-lg text-white/70 mb-8 leading-relaxed">
+          <p className="text-lg text-white/70 mb-8 leading-relaxed px-4">
             Thank you for applying to the BGT Creator Program. We&apos;ll review your application
             within <span className="text-[#D4AF37] font-semibold">10 business days</span> and contact you via Discord or email with the next steps.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
             <Link
               href="/creator-program"
               className="btn btn-outline rounded-2xl px-8 py-4"
@@ -320,12 +323,12 @@ export function CreatorApplication() {
   }
 
   return (
-    <div className="container py-20 select-none overflow-x-hidden">
+    <div className="container py-20 px-4 select-none overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">Apply to BGT Creator Program</h1>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed px-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4 px-4">Apply to BGT Creator Program</h1>
+          <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed px-4">
             Join the most exclusive creator program in Brawl Stars esports.
             Complete the application below to get started on your journey.
           </p>
@@ -343,7 +346,7 @@ export function CreatorApplication() {
         </motion.div>
 
         {/* Progress Bar */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="mb-12">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="mb-12 px-4">
           <div className="flex items-center justify-center mb-4">
             {[1, 2, 3].map((step) => (
               <div key={step} className="flex items-center">
@@ -365,7 +368,7 @@ export function CreatorApplication() {
                     animate={{
                       backgroundColor: currentStep > step ? "rgba(212, 175, 55, 1)" : "rgba(255, 255, 255, 0.2)"
                     }}
-                    className="w-20 h-1 mx-3 rounded-full transition-all duration-300"
+                    className="w-12 sm:w-20 h-1 mx-2 sm:mx-3 rounded-full transition-all duration-300"
                   />
                 )}
               </div>
@@ -386,23 +389,23 @@ export function CreatorApplication() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="card p-8"
+                className="card p-4 sm:p-6 md:p-8"
               >
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-3 bg-[#D4AF37]/10 rounded-xl">
                     <FiUser className="text-[#D4AF37]" size={20} />
                   </div>
-                  <h3 className="text-2xl font-bold">Personal Information</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold">Personal Information</h3>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label className="block text-sm font-semibold mb-2 text-white/90">Full Name *</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                         errors.name ? 'border-red-500 focus:border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                       }`}
                       placeholder="John Doe"
@@ -427,7 +430,7 @@ export function CreatorApplication() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                         errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                       }`}
                       placeholder="john@example.com"
@@ -452,7 +455,7 @@ export function CreatorApplication() {
                       type="text"
                       value={formData.discordId}
                       onChange={(e) => setFormData((prev) => ({ ...prev, discordId: e.target.value }))}
-                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                         errors.discordId ? 'border-red-500 focus:border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                       }`}
                       placeholder="username"
@@ -480,7 +483,7 @@ export function CreatorApplication() {
                       type="text"
                       value={formData.supercellCreatorCode}
                       onChange={(e) => setFormData((prev) => ({ ...prev, supercellCreatorCode: e.target.value }))}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[#D4AF37] focus:outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[#D4AF37] focus:outline-none transition-all duration-200 text-base"
                       placeholder="For T2+ status"
                     />
                   </div>
@@ -488,23 +491,23 @@ export function CreatorApplication() {
               </motion.div>
             )}
 
-            {/* Step 2 - Platform Info */}
+            {/* Step 2 - Platform Info - MOBILE OPTIMIZED */}
             {currentStep === 2 && (
               <motion.div
                 key="step2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="card p-8"
+                className="card p-4 sm:p-6 md:p-8"
               >
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                   <div className="flex items-center gap-3">
                     <div className="p-3 bg-[#D4AF37]/10 rounded-xl">
                       <FiStar className="text-[#D4AF37]" size={20} />
                     </div>
-                    <h3 className="text-2xl font-bold">Platform Information</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold">Platform Information</h3>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     {Object.entries(PLATFORM_CONFIG).map(([platform, config]) => (
                       <motion.button
                         key={platform}
@@ -513,7 +516,7 @@ export function CreatorApplication() {
                         disabled={formData.platforms.some((p) => p.platform === platform)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="p-3 bg-white/5 border border-white/20 rounded-xl hover:border-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                        className={`p-3 border border-white/20 rounded-xl hover:border-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 ${config.bgColor}`}
                         title={`Add ${config.name}`}
                       >
                         <config.icon className={config.color} size={20} />
@@ -523,10 +526,10 @@ export function CreatorApplication() {
                 </div>
 
                 {formData.platforms.length === 0 ? (
-                  <div className="text-center py-16 border-2 border-dashed border-white/20 rounded-2xl bg-white/[0.02]">
-                    <FiStar className="text-white/30 text-5xl mx-auto mb-4" />
-                    <p className="text-white/60 text-lg mb-2 font-medium">Add Your First Platform</p>
-                    <p className="text-white/40 text-sm">Click the platform icons above to get started</p>
+                  <div className="text-center py-12 sm:py-16 border-2 border-dashed border-white/20 rounded-2xl bg-white/[0.02]">
+                    <FiStar className="text-white/30 text-4xl sm:text-5xl mx-auto mb-4" />
+                    <p className="text-white/60 text-base sm:text-lg mb-2 font-medium px-4">Add Your First Platform</p>
+                    <p className="text-white/40 text-sm px-4">Click the platform icons above to get started</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -539,12 +542,12 @@ export function CreatorApplication() {
                           key={index}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="border border-white/15 rounded-2xl p-6 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-200"
+                          className="border border-white/15 rounded-2xl p-4 sm:p-6 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-200"
                         >
                           <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
-                              <IconComponent className={config.color} size={28} />
-                              <span className="font-semibold text-lg">{config.name}</span>
+                              <IconComponent className={config.color} size={24} />
+                              <span className="font-semibold text-base sm:text-lg">{config.name}</span>
                             </div>
                             <motion.button
                               type="button"
@@ -557,14 +560,14 @@ export function CreatorApplication() {
                             </motion.button>
                           </div>
 
-                          <div className="grid md:grid-cols-2 gap-4">
+                          <div className="grid sm:grid-cols-2 gap-4">
                             <div>
                               <label className="block text-sm font-semibold mb-2 text-white/90">Handle/Username *</label>
                               <input
                                 type="text"
                                 value={platform.handle}
                                 onChange={(e) => updatePlatform(index, "handle", e.target.value)}
-                                className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                   errors[`platform_${index}_handle`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                 }`}
                                 placeholder="@yourhandle"
@@ -589,7 +592,7 @@ export function CreatorApplication() {
                                 type="url"
                                 value={platform.url}
                                 onChange={(e) => updatePlatform(index, "url", e.target.value)}
-                                className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                   errors[`platform_${index}_url`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                 }`}
                                 placeholder={config.placeholder}
@@ -616,7 +619,7 @@ export function CreatorApplication() {
                                   type="number"
                                   value={platform.subscribers || ""}
                                   onChange={(e) => updatePlatform(index, "subscribers", parseInt(e.target.value) || 0)}
-                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                     errors[`platform_${index}_subs`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                   }`}
                                   placeholder="5000"
@@ -643,7 +646,7 @@ export function CreatorApplication() {
                                   type="number"
                                   value={platform.followers || ""}
                                   onChange={(e) => updatePlatform(index, "followers", parseInt(e.target.value) || 0)}
-                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                     errors[`platform_${index}_followers`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                   }`}
                                   placeholder={platform.platform === "twitch" ? "3000" : "15000"}
@@ -670,7 +673,7 @@ export function CreatorApplication() {
                                   type="number"
                                   value={platform.views60d || ""}
                                   onChange={(e) => updatePlatform(index, "views60d", parseInt(e.target.value) || 0)}
-                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                     errors[`platform_${index}_views`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                   }`}
                                   placeholder="100000"
@@ -697,7 +700,7 @@ export function CreatorApplication() {
                                   type="number"
                                   value={platform.avgCCV || ""}
                                   onChange={(e) => updatePlatform(index, "avgCCV", parseInt(e.target.value) || 0)}
-                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                     errors[`platform_${index}_ccv`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                   }`}
                                   placeholder="125"
@@ -724,7 +727,7 @@ export function CreatorApplication() {
                                   type="number"
                                   value={platform.hours60d || ""}
                                   onChange={(e) => updatePlatform(index, "hours60d", parseInt(e.target.value) || 0)}
-                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 ${
+                                  className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 text-base ${
                                     errors[`platform_${index}_hours`] ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                                   }`}
                                   placeholder="20"
@@ -771,13 +774,13 @@ export function CreatorApplication() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="card p-8"
+                className="card p-4 sm:p-6 md:p-8"
               >
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-3 bg-[#D4AF37]/10 rounded-xl">
                     <FiMessageSquare className="text-[#D4AF37]" size={20} />
                   </div>
-                  <h3 className="text-2xl font-bold">Additional Information</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold">Additional Information</h3>
                 </div>
 
                 <div className="space-y-6">
@@ -790,7 +793,7 @@ export function CreatorApplication() {
                       value={formData.motivation}
                       onChange={(e) => setFormData((prev) => ({ ...prev, motivation: e.target.value }))}
                       rows={5}
-                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 resize-none ${
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 resize-none text-base ${
                         errors.motivation ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                       }`}
                       placeholder="Tell us about your motivation, goals, and what you can bring to the BGT community..."
@@ -820,7 +823,7 @@ export function CreatorApplication() {
                       value={formData.availability}
                       onChange={(e) => setFormData((prev) => ({ ...prev, availability: e.target.value }))}
                       rows={4}
-                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 resize-none ${
+                      className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none transition-all duration-200 resize-none text-base ${
                         errors.availability ? 'border-red-500' : 'border-white/20 focus:border-[#D4AF37]'
                       }`}
                       placeholder="Describe your availability for content creation, tournaments, and community activities..."
@@ -839,10 +842,10 @@ export function CreatorApplication() {
                     </AnimatePresence>
                   </div>
 
-                  {/* PREMIUM TIER SELECTION - PERFECT QUALITY */}
+                  {/* PREMIUM TIER SELECTION - MOBILE OPTIMIZED */}
                   <div>
                     <label className="block text-sm font-semibold mb-4 text-white/90">Preferred Tier *</label>
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
                       {(Object.entries(TIER_INFO) as [CreatorTier, typeof TIER_INFO[CreatorTier]][]).map(([tier, info]) => (
                         <motion.label
                           key={tier}
@@ -876,7 +879,7 @@ export function CreatorApplication() {
                             </div>
                             
                             {/* Tier Name */}
-                            <div className={`text-xl font-black mb-2 bg-gradient-to-r ${info.color} bg-clip-text text-transparent`}>
+                            <div className={`text-lg sm:text-xl font-black mb-2 bg-gradient-to-r ${info.color} bg-clip-text text-transparent`}>
                               {info.name}
                             </div>
                             
@@ -917,14 +920,14 @@ export function CreatorApplication() {
                     </div>
                   </div>
 
-                  <div className="p-5 bg-white/[0.02] border border-white/10 rounded-xl">
+                  <div className="p-4 sm:p-5 bg-white/[0.02] border border-white/10 rounded-xl">
                     <div className="flex items-start gap-3">
                       <input
                         type="checkbox"
                         id="terms"
                         checked={formData.agreedToTerms}
                         onChange={(e) => setFormData((prev) => ({ ...prev, agreedToTerms: e.target.checked }))}
-                        className="mt-1 h-5 w-5 rounded border-white/20 bg-white/5 text-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] cursor-pointer"
+                        className="mt-1 h-5 w-5 rounded border-white/20 bg-white/5 text-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] cursor-pointer shrink-0"
                       />
                       <label htmlFor="terms" className="text-sm text-white/80 leading-relaxed cursor-pointer">
                         I agree to the BGT Creator Program terms and conditions, including brand guidelines,
@@ -951,18 +954,18 @@ export function CreatorApplication() {
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between pt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 px-4">
             <button
               type="button"
               onClick={prevStep}
               disabled={currentStep === 1}
-              className="btn btn-outline px-8 py-4 disabled:cursor-not-allowed disabled:opacity-30 hover:bg-white/5 transition-all duration-200 rounded-xl"
+              className="btn btn-outline w-full sm:w-auto px-8 py-4 disabled:cursor-not-allowed disabled:opacity-30 hover:bg-white/5 transition-all duration-200 rounded-xl"
             >
               Previous
             </button>
 
             {errors.submit && (
-              <p className="text-red-400 text-sm flex items-center gap-1">
+              <p className="text-red-400 text-sm flex items-center gap-1 order-first sm:order-none">
                 <FiAlertCircle size={14} /> {errors.submit}
               </p>
             )}
@@ -971,7 +974,7 @@ export function CreatorApplication() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="btn btn-primary px-8 py-4 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 rounded-xl"
+                className="btn btn-primary w-full sm:w-auto px-8 py-4 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 rounded-xl"
               >
                 Next Step
               </button>
@@ -979,17 +982,17 @@ export function CreatorApplication() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn btn-primary px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 inline-flex items-center gap-2 rounded-xl"
+                className="btn btn-primary w-full sm:w-auto px-8 py-4 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300 inline-flex items-center justify-center gap-2 rounded-xl"
               >
                 {isSubmitting ? (
                   <>
                     <FiLoader className="animate-spin" size={18} />
-                    Submitting...
+                    <span>Submitting...</span>
                   </>
                 ) : (
                   <>
                     <FiCheck size={18} />
-                    Submit Application
+                    <span>Submit Application</span>
                   </>
                 )}
               </button>
@@ -997,7 +1000,7 @@ export function CreatorApplication() {
           </div>
 
           {/* Help text */}
-          <div className="text-center pt-6 border-t border-white/10 mt-8">
+          <div className="text-center pt-6 border-t border-white/10 mt-8 px-4">
             <p className="text-white/60 text-sm">
               We&apos;ll review your application within <span className="text-[#D4AF37] font-semibold">10 business days</span> and contact you via Discord or email.
             </p>
