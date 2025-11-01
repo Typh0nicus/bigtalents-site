@@ -3,10 +3,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowLeft, FiCalendar, FiAward, FiPlay, FiExternalLink } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiAward, FiPlay, FiExternalLink, FiBook } from "react-icons/fi";
 import { FaTwitter, FaTwitch, FaYoutube, FaInstagram, FaTrophy } from "react-icons/fa";
 import type { TeamMember } from "@/data/players";
 import { useState, useEffect, ComponentType } from "react";
+
+
 
 const PARTICLE_COUNT = 20;
 
@@ -332,6 +334,9 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
                 Connect
               </h3>
               <div className="space-y-3">
+                {member.socials.liquipedia && (
+                  <SocialLink href={member.socials.liquipedia} icon={FiBook} label="Liquipedia" color="hover:bg-[#D4AF37]" />
+                )}
                 {member.socials.twitter && (
                   <SocialLink href={member.socials.twitter} icon={FaTwitter} label="Twitter" color="hover:bg-[#1DA1F2]" />
                 )}
@@ -373,3 +378,4 @@ function getFlagEmoji(countryCode: string): string {
   const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
   return String.fromCodePoint(...codePoints);
 }
+

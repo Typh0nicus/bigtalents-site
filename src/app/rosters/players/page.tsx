@@ -4,11 +4,13 @@ import { TEAM_MEMBERS } from "@/data/players";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { FaTrophy } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
-const PARTICLE_POSITIONS = Array.from({ length: 15 }, (_, i) => ({
+const PARTICLE_COUNT = 15;
+
+const PARTICLE_POSITIONS = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
   left: (i * 6.66) % 100,
   top: (i * 8.33) % 100,
 }));
@@ -23,9 +25,10 @@ export default function PlayersPage() {
   }, []);
 
   return (
-    <main className="min-h-screen overflow-hidden relative">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Particles (Original) */}
       <motion.div 
-        className="absolute inset-0 overflow-hidden"
+        className="absolute inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
         transition={{ duration: 0.5 }}
@@ -42,7 +45,7 @@ export default function PlayersPage() {
         />
         
         {isMounted && (
-          <div className="absolute inset-0 opacity-25 pointer-events-none">
+          <div className="absolute inset-0 opacity-25">
             {PARTICLE_POSITIONS.map((pos, i) => (
               <motion.div
                 key={i}
@@ -67,40 +70,154 @@ export default function PlayersPage() {
         )}
       </motion.div>
 
-      <div className="container mx-auto px-4 pt-32 pb-24 relative z-10">
+      {/* EPIC ROSTER HERO SECTION */}
+      <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
+        {/* Background with Parallax Effect */}
+        <motion.div
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
+          <Image
+            src="/images/rosters/roster-reveal.jpg"
+            alt="Big Talents Roster"
+            fill
+            className="object-cover"
+            priority
+            quality={100}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
+        </motion.div>
+
+        {/* Animated Trophy Particles */}
+        {isMounted && (
+          <div className="absolute inset-0 pointer-events-none">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${10 + i * 12}%`,
+                  top: `${20 + (i % 3) * 25}%`,
+                }}
+                animate={{
+                  y: [0, -20, 0],
+                  opacity: [0.1, 0.4, 0.1],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 5 + i,
+                  repeat: Infinity,
+                  delay: i * 0.5,
+                }}
+              >
+                <FaTrophy className="text-[#D4AF37] text-2xl" />
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {/* Content Overlay */}
+        <div className="container relative z-10 px-4 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-center"
+          >
+            {/* Championship Badge */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex mb-6"
+            >
+              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50 ring-4 ring-[#D4AF37]/20">
+                <FaTrophy className="text-black text-5xl" />
+              </div>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight"
+            >
+              <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+                OUR ROSTER
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="text-xl sm:text-2xl text-white/80 mb-8 max-w-3xl mx-auto"
+            >
+              T-esports Championship Season 2 Finalists
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.1 }}
+            >
+              <Link
+                href="#players"
+                className="btn btn-primary text-lg px-8 py-4 rounded-2xl inline-flex items-center gap-2 hover:shadow-2xl hover:shadow-[#D4AF37]/30 transition-all group"
+              >
+                Meet The Team
+                <motion.span
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <FiArrowRight />
+                </motion.span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Bottom Fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-16 relative z-10">
         <Link 
           href="/rosters"
-          className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors group"
+          className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-12 transition-colors group"
         >
           <FiArrowLeft className="group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm">Back to Rosters</span>
         </Link>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-4">
-            <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
-              Players
-            </span>
-          </h1>
-          <p className="text-white/60 text-lg">Championship roster and staff</p>
-        </motion.div>
-
         <div className="max-w-7xl mx-auto space-y-20">
+          {/* Players Section */}
           {players.length > 0 && (
-            <section>
-              <motion.h2 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-2xl font-black mb-8 text-white/80"
+            <section id="players">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12"
               >
-                Players
-              </motion.h2>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-2 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
+                  <h2 className="text-4xl md:text-5xl font-black">
+                    <span className="bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
+                      Players
+                    </span>
+                  </h2>
+                </div>
+                <p className="text-white/70 text-lg max-w-2xl">
+                  Championship-caliber talent competing at the highest level of Brawl Stars esports.
+                </p>
+              </motion.div>
+
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {players.map((player, index) => (
                   <PlayerCard key={player.id} member={player} index={index} isMounted={isMounted} />
@@ -109,16 +226,29 @@ export default function PlayersPage() {
             </section>
           )}
 
+          {/* Staff Section */}
           {staff.length > 0 && (
             <section>
-              <motion.h2 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-2xl font-black mb-8 text-white/80"
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12"
               >
-                Staff
-              </motion.h2>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-2 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
+                  <h2 className="text-4xl md:text-5xl font-black">
+                    <span className="bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
+                      Staff
+                    </span>
+                  </h2>
+                </div>
+                <p className="text-white/70 text-lg max-w-2xl">
+                  Expert leadership driving strategic excellence and player development.
+                </p>
+              </motion.div>
+
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {staff.map((member, index) => (
                   <StaffCard key={member.id} member={member} index={index} isMounted={isMounted} />
@@ -128,7 +258,7 @@ export default function PlayersPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -146,7 +276,8 @@ function PlayerCard({ member, index, isMounted }: { member: typeof TEAM_MEMBERS[
     <Link href={`/rosters/players/${member.id}`}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         onHoverStart={() => isMounted && setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
@@ -265,7 +396,8 @@ function StaffCard({ member, index, isMounted }: { member: typeof TEAM_MEMBERS[n
     <Link href={`/rosters/players/${member.id}`}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         onHoverStart={() => isMounted && setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
@@ -352,6 +484,10 @@ function StaffCard({ member, index, isMounted }: { member: typeof TEAM_MEMBERS[n
 }
 
 function getFlagEmoji(countryCode: string): string {
-  const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
+  if (!countryCode) return "";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
   return String.fromCodePoint(...codePoints);
 }

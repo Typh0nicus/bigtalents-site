@@ -24,6 +24,7 @@ export interface TeamMember {
     twitch?: string;
     youtube?: string;
     instagram?: string;
+    liquipedia?: string;
   };
   joinDate: string;
   featured?: boolean;
@@ -50,7 +51,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
       { title: 'LCQ 2025 Highlights', url: 'https://youtube.com/watch?v=example1' }
     ],
     socials: {
-      twitter: 'https://twitter.com/arthuur_abi'
+      twitter: 'https://twitter.com/arthuur_abi',
+      twitch: 'https://www.twitch.tv/ae_arthur',
+      liquipedia: 'https://liquipedia.net/brawlstars/Arthur'
     },
     joinDate: '2025-11-01',
     featured: true
@@ -72,7 +75,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'Regional Tournament Champion'
     ],
     socials: {
-      twitter: 'https://twitter.com/salty_bs'
+      twitter: 'https://twitter.com/salty_bs',
+      liquipedia: 'https://liquipedia.net/brawlstars/Salty'
     },
     joinDate: '2025-11-01',
     featured: true
@@ -106,7 +110,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     type: 'staff',
     roles: ['Manager'],
     country: 'International',
-    countryCode: 'INT',
+    countryCode: '',
     image: '/images/typhon.png',
     bio: 'Big Talents Founder & Manager - Building championship teams and developing world-class esports talent.',
     achievements: [
@@ -116,10 +120,33 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'Strategic Roster Building'
     ],
     socials: {
-      twitter: 'https://twitter.com/bigtalents'
+      twitter: 'https://twitter.com/typhonbs'
     },
     joinDate: 'The Beginning',
     featured: true
+  },
+  {
+    id: 'soleil',
+    name: 'Soleil (Shiroi)',
+    ign: 'Soleil',
+    type: 'staff',
+    roles: ['Coach'],
+    country: 'France',
+    countryCode: 'FR',
+    image: '/images/soleil.png',
+    bio: 'Experienced French coach specializing in team strategy, player development, and competitive meta analysis.',
+    achievements: [
+      'Brawl Stars Championship Coach',
+      'T-esports Championship Season 2 Finalist',
+      'BLITZ Subcontinental Brawl 2nd Place (2025)',
+      'Professional Team Coaching Experience',
+      'Meta & Strategy Expert'
+    ],
+    socials: {
+      twitter: 'https://twitter.com/soleil_bs',
+      liquipedia: 'https://liquipedia.net/brawlstars/Soleil'
+    },
+    joinDate: '2025-11-01'
   },
   {
     id: 'peri',
@@ -139,7 +166,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'International Tournament Analyst'
     ],
     socials: {
-      twitter: 'https://twitter.com/iperibs'
+      twitter: 'https://twitter.com/iperibs',
+      liquipedia: 'https://liquipedia.net/brawlstars/Peri'
     },
     joinDate: '2025-11-01'
   }
