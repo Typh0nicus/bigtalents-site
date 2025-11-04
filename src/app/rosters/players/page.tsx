@@ -80,7 +80,7 @@ export default function PlayersPage() {
           transition={{ duration: 1.5, ease: "easeOut" }}
         >
           <Image
-            src="/images/rosters/roster-reveal.jpg"
+            src="/images/rosters/roster-hero.jpg"
             alt="Big Talents Roster"
             fill
             className="object-cover"

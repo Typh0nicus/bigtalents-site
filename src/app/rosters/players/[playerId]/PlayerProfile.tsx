@@ -8,8 +8,6 @@ import { FaTwitter, FaTwitch, FaYoutube, FaInstagram, FaTrophy } from "react-ico
 import type { TeamMember } from "@/data/players";
 import { useState, useEffect, ComponentType } from "react";
 
-
-
 const PARTICLE_COUNT = 20;
 
 export default function PlayerProfile({ member }: { member: TeamMember }) {
@@ -29,7 +27,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
 
   return (
     <div className="min-h-screen overflow-x-hidden relative">
-      {/* Enhanced Particle Background */}
       {isMounted && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div
@@ -67,14 +64,13 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
         </div>
       )}
 
-      {/* Hero Section with Trophy Animation */}
       <motion.div 
         className="relative h-[400px] sm:h-[500px] overflow-hidden group"
         onHoverStart={() => isMounted && setIsHeroHovered(true)}
         onHoverEnd={() => setIsHeroHovered(false)}
       >
         <Image
-          src={member.coverImage || member.image}
+          src={member.coverImage}
           alt={member.name}
           fill
           className="object-cover transition-all duration-700 group-hover:scale-105"
@@ -82,14 +78,12 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
         
-        {/* Golden Overlay on Hover */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent pointer-events-none"
           animate={{ opacity: isHeroHovered && isMounted ? 1 : 0 }}
           transition={{ duration: 0.5 }}
         />
 
-        {/* Trophy Badge with Particles */}
         <AnimatePresence>
           {isHeroHovered && isMounted && (
             <>
@@ -103,7 +97,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
                 <FaTrophy className="text-black text-xl sm:text-2xl" />
               </motion.div>
 
-              {/* Floating Trophy Particles */}
               {trophyParticles.map((particle, i) => (
                 <motion.div
                   key={i}
@@ -129,7 +122,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
           )}
         </AnimatePresence>
 
-        {/* Back Button */}
         <div className="absolute top-24 sm:top-32 left-0 right-0 container mx-auto px-4">
           <Link
             href="/rosters/players"
@@ -140,7 +132,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
           </Link>
         </div>
 
-        {/* Player Info */}
         <div className="absolute bottom-0 left-0 right-0 container mx-auto px-4 pb-6 sm:pb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-6">
             <motion.div
@@ -150,7 +141,7 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
               className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-black shadow-2xl shadow-[#D4AF37]/30 group/avatar"
             >
               <Image 
-                src={member.image} 
+                src={member.profileImage}
                 alt={member.name} 
                 fill 
                 className="object-cover transition-all duration-500 group-hover/avatar:scale-110" 
@@ -220,11 +211,9 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
         </div>
       </motion.div>
 
-      {/* Content Section */}
       <div className="container mx-auto px-4 py-8 sm:py-12">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto lg:items-start">
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-            {/* About Section */}
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -238,7 +227,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
               <p className="text-white/80 text-base sm:text-lg leading-relaxed select-text">{member.bio}</p>
             </motion.div>
 
-            {/* Achievements Section */}
             {member.achievements && member.achievements.length > 0 && (
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
@@ -267,7 +255,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
               </motion.div>
             )}
 
-            {/* Highlights Section */}
             {member.clips && member.clips.length > 0 && (
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
@@ -321,7 +308,6 @@ export default function PlayerProfile({ member }: { member: TeamMember }) {
             )}
           </div>
 
-          {/* Sidebar - Social Links */}
           <div className="lg:order-last">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
@@ -378,4 +364,3 @@ function getFlagEmoji(countryCode: string): string {
   const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt(0));
   return String.fromCodePoint(...codePoints);
 }
-

@@ -18,8 +18,8 @@ const CONTACT_METHODS: ContactMethod[] = [
     icon: FiMail,
     title: "General Inquiries",
     description: "Questions about tournaments, partnerships, or general support",
-    contact: "hello@bigtalents.gg",
-    href: "mailto:hello@bigtalents.gg",
+    contact: "support@bigtalents.gg",
+    href: "mailto:support@bigtalents.gg",
   },
   {
     icon: FiUsers,

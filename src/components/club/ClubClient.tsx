@@ -1,10 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW, FaTrophy, FaStar } from "react-icons/fa";
-import { FiArrowRight, FiExternalLink } from "react-icons/fi";
+import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW, FaCrown, FaStar } from "react-icons/fa";
+import { FiArrowRight, FiExternalLink, FiUsers, FiGlobe } from "react-icons/fi";
+import { useState, useEffect, useRef } from "react";
+
+const PARTICLE_COUNT = 15;
+
+const PARTICLE_POSITIONS = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+  left: (i * 6.66) % 100,
+  top: (i * 8.33) % 100,
+}));
 
 const CLUB_INFO = {
   name: "BGT (Big Talents)",
@@ -14,13 +22,19 @@ const CLUB_INFO = {
   brawlifyUrl: "https://brawlify.com/stats/club/2GP8899V8"
 };
 
+const CLUB_STATS = [
+  { icon: FiUsers, value: "Many", label: "World-Class Members" },
+  { icon: FaCrown, value: "1", label: "World Champion" },
+  { icon: FiGlobe, value: "2M+ Followers", label: "Combined Reach" },
+];
+
 const ELITE_MEMBERS = [
   {
     name: "HMB | Boss",
     image: "/images/club/boss.jpg",
     title: "World Champion",
-    achievements: ["2024 BSC World Champion", "2025 Brawl Cup Champion"],
-    description: "The reigning world champion brings unparalleled competitive experience.",
+    mainAchievement: "2024 BSC World Champion",
+    achievements: ["BSC 2024 World Champion", "International Champion"],
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
     wiki: "https://liquipedia.net/brawlstars/BosS",
@@ -28,54 +42,26 @@ const ELITE_MEMBERS = [
   {
     name: "TTM | Angelboy", 
     image: "/images/club/angelboy.png",
-    title: "Top 1 Global Ranked",
-    achievements: ["#1 Global Ranked Player", "Worlds Finalist", "Multiple Season Champion"],
-    description: "The pinnacle of ranked gameplay in Brawl Stars.",
+    title: "Worlds Finalist",
+    mainAchievement: "Worlds Finalist",
+    achievements: ["Worlds Finalist", "#1 Global Ranked"],
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
   },
   {
-    name: "Hyra",
-    image: "/images/club/hyra.jpg", 
-    title: "Trophy Legend",
-    achievements: ["200K Trophy Milestone", "1.9M YouTube Subscribers", "Top 1 Ladder All-Time"],
-    description: "The ultimate trophy pusher with unmatched dedication across all brawlers.",
-    youtube: "https://www.youtube.com/@Hyra",
-  },
-  {
-    name: "ELV | DiegoGamer", 
-    image: "/images/club/diego.webp",
-    title: "NA Worlds Finalist",
-    achievements: ["Top 2 in North America", "Worlds Finalist", "Multiple Finals Champion"],
-    description: "Esports Prowess, Unmatched.",
-    youtube: "https://www.youtube.com/@DiegogamerCR_",
-    twitch: "https://www.twitch.tv/diegogamercr",
-    wiki: "https://liquipedia.net/brawlstars/Diegogamer",
-  },
-  {
-    name: "Trebor",
-    image: "/images/club/trebor.jpg",
-    title: "Pro Player & Creator",
-    achievements: ["Professional Esports Player", "1.75M YouTube", "725K Twitch"],
-    description: "Master strategist and professional player with deep understanding of competitive play.",
-    youtube: "https://www.youtube.com/@TreborBS",
-    twitch: "https://www.twitch.tv/trebor", 
-    wiki: "https://liquipedia.net/brawlstars/Trebor",
-  },
-  {
     name: "Vital Shark",
     image: "/images/club/vital_shark.jpg",
-    title: "Top Creator",
-    achievements: ["1.2M YouTube Subscribers", "Top Content Creator", "Community Builder"],
-    description: "Combines high-level gameplay with entertaining content creation.",
+    title: "Content Creator",
+    mainAchievement: "1.2M YouTube",
+    achievements: ["1.2M YouTube", "Top Creator"],
     youtube: "https://www.youtube.com/@VITALxSHARK",
   },
   {
     name: "Sniperbs_",
     image: "/images/club/sniperbs_.jpg",
     title: "Professional Player", 
-    achievements: ["800K YouTube Subscribers", "Professional Player", "Precision Specialist"],
-    description: "Renowned for incredible mechanical skill and precision gameplay.",
+    mainAchievement: "800K YouTube",
+    achievements: ["Professional Player", "800K YouTube"],
     youtube: "https://www.youtube.com/@Sniperbs_",
     wiki: "https://liquipedia.net/brawlstars/Sniper",
   }
@@ -119,287 +105,426 @@ const MEMBERSHIP_TIERS = [
 ];
 
 export default function ClubClient() {
-  return (
-    <div className="relative">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `
-                radial-gradient(1400px 800px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-                radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
-                radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.06), transparent 50%)
-              `
-            }}
-          />
-        </div>
+  const [isMounted, setIsMounted] = useState(false);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
 
-        <div className="container relative z-10 text-center">
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      <motion.div 
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isMounted ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.1), transparent 50%),
+              radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 50%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 50%)\
+            `
+          }}
+        />
+        
+        {isMounted && (
+          <div className="absolute inset-0 opacity-25">
+            {PARTICLE_POSITIONS.map((pos, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-px h-px bg-[#D4AF37] rounded-full"
+                style={{
+                  left: `${pos.left}%`,
+                  top: `${pos.top}%`,
+                }}
+                animate={{
+                  y: [0, -40, 0],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 4 + (i % 2),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.2
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </motion.div>
+
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-20">
+        <motion.div style={{ opacity, scale }} className="container relative z-10 text-center px-4 py-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 30 }}
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-2 text-sm backdrop-blur mb-6">
-              <FaTrophy className="text-[color:var(--gold)]" />
-              <span className="text-white/85">Most Exclusive Club in The World</span>
-            </div>
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: isMounted ? 1 : 0, rotate: isMounted ? 0 : -180 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex mb-8"
+            >
+              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/30">
+                <FaCrown className="text-black text-4xl" />
+              </div>
+            </motion.div>
 
-            <h1 className="h1 mb-6">
-              Welcome to <span className="text-[color:var(--gold)]">Talents</span>
-            </h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
+            >
+              Welcome to <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Talents</span>
+            </motion.h1>
 
-            <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-              Train with world champions, learn from top global players, and access the biggest 
-              creators in Brawl Stars. This is where legends are made.
-            </p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isMounted ? 1 : 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-xl md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed"
+            >
+              Train with world champions and elite players. Limited access club for serious players only.
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="grid grid-cols-3 gap-8 mb-12 max-w-3xl mx-auto"
+            >
+              {CLUB_STATS.map((stat, idx) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: isMounted ? 1 : 0, scale: isMounted ? 1 : 0.8 }}
+                  transition={{ delay: 0.9 + idx * 0.1 }}
+                  className="text-center"
+                >
+                  <stat.icon className="text-[#D4AF37] text-3xl mx-auto mb-3" />
+                  <div className="text-3xl font-black text-white mb-1">{stat.value}</div>
+                  <div className="text-sm text-white/60">{stat.label}</div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
+              transition={{ duration: 0.6, delay: 1.1 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
               <motion.a
                 href="https://discord.gg/bgt"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="btn btn-primary rounded-2xl px-8 py-4 text-lg"
+                whileHover={isMounted ? { scale: 1.05 } : {}}
+                whileTap={isMounted ? { scale: 0.95 } : {}}
+                className="btn btn-primary rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
               >
-                <FaDiscord className="mr-2" /> Join Elite Club
+                <FaDiscord /> Join Elite Club
               </motion.a>
               
               <motion.a
                 href={CLUB_INFO.brawlifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="btn btn-outline rounded-2xl px-8 py-4 text-lg"
+                whileHover={isMounted ? { scale: 1.05 } : {}}
+                whileTap={isMounted ? { scale: 0.95 } : {}}
+                className="btn btn-outline rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
               >
-                <FiExternalLink className="mr-2" /> View Club Stats
+                <FiExternalLink /> View Stats
               </motion.a>
-            </div>
+            </motion.div>
           </motion.div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Elite Members Section */}
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="h2 mb-4">Meet the <span className="text-[color:var(--gold)]">Legends</span></h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              World champions, top global players, and biggest creators ready to elevate your game
-            </p>
-          </motion.div>
-
-          <div className="grid gap-8 lg:gap-12">
-            {ELITE_MEMBERS.map((member, i) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className={`grid gap-8 lg:grid-cols-3 items-center`}
-              >
-                <div className={i % 2 === 1 ? 'lg:order-3' : ''}>
-                  <div className="relative group overflow-hidden">
-                    {/* FIXED: Proper hover container with unified scaling */}
-                    <div className="aspect-[4/3] rounded-2xl overflow-hidden relative group-hover:scale-105 transition-transform duration-500">
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 33vw"
-                      />
-                      {/* FIXED: Overlay now scales with the container */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                      
-                      {/* Social links positioned over the scaled content */}
-                      <div className="absolute bottom-4 left-4 flex gap-2">
-                        {member.youtube && (
-                          <a
-                            href={member.youtube}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-red-400 hover:bg-red-400 hover:text-white transition-all duration-200"
-                          >
-                            <FaYoutube />
-                          </a>
-                        )}
-                        {member.twitch && (
-                          <a
-                            href={member.twitch}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-purple-400 hover:bg-purple-400 hover:text-white transition-all duration-200"
-                          >
-                            <FaTwitch />
-                          </a>
-                        )}
-                        {member.wiki && (
-                          <a
-                            href={member.wiki}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 bg-black/70 backdrop-blur-sm rounded-lg text-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-black transition-all duration-200"
-                          >
-                            <FaWikipediaW />
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`lg:col-span-2 ${i % 2 === 1 ? 'lg:order-1' : ''}`}>
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-2xl font-bold mb-2">{member.name}</h3>
-                      <div className="inline-flex items-center px-3 py-1 bg-[color:var(--gold)]/20 text-[color:var(--gold)] rounded-full font-medium text-sm">
-                        {member.title}
-                      </div>
-                    </div>
-
-                    <p className="text-white/80 leading-relaxed">
-                      {member.description}
-                    </p>
-
-                    <div>
-                      <h4 className="font-semibold mb-2 text-[color:var(--gold)]">Key Achievements:</h4>
-                      <ul className="grid gap-1 sm:grid-cols-2">
-                        {member.achievements.map((achievement, j) => (
-                          <li key={j} className="flex items-center gap-2 text-sm text-white/70">
-                            <FaStar className="text-[color:var(--gold)] text-xs flex-shrink-0" />
-                            {achievement}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+      <section className="container py-20 px-4 mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-2 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
+            <h2 className="text-4xl md:text-5xl font-black">
+              <span className="bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
+                Meet the Legends
+              </span>
+            </h2>
           </div>
+          <p className="text-white/70 text-lg max-w-2xl">
+            World-class players and creators
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          {ELITE_MEMBERS.map((member, i) => (
+            <MemberCard key={member.name} member={member} index={i} isMounted={isMounted} />
+          ))}
         </div>
       </section>
 
-      {/* Membership Tiers */}
-      <section className="py-16 md:py-24 bg-white/[0.02]">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="h2 mb-4">Choose Your <span className="text-[color:var(--gold)]">Access Level</span></h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Flexible membership options for every level of commitment
-            </p>
-          </motion.div>
+      <section className="container py-20 px-4 mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16 text-center"
+        >
+          <h2 className="text-4xl md:text-5xl font-black mb-4">
+            Choose Your <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Access</span>
+          </h2>
+          <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            Flexible membership for every level of commitment
+          </p>
+        </motion.div>
 
-          <div className="grid gap-8 lg:grid-cols-3 max-w-5xl mx-auto">
-            {MEMBERSHIP_TIERS.map((tier, i) => (
-              <motion.div
-                key={tier.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className={`relative p-8 rounded-2xl border transition-all duration-300 hover:scale-105 ${
-                  tier.popular 
-                    ? 'border-[color:var(--gold)]/40 bg-gradient-to-b from-[color:var(--gold)]/10 to-[color:var(--gold)]/5 scale-105' 
-                    : 'border-white/15 bg-white/[0.03] hover:border-white/25'
-                }`}
-              >
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {MEMBERSHIP_TIERS.map((tier, i) => (
+            <motion.div
+              key={tier.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={tier.popular ? { y: -16, scale: 1.02 } : { y: -8 }}
+              className="group relative"
+            >
+              {tier.popular && (
+                <motion.div
+                  className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37]/30 via-[#FFD700]/20 to-[#D4AF37]/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
+                  animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              )}
+
+              <div className={`relative h-full card p-8 transition-all duration-500 flex flex-col ${
+                tier.popular 
+                  ? 'border-[#D4AF37]/50 bg-gradient-to-b from-black to-[#D4AF37]/5 scale-[1.02] shadow-2xl shadow-[#D4AF37]/30' 
+                  : 'border-white/15 bg-gradient-to-b from-white/5 to-white/[0.02] hover:border-[#D4AF37]/30'
+              }`}>
+                
                 {tier.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-[color:var(--gold)] text-black rounded-full text-sm font-bold">
-                    MOST POPULAR
-                  </div>
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15 + 0.3, duration: 0.6, type: "spring" }}
+                    className="absolute -top-4 left-1/2 transform -translate-x-1/2"
+                  >
+                    <div className="px-5 py-2 bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full text-black text-sm font-black shadow-lg shadow-[#D4AF37]/40 whitespace-nowrap">
+                      ⭐ MOST POPULAR
+                    </div>
+                  </motion.div>
                 )}
 
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-2">{tier.name}</h3>
-                  <div className="text-4xl font-bold text-[color:var(--gold)] mb-2">{tier.price}</div>
-                  <div className="text-sm text-white/70">per {tier.duration}</div>
+                <div className="text-center mb-8 pt-2">
+                  <h3 className="text-2xl font-black mb-4 group-hover:text-[#D4AF37] transition-colors duration-300">
+                    {tier.name}
+                  </h3>
+                  <div className="flex items-baseline justify-center gap-1 mb-2">
+                    <span className="text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+                      {tier.price}
+                    </span>
+                  </div>
+                  <div className="text-sm text-white/50 font-medium">per {tier.duration}</div>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-4 mb-8 flex-1">
                   {tier.features.map((feature, j) => (
-                    <li key={j} className="flex items-center gap-3 text-sm">
-                      <FiArrowRight className="text-[color:var(--gold)] flex-shrink-0" />
-                      <span className="text-white/80">{feature}</span>
-                    </li>
+                    <motion.li
+                      key={j}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.15 + j * 0.08 }}
+                      className="flex items-center gap-3 text-sm"
+                    >
+                      <motion.div
+                        className="w-2 h-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700]"
+                        whileHover={{ scale: 1.5 }}
+                      />
+                      <span className="text-white/85 font-medium">{feature}</span>
+                    </motion.li>
                   ))}
                 </ul>
 
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full py-3 rounded-xl font-medium transition-all ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
                     tier.popular 
-                      ? 'bg-[color:var(--gold)] text-black hover:bg-[color:var(--gold)]/90' 
-                      : 'bg-white/10 text-white hover:bg-white/20'
+                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black shadow-lg shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/40' 
+                      : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-[#D4AF37]/40'
                   }`}
                 >
                   Get Started
                 </motion.button>
-              </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+          className="text-center text-white/50 text-sm mt-12"
+        >
+          Limited availability • Upgrade or downgrade anytime • Cancel at any time
+        </motion.p>
+      </section>
+
+      <section className="container py-24 px-4 mx-auto relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center max-w-2xl mx-auto"
+        >
+          <h2 className="text-4xl md:text-5xl font-black mb-6">
+            Ready to Join?
+          </h2>
+          
+          <p className="text-xl text-white/70 mb-8">
+            Limited slots available. Apply now for exclusive access.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.a
+              href="https://discord.gg/bgt"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn btn-primary rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
+            >
+              <FaDiscord /> Apply Now
+            </motion.a>
+            
+            <Link 
+              href="/contact"
+              className="btn btn-outline rounded-2xl px-8 py-4 text-lg"
+            >
+              Business Inquiries
+            </Link>
+          </div>
+        </motion.div>
+      </section>
+    </div>
+  );
+}
+
+function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS[number]; index: number; isMounted: boolean }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      onHoverStart={() => isMounted && setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -12 }}
+      className="group"
+    >
+      <div className="relative rounded-3xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/40 transition-all duration-500 shadow-lg hover:shadow-2xl hover:shadow-[#D4AF37]/15">
+        
+        <div className="relative aspect-[4/5] bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0a]">
+          <Image
+            src={member.image}
+            alt={member.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-all duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent pointer-events-none"
+            animate={{ opacity: isHovered && isMounted ? 1 : 0 }}
+            transition={{ duration: 0.4 }}
+          />
+
+          <div className="absolute bottom-3 left-3 flex gap-2 z-10">
+            {member.youtube && (
+              <a
+                href={member.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-red-400 hover:bg-red-500 hover:text-white transition-all border border-white/20"
+              >
+                <FaYoutube size={16} />
+              </a>
+            )}
+            {member.twitch && (
+              <a
+                href={member.twitch}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-purple-400 hover:bg-purple-500 hover:text-white transition-all border border-white/20"
+              >
+                <FaTwitch size={16} />
+              </a>
+            )}
+            {member.wiki && (
+              <a
+                href={member.wiki}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all border border-white/20"
+              >
+                <FaWikipediaW size={16} />
+              </a>
+            )}
+          </div>
+
+          <div className="absolute top-3 right-3 z-10">
+            <div className="px-3 py-1.5 bg-white/10 backdrop-blur-md text-[#D4AF37] rounded-lg text-xs font-bold border border-[#D4AF37]/40">
+              {member.title}
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 bg-black/50 backdrop-blur-xl">
+          <h3 className="text-lg font-black mb-1 group-hover:text-[#D4AF37] transition-colors">
+            {member.name}
+          </h3>
+          <p className="text-sm text-[#D4AF37] font-semibold mb-3">
+            {member.mainAchievement}
+          </p>
+          
+          <div className="space-y-2 pt-3 border-t border-white/10">
+            {member.achievements.map((ach, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <FaStar className="text-[#D4AF37] text-xs flex-shrink-0 mt-1" />
+                <span className="text-xs text-white/80">{ach}</span>
+              </div>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-16 md:py-24">
-        <div className="container text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
-          >
-            <h2 className="text-4xl font-bold mb-6">
-              Ready to Join the <span className="text-[color:var(--gold)]">Elite?</span>
-            </h2>
-            
-            <p className="text-xl text-white/80 mb-8">
-              Limited availability. Only 3 fans can access at a time. 
-              This is your chance to train with champions.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.a
-                href="https://discord.gg/bgt"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="btn btn-primary rounded-2xl px-8 py-4 text-lg"
-              >
-                <FaDiscord className="mr-2" /> Apply Now
-              </motion.a>
-              
-              <Link 
-                href="/contact"
-                className="btn btn-outline rounded-2xl px-8 py-4 text-lg"
-              >
-                Business Inquiries
-              </Link>
-            </div>
-
-            <p className="text-sm text-white/60 mt-6">
-              Access rotates as seats open • Content lineup subject to change
-            </p>
-          </motion.div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </motion.div>
   );
 }

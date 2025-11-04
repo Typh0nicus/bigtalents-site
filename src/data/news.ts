@@ -15,8 +15,8 @@ export const NEWS: NewsItem[] = [
     title: "Big Talents Unveils Championship Roster for 2025",
     date: "2025-11-01T14:00:00Z",
     excerpt: "We're proud to introduce our competitive Brawl Stars roster featuring T-esports Championship Season 2 finalists Arthur, Salty, and Trashie, supported by world-class coaching staff.",
-    image: "/images/roster-reveal.jpg",
-    tags: ["Roster", "Players", "Announcement"],
+    image: "/images/news/roster-reveal.jpg",
+    tags: ["Esports" , "Announcement"],
     featured: true,
     content: `
 Big Talents is excited to officially announce our competitive Brawl Stars roster for 2025, featuring championship-caliber talent ready to dominate the esports scene.
@@ -48,7 +48,6 @@ Our roster made history by reaching the finals of T-esports Championship Season 
 With this roster, we're targeting:
 
 - **Multiple Championship Qualifications** across EMEA region
-- **Monthly Finals** appearances throughout 2025
 - **Major Tournament** victories and prize earnings
 - **Consistent Top Placements** in competitive events
 
@@ -69,7 +68,7 @@ Be part of something special as we build toward championship glory in 2025 and b
     date: "2025-11-01T09:00:00Z",
     excerpt: "We are thrilled to announce the official launch of the Big Talents esports hub on November 1st! Discover tournaments, rosters, news, and the home of the Brawl Stars creator community.",
     image: "/images/news/website-launch.png",
-    tags: ["Launch","Community"],
+    tags: ["Community"],
     featured: true,
     content: `
 Welcome to the official launch of the **Big Talents** website—your new home for Brawl Stars esports!

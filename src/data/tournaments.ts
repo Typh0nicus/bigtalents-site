@@ -132,7 +132,6 @@ export const TOURNAMENTS: Tournament[] = [
     region: "EU",
     archived: true
   },
-  // ❌ NO matcherinoId for this one
   {
     title: "Haneki x Big Talents Tournament",
     date: "Thu, Jun 26, 2025 7:00PM GMT+1",
@@ -141,6 +140,7 @@ export const TOURNAMENTS: Tournament[] = [
     slug: "haneki-x-bgt",
     image: "/images/tournaments/haneki.JPG",
     liquipedia: "https://liquipedia.net/brawlstars/Haneki_x_Big_Talents_Tournament",
+    matcherinoId: 153648,
     matcherinoSlug: "haneki-x-bigtalents",
     participants: 373,
     region: "EU",

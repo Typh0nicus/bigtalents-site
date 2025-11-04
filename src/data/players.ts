@@ -15,7 +15,8 @@ export interface TeamMember {
   country: string;
   countryCode: string;
   image: string;
-  coverImage?: string;
+  profileImage: string;
+  coverImage: string;
   bio: string;
   achievements: string[];
   clips?: ClipData[];
@@ -38,8 +39,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     type: 'player',
     country: 'Austria',
     countryCode: 'AT',
-    image: '/images/rosters/arthur.WEBP',
-    coverImage: '/images/arthur-cover.png',
+    image: '/images/rosters/arthur.webp',
+    profileImage: '/images/rosters/arthur-profile.jpg',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Young Austrian prodigy supported by the Esports Player Foundation with exceptional mechanical skill and championship drive.',
     achievements: [
       'Brawl Stars Championship 2025 Last Chance Qualifier',
@@ -66,7 +68,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     country: 'Czech Republic',
     countryCode: 'CZ',
     image: '/images/rosters/salty.WEBP',
-    coverImage: '/images/salty-cover.png',
+    profileImage: '/images/rosters/salty-profile.jpg',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Competitive Czech player with consistent championship qualifications and strong international tournament presence.',
     achievements: [
       'T-esports Championship Season 2 Finalist',
@@ -88,8 +91,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     type: 'player',
     country: 'Poland',
     countryCode: 'PL',
-    image: '/images/trashie.png',
-    coverImage: '/images/trashie-cover.png',
+    image: '/images/rosters/trashie.webp',
+    profileImage: '/images/rosters/trashie-profile.jpg',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Rising European competitive player with aggressive playstyle and strong tournament presence across major events.',
     achievements: [
       'T-esports Championship Season 2 Finalist',
@@ -112,6 +116,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     country: 'International',
     countryCode: '',
     image: '/images/typhon.png',
+    profileImage: '/images/typhon-profile.png',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Big Talents Founder & Manager - Building championship teams and developing world-class esports talent.',
     achievements: [
       'Big Talents Organization Founder',
@@ -134,6 +140,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
     country: 'France',
     countryCode: 'FR',
     image: '/images/soleil.png',
+    profileImage: '/images/soleil-profile.png',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Experienced French coach specializing in team strategy, player development, and competitive meta analysis.',
     achievements: [
       'Brawl Stars Championship Coach',
@@ -156,7 +164,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     roles: ['Analyst'],
     country: 'Spain',
     countryCode: 'ES',
-    image: '/images/peri.png',
+    image: '/images/rosters/peri.webp',
+    profileImage: '/images/rosters/peri-profile.webp',
+    coverImage: '/images/rosters/player-cover.webp',
     bio: 'Spanish analyst and strategic expert specializing in competitive meta analysis and tournament performance optimization.',
     achievements: [
       'Professional Brawl Stars Analyst',
