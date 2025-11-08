@@ -8,7 +8,6 @@ export default function HomePage() {
     <>
       <Hero />
       <Stats />
-      <FeaturedTournaments />
       <ExclusiveClub />
     </>
   );

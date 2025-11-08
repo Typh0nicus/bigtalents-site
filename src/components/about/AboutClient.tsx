@@ -2,17 +2,17 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { FaTrophy, FaUsers, FaRocket, FaCalendar, FaDiscord, FaTwitterSquare, FaTwitter, FaXbox, FaArrowUp } from "react-icons/fa";
+import { FaTrophy, FaUsers, FaRocket, FaCalendar, FaDiscord, FaTwitterSquare, FaStar, FaShieldAlt, FaCrown } from "react-icons/fa";
 import { FiArrowRight, FiTarget, FiGlobe, FiAward, FiZap } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
 
 const PARTICLE_COUNT = 25;
 
 const STATS = [
-  { icon: FaTrophy, value: "14+", label: "Tournaments Hosted" },
-  { icon: FaUsers, value: "4,600+", label: "Teams Competed" },
-  { icon: FaRocket, value: "$6,931", label: "Prizes Awarded" },
-  { icon: FaCalendar, value: "7+", label: "Months Running" },
+  { icon: FaTrophy, value: "5000+", label: "Teams Competed" },
+  { icon: FaCrown, value: "1", label: "Championship Finale" },
+  { icon: FaRocket, value: "$6,950+", label: "Prizes Awarded" },
+  { icon: FaUsers, value: "10000+", label: "Community Members" },
 ];
 
 const VALUES = [
@@ -20,44 +20,50 @@ const VALUES = [
     icon: FiTarget,
     title: "Player-First",
     description:
-      "Every decision we make prioritizes the player experience and competitive integrity.",
+      "Every decision we make prioritizes the player experience, from our competitive rosters to community events.",
   },
   {
     icon: FiGlobe,
     title: "Global Community",
     description:
-      "Connecting players across NA & EU regions with inclusive, accessible competitions.",
+      "Connecting players, creators, and fans across NA & EU regions with inclusive opportunities.",
   },
   {
     icon: FiAward,
     title: "Quality Standards",
     description:
-      "Maintaining high standards for tournament organization, production, and player support.",
+      "Maintaining high standards across our competitive teams, content creation, and event organization.",
   },
   {
     icon: FiZap,
     title: "Opportunity-Driven",
     description:
-      "Creating competitive opportunities for players of all skill levels to shine.",
+      "Creating pathways for players, creators, and fans to grow in the esports ecosystem.",
   },
 ];
 
 const HIGHLIGHTS = [
   {
-    name: "Proven Tournament Platform",
+    name: "Competitive Esports Organization",
     description:
-      "Successfully organized 14+ competitive tournaments across NA and EU regions with professional production quality and reliable execution.",
+      "Home to championship-level Brawl Stars rosters featuring elite competitors and coaching staff. Our teams compete at the highest level while representing the BGT brand globally.",
+    icon: FaShieldAlt,
+  },
+  {
+    name: "BGT Elite Club",
+    description: "Exclusive membership program connecting fans directly with world champions, top global players, and premier content creators through real-time games, insider insights, and private community access.",
+    icon: FaStar,
+  },
+  {
+    name: "Events & Community Growth",
+    description:
+      "From weekly competitive events to championship-level competitions, we create opportunities for players to compete, improve, and connect. Planning LAN events and expanding our global presence.",
     icon: FaTrophy,
   },
   {
-    name: "Growing Prize Pools",
-    description: "Awarded nearly $7,000 in total prizes with consistently growing prize pools and expanding sponsorship support for our events.",
-    icon: FaRocket,
-  },
-  {
-    name: "Thriving Community",
+    name: "Creator Collaborations",
     description:
-      "Built an engaged community of 4,600+ competing teams with regular tournaments, active Discord server, and growing creator collaborations.",
+      "Partnering with content creators and streamers to build engaging content, grow the Brawl Stars community, and provide sponsorship opportunities through our dedicated creator program.",
     icon: FaUsers,
   },
 ];
@@ -148,9 +154,9 @@ export default function AboutClient() {
             </h1>
 
             <p className="text-xl text-white/80 mb-8 leading-relaxed max-w-3xl mx-auto">
-              We&apos;re a dedicated tournament organization for competitive Brawl Stars. 
-              Since early 2025, we&apos;ve been creating opportunities for players to compete, 
-              improve, and showcase their skills in professional-grade tournaments.
+              A premier competitive esports organization in Brawl Stars. We field championship rosters, 
+              host high-level events, collaborate with top creators, and connect fans with elite players 
+              through our exclusive BGT Elite Club.
             </p>
 
             {/* Premium Animated Stats */}
@@ -187,8 +193,8 @@ export default function AboutClient() {
             </motion.div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/tournaments" className="btn btn-primary rounded-2xl px-8 py-4 text-lg group hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all">
-                View Tournaments 
+              <Link href="/rosters" className="btn btn-primary rounded-2xl px-8 py-4 text-lg group hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all">
+                View Our Rosters
                 <motion.span
                   className="inline-block ml-2"
                   animate={{ x: [0, 5, 0] }}
@@ -198,7 +204,7 @@ export default function AboutClient() {
                 </motion.span>
               </Link>
               <Link href="/creator-program" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">
-                Join Creator Program
+                Creator Program
               </Link>
             </div>
           </motion.div>
@@ -233,21 +239,21 @@ export default function AboutClient() {
 
               <div className="space-y-4 text-white/80 text-lg leading-relaxed">
                 <p className="select-text">
-                  Big Talents was founded with a clear mission: create accessible, high-quality 
-                  competitive opportunities for the Brawl Stars community. We believe every player, 
-                  regardless of skill level, deserves a chance to compete in well-organized tournaments.
+                  Big Talents was founded to elevate the Brawl Stars competitive ecosystem. 
+                  We&apos;re more than event organizers, we&apos;re building a complete esports organization 
+                  with championship rosters, creator partnerships, and community-driven initiatives.
                 </p>
 
                 <p className="select-text">
-                  In just 7 months, we&apos;ve organized 14+ major tournaments, bringing together over 
-                  4,600 teams from NA and EU regions. With nearly $7,000 awarded in prize pools, 
-                  we&apos;ve built a reputation for reliable, professionally-run competitive events.
+                  Since early 2025, we&apos;ve assembled elite competitive teams, organized 15+ high-level 
+                  events with nearly $7,000 in prizes, and built a thriving community of over 10000 members 
+                  across North America and Europe.
                 </p>
 
                 <p className="select-text">
-                  From weekly grassroots competitions to championship-level events with substantial 
-                  prize pools, we&apos;re committed to growing the competitive Brawl Stars scene and 
-                  providing consistent opportunities for players to compete and improve.
+                  Through our BGT Elite Club, fans get exclusive access to play alongside world champions 
+                  and top creators. We&apos;re expanding with LAN events, merchandise, sponsorships, and academy 
+                  programs to develop the next generation of competitive talent.
                 </p>
               </div>
             </motion.div>
@@ -319,7 +325,7 @@ export default function AboutClient() {
         </div>
       </section>
 
-      {/* What Makes Us Different - Premium Layout */}
+      {/* What We Offer - Premium Layout */}
       <section className="py-16 md:py-24">
         <div className="container">
           <motion.div
@@ -329,10 +335,10 @@ export default function AboutClient() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-black mb-4">
-              What Makes Us <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Different</span>
+              What We <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Offer</span>
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Our commitment to quality tournaments and community growth sets us apart
+              A complete esports ecosystem for players, creators, and fans
             </p>
           </motion.div>
 
@@ -434,17 +440,21 @@ export default function AboutClient() {
             </motion.div>
 
             <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Ready to <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Compete?</span>
+              Join the <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">BGT Family</span>
             </h2>
 
             <p className="text-xl text-white/80 mb-8 select-text">
-              Whether you&apos;re a competitive player looking to test your skills or a content 
-              creator wanting to collaborate, join our growing community today.
+              Whether you&apos;re a competitive player, content creator, or passionate fan, 
+              there&apos;s a place for you at Big Talents. Join our community and be part of 
+              something bigger.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/tournaments" className="btn btn-primary rounded-2xl px-8 py-4 text-lg hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all">
-                Browse Tournaments
+              <Link href="/rosters" className="btn btn-primary rounded-2xl px-8 py-4 text-lg hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all">
+                View Rosters
+              </Link>
+              <Link href="/tournaments" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">
+                Browse Events
               </Link>
               <Link href="/creator-program" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">
                 Creator Program
@@ -467,8 +477,8 @@ export default function AboutClient() {
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ y: -4, scale: 1.1 }}
-                className="p-4 bg-white/10 rounded-xl text-white/70 hover:text-cyan-400 hover:bg-white/20 transition-all hover:shadow-lg hover:shadow-red-400/20"
-                aria-label="Follow our Twitter"
+                className="p-4 bg-white/10 rounded-xl text-white/70 hover:text-cyan-400 hover:bg-white/20 transition-all hover:shadow-lg hover:shadow-cyan-400/20"
+                aria-label="Follow us on X"
               >
                 <FaTwitterSquare size={28} />
               </motion.a>

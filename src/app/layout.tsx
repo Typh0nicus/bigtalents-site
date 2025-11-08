@@ -5,7 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Outfit } from "next/font/google";
 
-// Display font just for headings (exposed as CSS var)
+// Display font for headings
 const heading = Outfit({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
@@ -15,17 +15,34 @@ const heading = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bigtalents.org"),
-  title: { default: "BGT — Big Talents", template: "%s — BGT" },
+  title: { default: "Big Talents — Premier Brawl Stars Esports", template: "%s | Big Talents" },
   description:
-    "Big Talents, Bigger Stages. $6,900+ awarded across NA & EU. Join the next BGT event.",
+    "Premier competitive esports organization fielding championship rosters, hosting elite events, and building the future of Brawl Stars esports. 10,000+ players, $7,300+ awarded.",
   alternates: { canonical: "https://bigtalents.org" },
+  keywords: [
+    "Brawl Stars esports",
+    "competitive Brawl Stars",
+    "BGT",
+    "Big Talents",
+    "esports organization",
+    "Brawl Stars rosters",
+    "esports tournaments",
+    "competitive gaming"
+  ],
   openGraph: {
-    title: "Home — Big Talents",
+    title: "Big Talents — Premier Brawl Stars Esports",
     description:
-      "Community-driven esports tournaments. $6,900+ awarded across NA & EU.",
+      "Championship rosters, elite tournaments, and exclusive community access. Join 10,000+ players in the BGT ecosystem.",
     url: "https://bigtalents.org",
     siteName: "Big Talents",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Home — Big Talents" }],
+    images: [
+      { 
+        url: "/og.png", 
+        width: 1200, 
+        height: 630, 
+        alt: "Big Talents — Premier Brawl Stars Esports Organization" 
+      }
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -33,19 +50,37 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@bgtalents",
     creator: "@bgtalents",
+    title: "Big Talents — Premier Brawl Stars Esports",
+    description: "Championship rosters, elite events, and 10,000+ players strong.",
     images: ["/og.png"],
   },
-  icons: { icon: "/favicon.ico" },
+  icons: { 
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  authors: [{ name: "Big Talents", url: "https://bigtalents.org" }],
+  creator: "Big Talents",
+  publisher: "Big Talents",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
-// FIXED: Mobile viewport issues
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#B8941C",
+  themeColor: "#D4AF37", 
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

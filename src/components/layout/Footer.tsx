@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaDiscord, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiArrowRight } from "react-icons/fi";
 
 export function Footer() {
@@ -34,7 +34,7 @@ export function Footer() {
                 </Link>
                 
                 <p className="text-white/80 text-base md:text-lg mb-8 max-w-md leading-relaxed">
-                  Premier esports organization hosting competitive tournaments with professional integrity and community focus.
+                  Premier competitive esports organization fielding championship rosters, hosting high-level events, and building the future of Brawl Stars esports.
                 </p>
 
                 {/* Social Links */}
@@ -72,17 +72,6 @@ export function Footer() {
                   >
                     <FaInstagram size={20} />
                   </motion.a>
-                  <motion.a
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    href="https://youtube.com/@bigtalents"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
-                    aria-label="YouTube"
-                  >
-                    <FaYoutube size={20} />
-                  </motion.a>
                 </div>
               </motion.div>
             </div>
@@ -103,8 +92,7 @@ export function Footer() {
                     {[
                       { label: "Tournaments", href: "/tournaments" },
                       { label: "Rosters", href: "/rosters" },
-                      { label: "Club", href: "/club" },
-                      { label: "News", href: "/news" },
+                      { label: "Creator Program", href: "/creator-program" },
                     ].map((link) => (
                       <li key={link.href}>
                         <Link
@@ -127,7 +115,6 @@ export function Footer() {
                       { label: "About", href: "/about" },
                       { label: "Contact", href: "/contact" },
                       { label: "Brand Guidelines", href: "/brand-guidelines" },
-                      { label: "Creator Program", href: "/creator-program" },
                     ].map((link) => (
                       <li key={link.href}>
                         <Link
@@ -150,28 +137,17 @@ export function Footer() {
                       { label: "Discord Server", href: "https://discord.gg/bgt", external: true },
                       { label: "Twitter", href: "https://x.com/bgtalents", external: true },
                       { label: "Instagram", href: "https://instagram.com/bigtalents_org", external: true },
-                      { label: "YouTube", href: "https://youtube.com/@bigtalents", external: true },
                     ].map((link) => (
                       <li key={link.href}>
-                        {link.external ? (
-                          <a
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
-                          >
-                            <span>{link.label}</span>
-                            <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
-                          </a>
-                        ) : (
-                          <Link
-                            href={link.href}
-                            className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
-                          >
-                            <span>{link.label}</span>
-                            <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
-                          </Link>
-                        )}
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-white/70 hover:text-[var(--gold)] transition-colors duration-200 flex items-center group text-sm"
+                        >
+                          <span>{link.label}</span>
+                          <FiArrowRight className="ml-1 text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
+                        </a>
                       </li>
                     ))}
                   </ul>

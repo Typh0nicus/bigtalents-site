@@ -48,28 +48,7 @@ const MEMBERS: Member[] = [
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
   },
-  {
-    name: "ELV | DiegoGamer",
-    image: "/images/club/diego.webp",
-    blurb: "NA Pro Player • Worlds Finalist",
-    youtube: "https://www.youtube.com/@DiegogamerCR_",
-    twitch: "https://www.twitch.tv/diegogamercr",
-    wiki: "https://liquipedia.net/brawlstars/Diegogamer",
-  },
-  {
-    name: "Hyra",
-    image: "/images/club/hyra.jpg",
-    blurb: "Top-1 Ladder • 200K trophies • 1.9M Youtube",
-    youtube: "https://www.youtube.com/@Hyra",
-  },
-  {
-    name: "Heretics Trebor",
-    image: "/images/club/trebor.jpg",
-    blurb: "Pro Player • 1.75M YouTube • 725K Twitch",
-    youtube: "https://www.youtube.com/@TreborBS",
-    twitch: "https://www.twitch.tv/trebor",
-    wiki: "https://liquipedia.net/brawlstars/Trebor",
-  },
+
   {
     name: "Vital Shark",
     image: "/images/club/vital_shark.jpg",

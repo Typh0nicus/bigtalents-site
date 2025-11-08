@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW, FaCrown, FaStar } from "react-icons/fa";
-import { FiArrowRight, FiExternalLink, FiUsers, FiGlobe } from "react-icons/fi";
+import { FiExternalLink, FiUsers, FiGlobe } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
 
 const PARTICLE_COUNT = 15;
@@ -16,16 +16,16 @@ const PARTICLE_POSITIONS = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
 
 const CLUB_INFO = {
   name: "BGT (Big Talents)",
-  tag: "#2GP8899V8", 
+  tag: "#2GP8899V8",
   description: "The most exclusive Brawl Stars club",
   region: "🇩🇪 Germany",
-  brawlifyUrl: "https://brawlify.com/stats/club/2GP8899V8"
+  brawlifyUrl: "https://brawlify.com/stats/club/2GP8899V8",
 };
 
 const CLUB_STATS = [
   { icon: FiUsers, value: "Many", label: "World-Class Members" },
   { icon: FaCrown, value: "1", label: "World Champion" },
-  { icon: FiGlobe, value: "2M+ Followers", label: "Combined Reach" },
+  { icon: FiGlobe, value: "2M+", label: "Combined Reach" },
 ];
 
 const ELITE_MEMBERS = [
@@ -40,7 +40,7 @@ const ELITE_MEMBERS = [
     wiki: "https://liquipedia.net/brawlstars/BosS",
   },
   {
-    name: "TTM | Angelboy", 
+    name: "TTM | Angelboy",
     image: "/images/club/angelboy.png",
     title: "Worlds Finalist",
     mainAchievement: "Worlds Finalist",
@@ -59,12 +59,12 @@ const ELITE_MEMBERS = [
   {
     name: "Sniperbs_",
     image: "/images/club/sniperbs_.jpg",
-    title: "Professional Player", 
+    title: "Professional Player",
     mainAchievement: "800K YouTube",
     achievements: ["Professional Player", "800K YouTube"],
     youtube: "https://www.youtube.com/@Sniperbs_",
     wiki: "https://liquipedia.net/brawlstars/Sniper",
-  }
+  },
 ];
 
 const MEMBERSHIP_TIERS = [
@@ -72,44 +72,31 @@ const MEMBERSHIP_TIERS = [
     name: "Daily Access",
     price: "$3.99",
     duration: "24 hours",
-    features: [
-      "Club chat access",
-      "Spectate games",
-      "Community events",
-      "Insider insights"
-    ]
+    features: ["Club chat access", "Spectate games", "Community events", "Insider insights"],
   },
   {
-    name: "Weekly Access", 
+    name: "Weekly Access",
     price: "$19.99",
     duration: "7 days",
-    features: [
-      "Everything in Daily",
-      "Priority queue",
-      "Weekly events",
-      "Extended access"
-    ],
-    popular: true
+    features: ["Everything in Daily", "Priority queue", "Weekly events", "Extended access"],
+    popular: true,
   },
   {
     name: "Monthly VIP",
-    price: "$69.99", 
+    price: "$69.99",
     duration: "30 days",
-    features: [
-      "Everything in Weekly",
-      "VIP status",
-      "Monthly events",
-      "Maximum access"
-    ]
-  }
+    features: ["Everything in Weekly", "VIP status", "Monthly events", "Maximum access"],
+  },
 ];
 
 export default function ClubClient() {
   const [isMounted, setIsMounted] = useState(false);
-  const heroRef = useRef(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const prefersReduced = useReducedMotion();
+
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
@@ -121,7 +108,7 @@ export default function ClubClient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <motion.div 
+      <motion.div
         className="absolute inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
@@ -133,31 +120,20 @@ export default function ClubClient() {
             background: `
               radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.1), transparent 50%),
               radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 50%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 50%)\
-            `
+              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 50%)
+            `,
           }}
         />
-        
-        {isMounted && (
+
+        {!prefersReduced && isMounted && (
           <div className="absolute inset-0 opacity-25">
             {PARTICLE_POSITIONS.map((pos, i) => (
               <motion.div
                 key={i}
                 className="absolute w-px h-px bg-[#D4AF37] rounded-full"
-                style={{
-                  left: `${pos.left}%`,
-                  top: `${pos.top}%`,
-                }}
-                animate={{
-                  y: [0, -40, 0],
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 4 + (i % 2),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.2
-                }}
+                style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
+                animate={{ y: [0, -40, 0], opacity: [0, 1, 0] }}
+                transition={{ duration: 4 + (i % 2), repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
               />
             ))}
           </div>
@@ -189,7 +165,8 @@ export default function ClubClient() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
             >
-              Welcome to <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Talents</span>
+              Welcome to{" "}
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Talents</span>
             </motion.h1>
 
             <motion.p
@@ -238,7 +215,7 @@ export default function ClubClient() {
               >
                 <FaDiscord /> Join Elite Club
               </motion.a>
-              
+
               <motion.a
                 href={CLUB_INFO.brawlifyUrl}
                 target="_blank"
@@ -270,9 +247,7 @@ export default function ClubClient() {
               </span>
             </h2>
           </div>
-          <p className="text-white/70 text-lg max-w-2xl">
-            World-class players and creators
-          </p>
+          <p className="text-white/70 text-lg max-w-2xl">World-class players and creators</p>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
@@ -291,11 +266,12 @@ export default function ClubClient() {
           className="mb-16 text-center"
         >
           <h2 className="text-4xl md:text-5xl font-black mb-4">
-            Choose Your <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Access</span>
+            Choose Your{" "}
+            <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+              Access
+            </span>
           </h2>
-          <p className="text-white/70 text-lg max-w-2xl mx-auto">
-            Flexible membership for every level of commitment
-          </p>
+          <p className="text-white/70 text-lg max-w-2xl mx-auto">Flexible membership for every level of commitment</p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -317,12 +293,13 @@ export default function ClubClient() {
                 />
               )}
 
-              <div className={`relative h-full card p-8 transition-all duration-500 flex flex-col ${
-                tier.popular 
-                  ? 'border-[#D4AF37]/50 bg-gradient-to-b from-black to-[#D4AF37]/5 scale-[1.02] shadow-2xl shadow-[#D4AF37]/30' 
-                  : 'border-white/15 bg-gradient-to-b from-white/5 to-white/[0.02] hover:border-[#D4AF37]/30'
-              }`}>
-                
+              <div
+                className={`relative h-full card p-8 transition-all duration-500 flex flex-col ${
+                  tier.popular
+                    ? "border-[#D4AF37]/50 bg-gradient-to-b from-black to-[#D4AF37]/5 scale-[1.02] shadow-2xl shadow-[#D4AF37]/30"
+                    : "border-white/15 bg-gradient-to-b from-white/5 to-white/[0.02] hover:border-[#D4AF37]/30"
+                }`}
+              >
                 {tier.popular && (
                   <motion.div
                     initial={{ scale: 0, rotate: -180 }}
@@ -359,22 +336,20 @@ export default function ClubClient() {
                       transition={{ delay: i * 0.15 + j * 0.08 }}
                       className="flex items-center gap-3 text-sm"
                     >
-                      <motion.div
-                        className="w-2 h-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700]"
-                        whileHover={{ scale: 1.5 }}
-                      />
+                      <motion.div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700]" whileHover={{ scale: 1.5 }} />
                       <span className="text-white/85 font-medium">{feature}</span>
                     </motion.li>
                   ))}
                 </ul>
 
                 <motion.button
+                  type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
-                    tier.popular 
-                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black shadow-lg shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/40' 
-                      : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-[#D4AF37]/40'
+                    tier.popular
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black shadow-lg shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/40"
+                      : "bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-[#D4AF37]/40"
                   }`}
                 >
                   Get Started
@@ -391,7 +366,7 @@ export default function ClubClient() {
           transition={{ delay: 0.6 }}
           className="text-center text-white/50 text-sm mt-12"
         >
-          Limited availability • Upgrade or downgrade anytime • Cancel at any time
+          Limited availability • Longer periods = cheaper prices
         </motion.p>
       </section>
 
@@ -402,13 +377,9 @@ export default function ClubClient() {
           viewport={{ once: true }}
           className="text-center max-w-2xl mx-auto"
         >
-          <h2 className="text-4xl md:text-5xl font-black mb-6">
-            Ready to Join?
-          </h2>
-          
-          <p className="text-xl text-white/70 mb-8">
-            Limited slots available. Apply now for exclusive access.
-          </p>
+          <h2 className="text-4xl md:text-5xl font-black mb-6">Ready to Join?</h2>
+
+          <p className="text-xl text-white/70 mb-8">Limited slots available. Apply now for exclusive access.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.a
@@ -421,11 +392,8 @@ export default function ClubClient() {
             >
               <FaDiscord /> Apply Now
             </motion.a>
-            
-            <Link 
-              href="/contact"
-              className="btn btn-outline rounded-2xl px-8 py-4 text-lg"
-            >
+
+            <Link href="/contact" className="btn btn-outline rounded-2xl px-8 py-4 text-lg">
               Business Inquiries
             </Link>
           </div>
@@ -435,7 +403,15 @@ export default function ClubClient() {
   );
 }
 
-function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS[number]; index: number; isMounted: boolean }) {
+function MemberCard({
+  member,
+  index,
+  isMounted,
+}: {
+  member: (typeof ELITE_MEMBERS)[number];
+  index: number;
+  isMounted: boolean;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -450,7 +426,6 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
       className="group"
     >
       <div className="relative rounded-3xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/40 transition-all duration-500 shadow-lg hover:shadow-2xl hover:shadow-[#D4AF37]/15">
-        
         <div className="relative aspect-[4/5] bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0a]">
           <Image
             src={member.image}
@@ -458,9 +433,10 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover transition-all duration-700 group-hover:scale-105"
+            priority={index < 2}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          
+
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent pointer-events-none"
             animate={{ opacity: isHovered && isMounted ? 1 : 0 }}
@@ -473,6 +449,7 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
                 href={member.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${member.name} on YouTube`}
                 className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-red-400 hover:bg-red-500 hover:text-white transition-all border border-white/20"
               >
                 <FaYoutube size={16} />
@@ -483,6 +460,7 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
                 href={member.twitch}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${member.name} on Twitch`}
                 className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-purple-400 hover:bg-purple-500 hover:text-white transition-all border border-white/20"
               >
                 <FaTwitch size={16} />
@@ -493,6 +471,7 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
                 href={member.wiki}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${member.name} on Liquipedia`}
                 className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all border border-white/20"
               >
                 <FaWikipediaW size={16} />
@@ -508,13 +487,9 @@ function MemberCard({ member, index, isMounted }: { member: typeof ELITE_MEMBERS
         </div>
 
         <div className="p-6 bg-black/50 backdrop-blur-xl">
-          <h3 className="text-lg font-black mb-1 group-hover:text-[#D4AF37] transition-colors">
-            {member.name}
-          </h3>
-          <p className="text-sm text-[#D4AF37] font-semibold mb-3">
-            {member.mainAchievement}
-          </p>
-          
+          <h3 className="text-lg font-black mb-1 group-hover:text-[#D4AF37] transition-colors">{member.name}</h3>
+          <p className="text-sm text-[#D4AF37] font-semibold mb-3">{member.mainAchievement}</p>
+
           <div className="space-y-2 pt-3 border-t border-white/10">
             {member.achievements.map((ach, i) => (
               <div key={i} className="flex items-start gap-2">

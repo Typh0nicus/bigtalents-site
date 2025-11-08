@@ -129,7 +129,10 @@ export default function TournamentsPage() {
       >
         <h1 className="h2 mb-2">Tournaments</h1>
         <p className="text-white/60 mb-6">
-          Total prizes awarded: <span className="text-[#D4AF37] font-bold">${totalPrize.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+          Total prizes awarded:{" "}
+<span className="text-[#D4AF37] font-bold">
+  ${(totalPrize + 13 + 30 + 30 + 50).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+</span>
         </p>
 
         {/* Filter Tabs */}

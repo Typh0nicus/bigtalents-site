@@ -15,6 +15,19 @@ export type Tournament = {
 };
 
 export const TOURNAMENTS: Tournament[] = [
+   {
+    title: "Time To Win #18",
+    date: "Fri, Mar 14, 2025 9:00PM GMT+1",
+    prizeUsd: 385.0,
+    url: "https://matcherino.com/supercell/tournaments/145019",
+    slug: "ttw18",
+    image: "/images/tournaments/ttw18.png",
+    liquipedia: "https://liquipedia.net/brawlstars/Time_To_Win/18",
+    matcherinoId: 145775,
+    participants: 296,
+    region: "EU",
+    archived: true
+  },
   {
     title: "Eternal x Big Talents: March Madness",
     date: "Mon, Mar 3, 2025 12:00AM GMT",
@@ -149,7 +162,6 @@ export const TOURNAMENTS: Tournament[] = [
   {
     title: "BGT July Cup",
     date: "Fri, Jul 18, 2025 6:00PM GMT+1",
-    prizeUsd: 50.0,
     url: "https://matcherino.com/supercell/tournaments/156361",
     slug: "156361-bgt-july-cup",
     image: "/images/tournaments/156361.WEBP",
@@ -161,7 +173,6 @@ export const TOURNAMENTS: Tournament[] = [
   {
     title: "Wildcard Weekend #1",
     date: "Sat, Aug 16, 2025 10:00PM GMT+1",
-    prizeUsd: 30.0,
     url: "https://matcherino.com/supercell/tournaments/165244/overview",
     slug: "165244-wildcard-weekend-1",
     image: "/images/tournaments/165244.WEBP",
@@ -173,7 +184,6 @@ export const TOURNAMENTS: Tournament[] = [
   {
     title: "Wildcard Weekend #2",
     date: "Sun, Aug 17, 2025 3:00PM GMT+1",
-    prizeUsd: 30.0,
     url: "https://matcherino.com/supercell/tournaments/165521/overview",
     slug: "165521-wildcard-weekend-2",
     image: "/images/tournaments/165521.WEBP",
@@ -195,41 +205,15 @@ export const TOURNAMENTS: Tournament[] = [
     region: "EU",
     archived: true
   },
-  // Future tournaments - no matcherinoId yet
   {
-    title: "Wildcard Weekend #4",
-    date: "Coming Soon",
-    url: "https://matcherino.com/t/ww4/overview",
-    slug: "WW4",
-    image: "/images/tournaments/ww4.png",
+    title: "Middle Talents League",
+    date: "Fri, Nov 7, 2025 6:00PM GMT+1",
+    url: "https://matcherino.com/t/bgt-megaming/overview",
+    slug: "bgt-megaming",
+    image: "/images/tournaments/mtl.png",
+    matcherinoId: 172627,
+    participants: 140,
     region: "EU",
-    archived: false
+    archived: true
   },
-  {
-    title: "Silver Talents League #1",
-    date: "Coming Soon",
-    url: "https://matcherino.com",
-    slug: "stl1",
-    image: "/images/tournaments/stl1.png",
-    region: "EU",
-    archived: false
-  },
-  {
-    title: "Octonoob",
-    date: "Coming Soon",
-    url: "https://matcherino.com",
-    slug: "octonoob",
-    image: "/images/tournaments/octonoob.png",
-    region: "NA",
-    archived: false
-  },
-  {
-    title: "Wildcard Weekend #5",
-    date: "Coming Soon",
-    url: "https://matcherino.com/t/ww5/overview",
-    slug: "ww5",
-    image: "/images/tournaments/ww5.png",
-    region: "EU",
-    archived: false
-  }
 ];
