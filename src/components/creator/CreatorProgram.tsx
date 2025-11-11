@@ -79,7 +79,7 @@ const TIERS: Tier[] = [
     requirements: "35K+ YouTube or 10K+ Twitch or 100K+ TikTok",
     benefits: [
       "Revenue share on tournaments",
-      "Custom creator code tracking",
+      "Custom creator code for merch",
       "Early tournament access & perks",
       "Collaborative content opportunities",
       "Free Future Merch Drops",
