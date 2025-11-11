@@ -60,7 +60,7 @@ const TIERS: Tier[] = [
     description: "Foundation tier for emerging creators ready to level up",
     requirements: "5K+ YouTube or 3K+ Twitch or 15K+ TikTok",
     benefits: [
-      "Academy Discord role & channels",
+      "BGT Creator Discord role & channels",
       "Featuring content on our Discord",
       "Brand kit & graphics templates",
       "Tournament casting opportunities",
@@ -82,7 +82,9 @@ const TIERS: Tier[] = [
       "Custom creator code tracking",
       "Early tournament access & perks",
       "Collaborative content opportunities",
-      "Monthly creator roundtables",
+      "Free Future Merch Drops",
+      "Creator roundtables",
+      "Sponsorship & Ambassador program opportunities"
     ],
     icon: FiStar,
     color: "from-[#D4AF37] to-[#FFD700]",
@@ -99,6 +101,7 @@ const TIERS: Tier[] = [
     benefits: [
       "Monthly guaranteed payment",
       "Premium revenue rates",
+      "Higher Sponsorship Guarantees",
       "Direct CFO & roster access",
       "Co-host major tournaments",
       "possible free elite club access",
