@@ -484,7 +484,7 @@ export function CreatorApplication() {
                       value={formData.supercellCreatorCode}
                       onChange={(e) => setFormData((prev) => ({ ...prev, supercellCreatorCode: e.target.value }))}
                       className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl focus:border-[#D4AF37] focus:outline-none transition-all duration-200 text-base"
-                      placeholder="For T2+ status"
+                      placeholder="For T1 status"
                     />
                   </div>
                 </div>
