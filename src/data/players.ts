@@ -12,8 +12,10 @@ export interface TeamMember {
   ign: string;
   type: 'player' | 'staff';
   roles?: StaffRole[];
-  country: string;
-  countryCode: string;
+  countries: Array<{
+    name: string;
+    code: string;
+  }>;
   image: string;
   profileImage: string;
   coverImage: string;
@@ -37,8 +39,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Arthur Kornfeld',
     ign: 'Arthur',
     type: 'player',
-    country: 'Austria',
-    countryCode: 'AT',
+    countries: [
+      { name: 'Austria', code: 'AT' }
+    ],
     image: '/images/rosters/arthur.webp',
     profileImage: '/images/rosters/arthur-profile.jpg',
     coverImage: '/images/rosters/player-cover.webp',
@@ -65,8 +68,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Jiří Vilímovský',
     ign: 'Salty',
     type: 'player',
-    country: 'Czech Republic',
-    countryCode: 'CZ',
+    countries: [
+      { name: 'Czech Republic', code: 'CZ' }
+    ],
     image: '/images/rosters/salty.WEBP',
     profileImage: '/images/rosters/salty-profile.jpg',
     coverImage: '/images/rosters/player-cover.webp',
@@ -89,8 +93,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Trashie',
     ign: 'Trxshie',
     type: 'player',
-    country: 'Poland',
-    countryCode: 'PL',
+    countries: [
+      { name: 'Poland', code: 'PL' }
+    ],
     image: '/images/rosters/trashie.webp',
     profileImage: '/images/rosters/trashie-profile.jpg',
     coverImage: '/images/rosters/player-cover.webp',
@@ -113,8 +118,10 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ign: 'Typhon',
     type: 'staff',
     roles: ['Manager'],
-    country: 'International',
-    countryCode: '',
+    countries: [
+      { name: 'Germany', code: 'DE' },
+      { name: 'Tunisia', code: 'TN' }
+    ],
     image: '/images/typhon.png',
     profileImage: '/images/typhon-profile.png',
     coverImage: '/images/rosters/player-cover.webp',
@@ -137,8 +144,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ign: 'Soleil',
     type: 'staff',
     roles: ['Coach'],
-    country: 'France',
-    countryCode: 'FR',
+    countries: [
+      { name: 'France', code: 'FR' }
+    ],
     image: '/images/soleil.png',
     profileImage: '/images/soleil-profile.png',
     coverImage: '/images/rosters/player-cover.webp',
@@ -162,8 +170,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
     ign: 'Peri',
     type: 'staff',
     roles: ['Analyst'],
-    country: 'Spain',
-    countryCode: 'ES',
+    countries: [
+      { name: 'Spain', code: 'ES' }
+    ],
     image: '/images/rosters/peri.webp',
     profileImage: '/images/rosters/peri-profile.webp',
     coverImage: '/images/rosters/player-cover.webp',

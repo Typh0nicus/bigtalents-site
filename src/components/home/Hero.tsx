@@ -3,9 +3,8 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
-import { FiArrowDown, FiPlay } from "react-icons/fi";
+import { FiArrowDown } from "react-icons/fi";
 
-// Optimized constants
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
 const SPEED = 0.025;
@@ -13,7 +12,6 @@ const MAX_FPS = 60;
 const FRAME_TIME = 1000 / MAX_FPS;
 const CONNECTION_DISTANCE = 160;
 
-/* ======================= Particles (safe DPR scaling) ======================= */
 function Particles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReduced = useReducedMotion();
@@ -156,11 +154,9 @@ function Particles() {
   }, [prefersReduced]);
 
   if (prefersReduced) return null;
-
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[0.55] pointer-events-none" aria-hidden />;
 }
 
-/* ============================= Animated text ============================= */
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
     <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
@@ -221,10 +217,9 @@ function ScrollIndicator() {
 const SOCIALS = [
   { icon: FaDiscord, href: "https://discord.gg/bgt", label: "Discord", color: "hover:text-indigo-400", bg: "hover:bg-indigo-500/10" },
   { icon: FaTwitter, href: "https://x.com/bgtalents", label: "Twitter", color: "hover:text-blue-400", bg: "hover:bg-blue-500/10" },
-  { icon: FaInstagram, href: "https://instagram.com/bigtalents_org", label: "Instagram", color: "hover:text-pink-400", bg: "hover:bg-pink-500/10" }
+  { icon: FaInstagram, href: "https://instagram.com/bigtalents_org", label: "Instagram", color: "hover:text-pink-400", bg: "hover:bg-pink-500/10" },
 ];
 
-/* ================================= Hero ================================== */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
@@ -232,9 +227,7 @@ export function Hero() {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    // NO overflow-hidden here (prevents clipping). Keep it only on bg wrapper.
     <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
-      {/* Background wrapper with overflow-hidden */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute inset-0"
@@ -255,43 +248,17 @@ export function Hero() {
         />
       </div>
 
-      {/* Foreground content */}
       <div className="container relative z-10 text-center max-w-4xl px-6 pb-6">
         <AnimatedHeading />
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.3 }}>
-          <TypingEffect text="Player-first esports community across NA & EU." />
+          <TypingEffect text="Think Big, Play Bigger." />
         </motion.div>
-
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10 mb-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.8 }}
+          className="flex items-center justify-center gap-4 mt-10"
         >
-          <motion.a
-            href="/tournaments"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(212,175,55,.4)" }}
-            whileTap={{ scale: 0.98 }}
-            className="btn btn-primary rounded-2xl px-8 py-4 text-lg shadow-2xl inline-flex items-center gap-2 group/btn backdrop-blur-sm"
-          >
-            <FiPlay className="group-hover/btn:scale-110 transition-transform duration-200" />
-            View Tournaments
-          </motion.a>
-
-          <motion.a
-            href="https://discord.gg/bgt"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300 backdrop-blur-sm"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join Discord
-          </motion.a>
-        </motion.div>
-
-        {/* Socials — true squares, no clipping */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.8 }} className="flex items-center justify-center gap-4">
           {SOCIALS.map((s) => {
             const Icon = s.icon;
             return (

@@ -2,10 +2,10 @@ import { CreatorProgram } from "@/components/creator/CreatorProgram";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Creator Program Overview — BGT",
+  title: "Creator Program",
   description: "Join the Big Talents Creator Program and collaborate with top esports talent.",
   openGraph: {
-    title: "Creator Program Overview — BGT",
+    title: "Creator Program",
     description: "The most exclusive creator program in Brawl Stars esports. Grow your audience, earn revenue, and collaborate with the best.",
     images: [
       {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Creator Program Overview — BGT",
+    title: "Creator Program",
     description: "The most exclusive creator program in Brawl Stars esports.",
     images: ["/images/og-creator-program.jpg"],
   },

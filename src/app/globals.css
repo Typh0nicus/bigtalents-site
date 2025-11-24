@@ -3,6 +3,7 @@
 /* ===== Prevents horizontal scroll & auto-zoom ====== */
 html {
   overflow-x: hidden;
+  overflow-y: scroll;
   width: 100%;
   position: relative;
   scroll-behavior: smooth;
@@ -526,3 +527,21 @@ nav > div,
   overflow: visible !important;
 }
 html, body { overflow-x: hidden; }
+/* ===== Global scrollbar reset: hide all scrollbars, keep scrolling ===== */
+
+/* Firefox: hide scrollbars everywhere but keep scroll functionality */
+* {
+  scrollbar-width: none;
+}
+
+/* IE / old Edge: hide scrollbars but allow scrolling */
+* {
+  -ms-overflow-style: none;
+}
+
+/* WebKit (Chrome, Edge, Safari): hide scrollbars on all elements */
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}

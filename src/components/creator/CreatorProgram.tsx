@@ -84,14 +84,14 @@ const TIERS: Tier[] = [
       "Collaborative content opportunities",
       "Free Future Merch Drops",
       "Creator roundtables",
-      "Sponsorship & Ambassador program opportunities"
+      "Sponsorship & Ambassador program opportunities",
     ],
     icon: FiStar,
     color: "from-[#D4AF37] to-[#FFD700]",
     iconBg: "bg-[#D4AF37]/10",
     iconColor: "text-[#D4AF37]",
     particleColor: "rgba(212, 175, 55, 0.8)",
-    featured: true,
+    featured: true, // kept for compatibility but no longer used for styling
   },
   {
     name: "BGT Elite",
@@ -405,7 +405,7 @@ export function CreatorProgram() {
                   transition={{ delay: index * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   onHoverStart={() => setHoveredTier(index)}
                   onHoverEnd={() => setHoveredTier(null)}
-                  className={cn("relative group w-full", tier.featured ? "lg:scale-105" : undefined)}
+                  className="relative group w-full"
                 >
                   <motion.div
                     animate={{
@@ -413,10 +413,7 @@ export function CreatorProgram() {
                       y: isHovered && isMounted ? -4 : 0,
                     }}
                     transition={{ duration: 0.3 }}
-                    className={cn(
-                      "relative h-full card p-8 backdrop-blur-xl overflow-hidden",
-                      tier.featured ? "ring-2 ring-[#D4AF37] shadow-2xl shadow-[#D4AF37]/20" : undefined
-                    )}
+                    className="relative h-full card p-8 backdrop-blur-xl overflow-hidden flex flex-col"
                   >
                     {/* Particles */}
                     {isHovered && isMounted && !prefersReduced && (
@@ -480,15 +477,10 @@ export function CreatorProgram() {
                       ))}
                     </div>
 
-                    {/* CTA Button */}
+                    {/* CTA Button - unified + pinned to bottom */}
                     <Link
                       href="/creator-program/apply"
-                      className={cn(
-                        "relative w-full inline-block text-center py-3.5 px-6 rounded-xl font-bold transition-all duration-300 overflow-hidden group/btn z-10",
-                        tier.featured
-                          ? "bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black hover:shadow-xl hover:shadow-[#D4AF37]/50"
-                          : "border-2 border-white/20 hover:bg-white/5 hover:border-[#D4AF37]/50"
-                      )}
+                      className="relative w-full mt-auto inline-block text-center py-3.5 px-6 rounded-xl font-bold transition-all duration-300 overflow-hidden group/btn z-10 border-2 border-white/20 hover:bg-white/5 hover:border-[#D4AF37]/50"
                     >
                       <span className="relative z-20">Apply Now</span>
 

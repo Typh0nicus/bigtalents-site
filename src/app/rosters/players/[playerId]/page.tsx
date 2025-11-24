@@ -18,11 +18,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const member = TEAM_MEMBERS.find((m) => m.id === playerId);
 
   if (!member) {
-    return { title: "Profile Not Found | Big Talents" };
+    return { title: "Big Talents | Profile Not Found" };
   }
 
   return {
-    title: `${member.ign} - ${member.name} | Big Talents`,
+    title: `Big Talents | ${member.ign}`,
     description: member.bio,
   };
 }

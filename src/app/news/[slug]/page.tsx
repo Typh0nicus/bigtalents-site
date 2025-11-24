@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NEWS } from "@/data/news";
 import NewsArticle from "@/components/news/NewsArticle";
@@ -42,5 +42,7 @@ export default async function NewsArticlePage({ params }: Props) {
     notFound();
   }
 
-  return <NewsArticle article={article} />;
+  const moreArticles = NEWS.filter((n) => n.slug !== slug).slice(0, 3);
+
+  return <NewsArticle article={article} moreArticles={moreArticles} />;
 }

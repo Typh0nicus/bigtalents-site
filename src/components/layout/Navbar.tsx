@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail, FiUsers } from "react-icons/fi";
 import { FaDiscord, FaTwitter, FaInstagram, FaCrown } from "react-icons/fa";
 
 type NavItem = {
@@ -26,7 +26,25 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/tournaments", label: "Tournaments" },
-  { href: "/rosters", label: "Rosters" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/rosters/players", 
+        label: "Players",
+        icon: FiUsers,
+        description: "Championship athletes"
+      },
+      { 
+        href: "/rosters/creators", 
+        label: "Creators",
+        icon: FiStar,
+        description: "Content program stars"
+      }
+    ]
+  },
   { href: "/club", label: "Club", special: true },
   { href: "/news", label: "News" },
   { 
@@ -54,16 +72,16 @@ const NAV_ITEMS: NavItem[] = [
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/about", 
-        label: "About",
-        icon: FiInfo,
-        description: "Our story and mission"
-      },
-      { 
         href: "/contact", 
         label: "Contact",
         icon: FiMail,
         description: "Get in touch with us"
+      },
+      { 
+        href: "/positions", 
+        label: "Positions",
+        icon: FiInfo,
+        description: "Explore open team positions"
       },
       { 
         href: "/brand-guidelines", 
@@ -101,16 +119,16 @@ const LEFT_NAV_ITEMS: NavItem[] = [
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/about", 
-        label: "About",
-        icon: FiInfo,
-        description: "Our story and mission"
-      },
-      { 
         href: "/contact", 
         label: "Contact",
         icon: FiMail,
         description: "Get in touch with us"
+      },
+      { 
+        href: "/positions", 
+        label: "Positions",
+        icon: FiInfo,
+        description: "Explore open team positions"
       },
       { 
         href: "/brand-guidelines", 
@@ -125,7 +143,25 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
   { href: "/tournaments", label: "Tournaments" },
-  { href: "/rosters", label: "Rosters" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/rosters/players", 
+        label: "Players",
+        icon: FiUsers,
+        description: "Championship athletes"
+      },
+      { 
+        href: "/rosters/creators", 
+        label: "Creators",
+        icon: FiStar,
+        description: "Content program stars"
+      }
+    ]
+  },
   { href: "/club", label: "Club", special: true }
 ];
 
@@ -334,7 +370,6 @@ function DesktopLink({
         )}
       </motion.div>
         
-      {/* FIXED: Replaced dot with underline only */}
       {!special && (
         <motion.div
           className="absolute left-4 -bottom-1 h-0.5 bg-[var(--gold)] rounded-full"
@@ -749,7 +784,6 @@ export function Navbar() {
         </div>
       </motion.nav>
 
-      {/* FIXED: Mobile menu rendered outside navbar to prevent transform inheritance */}
       <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} items={items} />
     </>
   );

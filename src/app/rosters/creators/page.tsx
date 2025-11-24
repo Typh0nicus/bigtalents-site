@@ -1,45 +1,138 @@
-"use client";
+import { CREATORS } from "@/data/creators";
+import type { Creator } from "@/lib/featuredAlgorithm";
+import { fetchYouTubeChannelStats } from "@/lib/youtube";
+import { fetchTwitchUser } from "@/lib/twitch";
+import { fetchTikTokUser } from "@/lib/tiktok";
+import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { FiArrowLeft, FiUsers } from "react-icons/fi";
+// Extend Creator with a totalViews field for this page
+export type CreatorWithViews = Creator & {
+  totalViews?: number;
+};
 
-export default function ComingSoonPage() {
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <div className="container mx-auto px-4">
-        <Link 
-          href="/rosters"
-          className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors"
-        >
-          <FiArrowLeft />
-          <span>Back to Rosters</span>
-        </Link>
+// Safe helper to extract a view count from any stats object
+function extractViewCount(stats: unknown): number {
+  if (!stats || typeof stats !== "object") return 0;
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto text-center"
-        >
-          <div className="card p-12">
-            <FiUsers className="w-16 h-16 text-[#D4AF37] mx-auto mb-6" />
-            <h1 className="text-4xl font-black mb-4">
-              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
-                Coming Soon
-              </span>
-            </h1>
-            <p className="text-white/70 text-lg mb-8">
-              Announcements will be made on our social channels
-            </p>
-            <Link
-              href="/rosters"
-              className="inline-block px-8 py-4 bg-[#D4AF37] text-black font-bold rounded-xl hover:bg-[#FFD700] transition-colors"
-            >
-              Back to Rosters
-            </Link>
-          </div>
-        </motion.div>
-      </div>
-    </main>
+  const s = stats as {
+    viewCount?: number | string;
+    view_count?: number | string;
+  };
+
+  const raw = s.viewCount ?? s.view_count;
+  if (typeof raw === "string") {
+    const parsed = Number(raw);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+  return typeof raw === "number" ? raw : 0;
+}
+
+async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
+  const [ytStats, twitchStats, tiktokStats] = await Promise.all([
+    creator.platforms.youtube?.channelId
+      ? fetchYouTubeChannelStats(creator.platforms.youtube.channelId)
+      : Promise.resolve(null),
+    creator.platforms.twitch?.username
+      ? fetchTwitchUser(creator.platforms.twitch.username)
+      : Promise.resolve(null),
+    creator.platforms.tiktok?.username
+      ? fetchTikTokUser(creator.platforms.tiktok.username)
+      : Promise.resolve(null),
+  ]);
+
+  // Followers / subs (reach)
+  const youtubeSubs =
+    (ytStats as { subscriberCount?: number } | null)?.subscriberCount ??
+    creator.platforms.youtube?.subscribers ??
+    0;
+
+  const twitchFollowers =
+    (twitchStats as { followerCount?: number } | null)?.followerCount ??
+    creator.platforms.twitch?.followers ??
+    0;
+
+  const tiktokFollowers =
+    (tiktokStats as { followerCount?: number } | null)?.followerCount ??
+    creator.platforms.tiktok?.followers ??
+    0;
+
+  // X followers are manually maintained, just pass through
+  const xFollowers = creator.platforms.x?.followers ?? 0;
+
+  // ──────────────────────────────
+  // Lifetime views per platform
+  // ──────────────────────────────
+
+  const youtubeViews = extractViewCount(ytStats);
+  const twitchViews = extractViewCount(twitchStats);
+
+  // TikTok user/info doesn't expose lifetime views – only likes (heartCount),
+  // so we leave this as 0 for now to avoid mixing "likes" and "views".
+  const tiktokViews = 0;
+
+  const totalViews = youtubeViews + twitchViews + tiktokViews;
+
+  console.log(
+    "Computed stats for",
+    creator.id,
+    "=>",
+    "YT subs:",
+    youtubeSubs,
+    "TW fol:",
+    twitchFollowers,
+    "TT fol:",
+    tiktokFollowers,
+    "X fol:",
+    xFollowers,
+    "| YT views:",
+    youtubeViews,
+    "TW views:",
+    twitchViews,
+    "TT views:",
+    tiktokViews,
+    "TOTAL views:",
+    totalViews
   );
+
+  return {
+    ...creator,
+    platforms: {
+      ...creator.platforms,
+      youtube:
+        creator.platforms.youtube && {
+          ...creator.platforms.youtube,
+          subscribers: youtubeSubs,
+        },
+      twitch:
+        creator.platforms.twitch && {
+          ...creator.platforms.twitch,
+          followers: twitchFollowers,
+        },
+      tiktok:
+        creator.platforms.tiktok && {
+          ...creator.platforms.tiktok,
+          followers: tiktokFollowers,
+        },
+      x:
+        creator.platforms.x && {
+          ...creator.platforms.x,
+          followers: xFollowers,
+        },
+    },
+    totalViews,
+  };
+}
+
+export const metadata = {
+  title: "Big Talents | Creators",
+  description:
+    "Meet the Elite, Partnered, and Academy creators representing Big Talents.",
+};
+
+export default async function CreatorsPage() {
+  const enrichedCreators = await Promise.all(
+    CREATORS.map(enrichCreator)
+  );
+
+  return <CreatorsClient creators={enrichedCreators} />;
 }

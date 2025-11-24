@@ -1,17 +1,16 @@
-// src/data/tournaments.ts
 export type Tournament = {
   title: string;
   date?: string;
   prizeUsd?: number;
-  url: string;             // primary registration/overview (Matcherino, etc.)
-  slug: string;            // local slug (for images/fallbacks)
+  url: string;
+  slug: string;
   image?: string;
-  liquipedia?: string;     // Optional: Liquipedia event page
-  participants?: number;   // Optional: number of TEAMS
-  matcherinoId?: number;   // Optional: numeric ID (kept for future)
-  matcherinoSlug?: string; // Optional: /t/<slug> style (kept for future)
-  region?: 'NA' | 'EU';    // Tournament region
-  archived?: boolean;      // Whether tournament is archived
+  liquipedia?: string;
+  participants?: number;
+  matcherinoId?: number;
+  matcherinoSlug?: string; // /t/<slug>
+  region?: 'NA' | 'EU';
+  archived?: boolean;
 };
 
 export const TOURNAMENTS: Tournament[] = [

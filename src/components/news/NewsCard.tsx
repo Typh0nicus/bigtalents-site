@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export type NewsItem = {
   slug: string;
@@ -11,93 +12,159 @@ export type NewsItem = {
   excerpt?: string;
   image?: string;
   tags?: string[];
-  featured?: boolean;
+  content?: string; // for building summaries if no excerpt
+  featured?: boolean; // kept for compatibility, only used for priority
 };
 
-export function NewsCard({ item, featured = false }: { item: NewsItem; featured?: boolean }) {
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function getCategory(tags?: string[]): string {
+  if (!tags || tags.length === 0) return "Update";
+
+  const primary = tags[0]?.toLowerCase();
+  if (primary === "esports") return "Esports";
+  if (primary === "community") return "Community";
+
+  // fallback to first tag if it’s something like "Announcement"
+  return tags[0] ?? "Update";
+}
+
+function buildSummary(item: NewsItem): string | null {
+  if (item.excerpt && item.excerpt.trim().length > 0) {
+    return item.excerpt.trim();
+  }
+
+  if (item.content) {
+    const plain = item.content
+      .replace(/[#>*`]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!plain) return null;
+    if (plain.length <= 190) return plain;
+    return plain.slice(0, 187) + "…";
+  }
+
+  return null;
+}
+
+export function NewsCard({
+  item,
+  featured = false, // only used for image priority
+}: {
+  item: NewsItem;
+  featured?: boolean;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const summary = buildSummary(item);
+  const category = getCategory(item.tags);
+  const imageSrc = item.image ?? "/images/news/news-placeholder.webp";
+
   return (
-    <motion.article
-      whileHover={{ y: -4 }}
-      className={`group rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-all duration-300 hover:border-[color:var(--gold)]/50 focus-within:border-[color:var(--gold)] ${
-        featured ? 'md:col-span-2 lg:col-span-2' : ''
-      }`}
-      style={{ WebkitTapHighlightColor: "transparent" }}
+    <Link
+      href={`/news/${item.slug}`}
+      className="block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD700]/80 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+      aria-label={`Read: ${item.title}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <Link
-        href={`/news/${item.slug}`}
-        className="block p-4 sm:p-5 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-2xl"
-        aria-label={`Read: ${item.title}`}
+      <motion.article
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.18 }}
+        whileHover={{ y: -6, scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-colors duration-300 hover:border-[#FFD700]/60"
+        style={{ WebkitTapHighlightColor: "transparent" }}
       >
-        {/* Image */}
-        <div className="relative mb-4 overflow-hidden rounded-xl">
-          <div className={`relative w-full ${featured ? 'aspect-[21/9]' : 'aspect-[16/9]'}`}>
+        {/* IMAGE HEADER */}
+        <div className="relative aspect-[16/9] overflow-hidden">
+          <motion.div
+            className="h-full w-full"
+            animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          >
             <Image
-              src={item.image ?? "/images/news/placeholder.jpg"}
+              src={imageSrc}
               alt={item.title}
               fill
-              sizes={featured ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
-              className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
               priority={featured}
             />
+          </motion.div>
+
+          {/* dark gradient, same vibe as HomeNews */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+
+          {/* shine sweep on hover */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                key="shine"
+                className="pointer-events-none absolute inset-0 overflow-hidden"
+                initial={{ x: "-140%", opacity: 0 }}
+                animate={{ x: "140%", opacity: [0, 1, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                <div
+                  className="h-full w-[60%] bg-white/35"
+                  style={{
+                    transform: "skewX(-18deg)",
+                    filter: "blur(4px)",
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* category + date row */}
+          <div className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2 text-[11px] sm:text-xs">
+            <span className="inline-flex items-center rounded-full bg-black/70 border border-white/15 px-2.5 py-1 uppercase tracking-[0.16em] font-semibold text-[10px] text-white/80">
+              {category}
+            </span>
+            <span className="rounded-full bg-black/60 px-2 py-1 text-[11px] text-white/70 font-medium">
+              {formatDate(item.date)}
+            </span>
           </div>
-          {/* Gradient overlay */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-          
-          {item.featured && (
-            <div className="absolute top-3 left-3 px-3 py-1 bg-[color:var(--gold)] text-black rounded-full text-xs font-bold">
-              Featured
-            </div>
-          )}
         </div>
 
-        {/* Content */}
-        <div className={featured ? 'grid gap-4 lg:grid-cols-2' : ''}>
-          <div>
-            <h3 className={`font-semibold group-hover:text-[color:var(--gold)] transition-colors ${
-              featured ? 'text-xl lg:text-2xl' : 'text-lg'
-            }`}>
+        {/* CONTENT */}
+        <div className="flex flex-1 flex-col gap-3 p-5">
+          {/* Title + summary block gets a min-height so cards align better */}
+          <div className="space-y-1.5 min-h-[4.5rem]">
+            <h3 className="text-base sm:text-lg font-semibold text-white line-clamp-2 transition-colors duration-150 group-hover:text-[#FFD700]">
               {item.title}
             </h3>
-            
-            <p className="caption mt-1 text-white/60">
-              {new Date(item.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </p>
-          </div>
 
-          {item.excerpt && (
-            <div className={featured ? '' : 'mt-3'}>
-              <p className={`text-white/80 line-clamp-3 ${
-                featured ? 'text-base leading-relaxed' : 'text-sm'
-              }`}>
-                {item.excerpt}
+            {summary && (
+              <p className="text-xs sm:text-sm text-white/70 line-clamp-3">
+                {summary}
               </p>
-            </div>
-          )}
-        </div>
-
-        {/* Tags */}
-        {item.tags && item.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {item.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-lg border border-white/10 px-2 py-0.5 text-xs text-white/70 group-hover:border-[color:var(--gold)]/30 transition-colors"
-              >
-                {tag}
-              </span>
-            ))}
-            {item.tags.length > 3 && (
-              <span className="rounded-lg border border-white/10 px-2 py-0.5 text-xs text-white/50">
-                +{item.tags.length - 3} more
-              </span>
             )}
           </div>
-        )}
-      </Link>
-    </motion.article>
+
+          {/* Bottom row sticks to bottom for equal-height feel */}
+          <div className="mt-auto flex items-center justify-between pt-1 text-[10px] sm:text-xs uppercase tracking-[0.18em] text-[#FFD700]/85">
+            <span className="font-semibold">Read Article</span>
+            <span
+              aria-hidden
+              className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#FFD700]/60 bg-[#FFD700]/10 text-[11px] group-hover:translate-x-0.5 transition-transform duration-150"
+            >
+              →
+            </span>
+          </div>
+        </div>
+      </motion.article>
+    </Link>
   );
 }

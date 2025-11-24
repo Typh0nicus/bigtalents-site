@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import NewsClient from "@/components/news/NewsClient";
 
 export const metadata: Metadata = {
-  title: "News — Big Talents",
+  title: "News",
   description:
     "Updates, announcements, and winners from Big Talents tournaments across NA & EU.",
   alternates: { canonical: "/news" },
   openGraph: {
-    title: "News — Big Talents",
+    title: "News",
     description: "Tournament recaps, announcements, and community updates.",
     url: "/news",
     type: "website",

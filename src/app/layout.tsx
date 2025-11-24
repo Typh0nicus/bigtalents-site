@@ -15,7 +15,7 @@ const heading = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bigtalents.org"),
-  title: { default: "Big Talents — Premier Brawl Stars Esports", template: "%s | Big Talents" },
+  title: { default: "Big Talents", template: "Big Talents | %s" },
   description:
     "Premier competitive esports organization fielding championship rosters, hosting elite events, and building the future of Brawl Stars esports. 10,000+ players, $7,300+ awarded.",
   alternates: { canonical: "https://bigtalents.org" },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "competitive gaming"
   ],
   openGraph: {
-    title: "Big Talents — Premier Brawl Stars Esports",
+    title: "Big Talents",
     description:
       "Championship rosters, elite tournaments, and exclusive community access. Join 10,000+ players in the BGT ecosystem.",
     url: "https://bigtalents.org",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
         url: "/og.png", 
         width: 1200, 
         height: 630, 
-        alt: "Big Talents — Premier Brawl Stars Esports Organization" 
+        alt: "Big Talents" 
       }
     ],
     locale: "en_US",

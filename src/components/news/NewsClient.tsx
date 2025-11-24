@@ -8,7 +8,9 @@ import { FiSearch, FiX } from "react-icons/fi";
 
 const gridStagger: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
+  show: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.12 },
+  },
 };
 
 const itemUp: Variants = {
@@ -22,42 +24,49 @@ const itemUp: Variants = {
 
 export default function NewsClient() {
   const [query, setQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const allTags = useMemo(() => {
-    const tagSet = new Set<string>();
-    NEWS.forEach((item) => item.tags?.forEach((tag) => tagSet.add(tag)));
-    return ["All", ...Array.from(tagSet).sort()];
+  // Categories = first tag only (Esports / Community / whatever you define as primary)
+  const allCategories = useMemo(() => {
+    const categorySet = new Set<string>();
+    NEWS.forEach((item) => {
+      const primary = item.tags?.[0];
+      if (primary) categorySet.add(primary);
+    });
+    return ["All", ...Array.from(categorySet).sort()];
   }, []);
 
   const filteredNews = useMemo(() => {
     const searchTerm = query.trim().toLowerCase();
-    let filtered = NEWS;
+    let filtered = [...NEWS];
 
-    // Filter by tag
-    if (selectedTag !== "All") {
-      filtered = filtered.filter((item) => item.tags?.includes(selectedTag));
+    // Filter by primary category (first tag)
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((item) => item.tags?.[0] === selectedCategory);
     }
 
-    // Filter by search query
+    // Filter by search query (title, excerpt, any tag)
     if (searchTerm) {
-      filtered = filtered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(searchTerm) ||
-          (item.excerpt?.toLowerCase().includes(searchTerm) ?? false) ||
-          (item.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ?? false)
-      );
+      filtered = filtered.filter((item) => {
+        const inTitle = item.title.toLowerCase().includes(searchTerm);
+        const inExcerpt = item.excerpt
+          ? item.excerpt.toLowerCase().includes(searchTerm)
+          : false;
+        const inTags = item.tags
+          ? item.tags.some((tag) =>
+              tag.toLowerCase().includes(searchTerm)
+            )
+          : false;
+
+        return inTitle || inExcerpt || inTags;
+      });
     }
 
     // Sort by date (newest first)
     return filtered.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-  }, [query, selectedTag]);
-
-  // Separate featured and regular news
-  const featuredNews = filteredNews.filter(item => item.featured);
-  const regularNews = filteredNews.filter(item => !item.featured);
+  }, [query, selectedCategory]);
 
   return (
     <motion.section
@@ -74,19 +83,22 @@ export default function NewsClient() {
         transition={{ delay: 0.12, duration: 0.25 }}
       >
         <div className="max-w-2xl">
-          <h1 className="h1 mb-4">News & <span className="text-[color:var(--gold)]">Updates</span></h1>
+          <h1 className="h1 mb-4">
+            News &{" "}
+            <span className="text-[color:var(--gold)]">Updates</span>
+          </h1>
           <p className="text-white/70 text-lg leading-relaxed">
-            Stay updated with tournament results, player achievements, community announcements, 
-            and the latest from the Big Talents ecosystem.
+            Tournament recaps, roster announcements, creator news, and
+            everything happening around Big Talents.
           </p>
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           {/* Search */}
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
             <input
-              placeholder="Search news..."
+              placeholder="Search articles..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-10 pr-10 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors"
@@ -94,7 +106,7 @@ export default function NewsClient() {
             {query && (
               <button
                 onClick={() => setQuery("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
                 aria-label="Clear search"
               >
                 <FiX />
@@ -104,26 +116,26 @@ export default function NewsClient() {
         </div>
       </motion.div>
 
-      {/* Tag filters */}
+      {/* Category filters (Esports / Community / etc – first tag only) */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.25 }}
         className="flex flex-wrap gap-3 mb-8"
       >
-        {allTags.map((tag) => {
-          const isActive = selectedTag === tag;
+        {allCategories.map((category) => {
+          const isActive = selectedCategory === category;
           return (
             <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
+              key={category}
+              onClick={() => setSelectedCategory(category)}
               className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? "border-[color:var(--gold)] bg-[color:var(--gold)] text-black"
-                  : "border-white/15 hover:border-[color:var(--gold)]/50 hover:bg-white/5"
+                  ? "border-[color:var(--gold)] bg-[color:var(--gold)] text-black shadow-[0_0_25px_rgba(212,175,55,0.35)]"
+                  : "border-white/15 text-white/80 hover:border-[color:var(--gold)]/50 hover:bg-white/5"
               }`}
             >
-              {tag}
+              {category}
             </button>
           );
         })}
@@ -139,55 +151,33 @@ export default function NewsClient() {
         >
           <div className="text-6xl mb-4">📰</div>
           <h3 className="text-xl font-bold mb-2">No articles found</h3>
-          <p className="text-white/60 mb-6">Try adjusting your search or selecting a different tag.</p>
+          <p className="text-white/60 mb-6">
+            Try adjusting your search or switching categories.
+          </p>
           <button
             onClick={() => {
               setQuery("");
-              setSelectedTag("All");
+              setSelectedCategory("All");
             }}
             className="btn btn-outline rounded-xl px-6 py-3"
           >
-            Clear Filters
+            Clear filters
           </button>
         </motion.div>
       ) : (
-        <div className="space-y-12">
-          {/* Featured News */}
-          {featuredNews.length > 0 && (
-            <motion.div
-              variants={gridStagger}
-              initial="hidden"
-              animate="show"
-            >
-              <h2 className="text-xl font-bold mb-6">Featured</h2>
-              <div className="grid gap-6 lg:grid-cols-2">
-                {featuredNews.slice(0, 2).map((item) => (
-                  <motion.div key={item.slug} variants={itemUp}>
-                    <NewsCard item={item} featured />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Regular News */}
-          {regularNews.length > 0 && (
-            <motion.div
-              variants={gridStagger}
-              initial="hidden"
-              animate="show"
-            >
-              {featuredNews.length > 0 && <h2 className="text-xl font-bold mb-6">Latest News</h2>}
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {regularNews.map((item) => (
-                  <motion.div key={item.slug} variants={itemUp}>
-                    <NewsCard item={item} />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
+        <motion.div
+          variants={gridStagger}
+          initial="hidden"
+          animate="show"
+        >
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredNews.map((item) => (
+              <motion.div key={item.slug} variants={itemUp}>
+                <NewsCard item={item} />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       )}
     </motion.section>
   );
