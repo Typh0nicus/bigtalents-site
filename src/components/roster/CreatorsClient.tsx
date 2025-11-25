@@ -51,7 +51,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
         (c.platforms.tiktok?.followers ?? 0) +
         (c.platforms.x?.followers ?? 0);
 
-      // this is the field we'll compute server-side
+      // this is the field we compute server-side
       views += c.totalViews ?? 0;
     }
 
@@ -87,7 +87,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       </motion.div>
 
       {/* HERO */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[65vh] flex items-center justify-center overflow-hidden">
         {isMounted && (
           <div className="absolute inset-0 pointer-events-none">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -142,7 +142,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 tracking-tight"
             >
               <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
                 OUR CREATORS
@@ -153,33 +153,44 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.9 }}
-              className="text-xl sm:text-2xl text-white/80 mb-8 max-w-3xl mx-auto"
+              className="text-lg sm:text-xl text-white/80 mb-6 max-w-3xl mx-auto"
             >
               Content creators representing Big Talents across{" "}
-              <span className="text-[#D4AF37]">YouTube, Twitch and TikTok</span>.
+              <span className="text-[#D4AF37]">
+                YouTube, Twitch and TikTok
+              </span>
+              .
             </motion.p>
 
-            {/* REACH + VIEWS LINE */}
-            <motion.p
+            {/* REACH + VIEWS LINE (mobile-optimized, no ugly wrapping) */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.0 }}
-              className="text-white/60 mb-8 text-lg sm:text-xl"
+              className="mb-8"
             >
-              <span className="text-[#FFD700] font-semibold text-2xl">
-                {formatCompact(combinedReach)}
-              </span>{" "}
-              combined reach
-              {combinedViews > 0 && (
-                <>
-                  <span className="mx-3 text-white/30">•</span>
-                  <span className="text-[#FFD700] font-semibold text-2xl">
-                    {formatCompact(combinedViews)}
-                  </span>{" "}
-                  views
-                </>
-              )}
-            </motion.p>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
+                <span className="inline-flex items-baseline gap-1 whitespace-nowrap">
+                  <span className="text-[#FFD700] font-semibold text-2xl sm:text-3xl">
+                    {formatCompact(combinedReach)}
+                  </span>
+                  <span className="text-sm sm:text-base text-white/70">
+                    combined reach
+                  </span>
+                </span>
+
+                {combinedViews > 0 && (
+                  <span className="inline-flex items-baseline gap-1 whitespace-nowrap">
+                    <span className="text-[#FFD700] font-semibold text-2xl sm:text-3xl">
+                      {formatCompact(combinedViews)}
+                    </span>
+                    <span className="text-sm sm:text-base text-white/70">
+                      views
+                    </span>
+                  </span>
+                )}
+              </div>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}

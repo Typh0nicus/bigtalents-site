@@ -27,6 +27,21 @@ function extractViewCount(stats: unknown): number {
   return typeof raw === "number" ? raw : 0;
 }
 
+// Helper: merge follower counts so a flaky API returning 0/null
+// doesn't wipe a previously configured value.
+function mergeFollowers(
+  base: number | undefined,
+  live: number | undefined | null
+): number {
+  const existing = base ?? 0;
+  if (live == null) return existing;
+  if (live === 0 && existing > 0) {
+    // Treat "suddenly 0" from API as suspicious and keep existing value
+    return existing;
+  }
+  return live;
+}
+
 async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
   const [ytStats, twitchStats, tiktokStats] = await Promise.all([
     creator.platforms.youtube?.channelId
@@ -40,21 +55,21 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
       : Promise.resolve(null),
   ]);
 
-  // Followers / subs (reach)
-  const youtubeSubs =
-    (ytStats as { subscriberCount?: number } | null)?.subscriberCount ??
-    creator.platforms.youtube?.subscribers ??
-    0;
+  // Followers / subs (reach) — we merge live + base safely
+  const youtubeSubs = mergeFollowers(
+    creator.platforms.youtube?.subscribers,
+    (ytStats as { subscriberCount?: number } | null)?.subscriberCount
+  );
 
-  const twitchFollowers =
-    (twitchStats as { followerCount?: number } | null)?.followerCount ??
-    creator.platforms.twitch?.followers ??
-    0;
+  const twitchFollowers = mergeFollowers(
+    creator.platforms.twitch?.followers,
+    (twitchStats as { followerCount?: number } | null)?.followerCount
+  );
 
-  const tiktokFollowers =
-    (tiktokStats as { followerCount?: number } | null)?.followerCount ??
-    creator.platforms.tiktok?.followers ??
-    0;
+  const tiktokFollowers = mergeFollowers(
+    creator.platforms.tiktok?.followers,
+    (tiktokStats as { followerCount?: number } | null)?.followerCount
+  );
 
   // X followers are manually maintained, just pass through
   const xFollowers = creator.platforms.x?.followers ?? 0;
