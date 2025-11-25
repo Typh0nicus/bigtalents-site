@@ -5,6 +5,9 @@ import { fetchTwitchUser } from "@/lib/twitch";
 import { fetchTikTokUser } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
+// Force this page to be dynamic so we don't get weird build-time caching
+export const dynamic = "force-dynamic";
+
 // Extend Creator with a totalViews field for this page
 export type CreatorWithViews = Creator & {
   totalViews?: number;
