@@ -5,7 +5,7 @@ import { fetchTwitchUser } from "@/lib/twitch";
 import { fetchTikTokUser } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
-// Force this page to be dynamic so we don't get weird build-time caching
+// Make sure this page always runs on the server (no static build weirdness)
 export const dynamic = "force-dynamic";
 
 // Extend Creator with a totalViews field for this page
@@ -31,7 +31,7 @@ function extractViewCount(stats: unknown): number {
 }
 
 // Helper: merge follower counts so a flaky API returning 0/null
-// doesn't wipe a previously configured value.
+// doesn't wipe a previously configured value (from CREATORS).
 function mergeFollowers(
   base: number | undefined,
   live: number | undefined | null
@@ -39,7 +39,7 @@ function mergeFollowers(
   const existing = base ?? 0;
   if (live == null) return existing;
   if (live === 0 && existing > 0) {
-    // Treat "suddenly 0" from API as suspicious and keep existing value
+    // Treat "suddenly 0" from API as suspicious and keep existing
     return existing;
   }
   return live;
@@ -58,7 +58,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
       : Promise.resolve(null),
   ]);
 
-  // Followers / subs (reach) — we merge live + base safely
+  // Followers / subs (reach) — merge live + base safely
   const youtubeSubs = mergeFollowers(
     creator.platforms.youtube?.subscribers,
     (ytStats as { subscriberCount?: number } | null)?.subscriberCount

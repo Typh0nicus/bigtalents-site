@@ -32,12 +32,6 @@ type TikTokUserStats = {
   heart?: number;
 };
 
-type TikTokUserStatsV2 = {
-  followerCount?: string | number;
-  followingCount?: string | number;
-  heartCount?: string | number;
-};
-
 type TikTokUserRaw = {
   id?: string;
   uniqueId?: string;
@@ -49,7 +43,6 @@ type TikTokUserInfoRaw = {
   userInfo?: {
     user?: TikTokUserRaw;
     stats?: TikTokUserStats;
-    statsV2?: TikTokUserStatsV2;
   };
 };
 
@@ -151,7 +144,8 @@ function normalizePostItem(
   item: TikTokPostItem,
   username: string
 ): TikTokVideo | null {
-  const id = item.id ?? item.awemeId ?? null;
+  const id =
+    item.id ?? item.awemeId ?? null;
 
   if (!id) return null;
 
@@ -163,7 +157,8 @@ function normalizePostItem(
     item.dynamicCover ??
     "";
 
-  const timestamp = item.createTime ?? item.create_time ?? null;
+  const timestamp =
+    item.createTime ?? item.create_time ?? null;
 
   const publishedAt = timestamp
     ? new Date(timestamp * 1000).toISOString()
@@ -295,19 +290,6 @@ export async function fetchTikTokVideos(
   }
 }
 
-function pickStatNumber(
-  primary?: number,
-  secondary?: string | number
-): number {
-  if (typeof primary === "number" && primary > 0) return primary;
-  if (typeof secondary === "number" && secondary > 0) return secondary;
-  if (typeof secondary === "string") {
-    const parsed = Number(secondary);
-    if (!Number.isNaN(parsed) && parsed > 0) return parsed;
-  }
-  return primary ?? 0;
-}
-
 export async function fetchTikTokUser(
   username: string
 ): Promise<TikTokUser | null> {
@@ -346,23 +328,12 @@ export async function fetchTikTokUser(
       return null;
     }
 
-    const info = data.userInfo ?? {};
-    const user = info.user ?? {};
-    const stats = info.stats ?? {};
-    const statsV2 = info.statsV2 ?? {};
+    const user = data.userInfo?.user ?? {};
+    const stats = data.userInfo?.stats ?? {};
 
-    const followerCount = pickStatNumber(
-      stats.followerCount,
-      statsV2.followerCount
-    );
-    const followingCount = pickStatNumber(
-      stats.followingCount,
-      statsV2.followingCount
-    );
-    const heartCount = pickStatNumber(
-      stats.heartCount ?? stats.heart,
-      statsV2.heartCount
-    );
+    const followerCount: number = stats.followerCount ?? 0;
+    const followingCount: number = stats.followingCount ?? 0;
+    const heartCount: number = stats.heartCount ?? stats.heart ?? 0;
 
     return {
       id: user.id ?? "",
