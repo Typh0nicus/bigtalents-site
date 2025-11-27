@@ -27,9 +27,13 @@ const TIKAPI_HOST = "tiktok-api23.p.rapidapi.com";
 
 type TikTokUserStats = {
   followerCount?: number;
+  follower_count?: number;
+  follower?: number;
   followingCount?: number;
+  following_count?: number;
   heartCount?: number;
   heart?: number;
+  heart_count?: number;
 };
 
 type TikTokUserRaw = {
@@ -331,9 +335,30 @@ export async function fetchTikTokUser(
     const user = data.userInfo?.user ?? {};
     const stats = data.userInfo?.stats ?? {};
 
-    const followerCount: number = stats.followerCount ?? 0;
-    const followingCount: number = stats.followingCount ?? 0;
-    const heartCount: number = stats.heartCount ?? stats.heart ?? 0;
+    // Defensive parsing: the API can return different key names depending on
+    // endpoint/version. Try several common variants before falling back to 0.
+    const followerCount: number =
+      stats.followerCount ?? stats.follower_count ?? stats.follower ?? 0;
+    const followingCount: number =
+      stats.followingCount ?? stats.following_count ?? 0;
+    const heartCount: number =
+      stats.heartCount ?? stats.heart ?? stats.heart_count ?? 0;
+
+    // Helpful debug output when running in development so it's easier to
+    // diagnose why callers might only be seeing followers or partial data.
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        // Avoid logging huge objects, just the parts relevant to debugging
+        console.debug("TikAPI user/info parsed for", username, {
+          followerCount,
+          followingCount,
+          heartCount,
+          rawStats: Object.keys(stats).length ? stats : undefined,
+        });
+      } catch (e) {
+        // ignore logging failures
+      }
+    }
 
     return {
       id: user.id ?? "",
