@@ -7,9 +7,6 @@ import { CREATORS } from "@/data/creators";
 import { fetchYouTubeChannelStats } from "@/lib/youtube";
 import { fetchTwitchUser } from "@/lib/twitch";
 
-// Revalidate this page every 2 hours (7200 seconds) to keep featured content fresh
-export const revalidate = 7200;
-
 async function enrichCreatorsWithLiveStats(): Promise<Creator[]> {
   const enriched = await Promise.all(
     CREATORS.map(async (creator) => {

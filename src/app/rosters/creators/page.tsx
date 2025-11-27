@@ -5,9 +5,6 @@ import { fetchTwitchUser } from "@/lib/twitch";
 import { fetchTikTokUser } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
-// Revalidate the creators list page every 2 hours (7200 seconds)
-export const revalidate = 7200;
-
 // Extend Creator with a totalViews field for this page
 export type CreatorWithViews = Creator & {
   totalViews?: number;

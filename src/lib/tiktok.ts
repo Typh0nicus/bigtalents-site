@@ -23,10 +23,7 @@ export interface TikTokUser {
 }
 
 const TIKAPI_HOST = "tiktok-api23.p.rapidapi.com";
-
-function getTikApiKey(): string | undefined {
-  return process.env["TIKAPI_KEY"];
-}
+const TIKAPI_KEY = process.env["TIKAPI_KEY"];
 
 type TikTokUserStats = {
   followerCount?: number;
@@ -95,7 +92,6 @@ async function tikApiGet(
   path: string,
   params: Record<string, string>
 ): Promise<Response | null> {
-  const TIKAPI_KEY = getTikApiKey();
   if (!TIKAPI_KEY) {
     console.error("TikAPI key not configured");
     return null;
@@ -111,7 +107,7 @@ async function tikApiGet(
         "x-rapidapi-key": TIKAPI_KEY,
         "x-rapidapi-host": TIKAPI_HOST,
       },
-      next: { revalidate: 3600 },  // 1 hour - fresher TikTok data
+      next: { revalidate: 21600 },
     });
 
     return res;
@@ -198,7 +194,6 @@ export async function fetchTikTokVideos(
   username: string,
   maxResults: number = 3
 ): Promise<TikTokVideo[]> {
-  const TIKAPI_KEY = getTikApiKey();
   if (!TIKAPI_KEY) {
     console.error("TikAPI key not configured");
     return [];
@@ -302,7 +297,6 @@ export async function fetchTikTokVideos(
 export async function fetchTikTokUser(
   username: string
 ): Promise<TikTokUser | null> {
-  const TIKAPI_KEY = getTikApiKey();
   if (!TIKAPI_KEY) {
     console.error("TikAPI key not configured");
     return null;
