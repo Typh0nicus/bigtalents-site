@@ -107,7 +107,7 @@ async function tikApiGet(
         "x-rapidapi-key": TIKAPI_KEY,
         "x-rapidapi-host": TIKAPI_HOST,
       },
-      next: { revalidate: 21600 },
+      next: { revalidate: 43200 },
     });
 
     return res;
