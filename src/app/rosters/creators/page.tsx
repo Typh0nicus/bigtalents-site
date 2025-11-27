@@ -2,7 +2,7 @@ import { CREATORS } from "@/data/creators";
 import type { Creator } from "@/lib/featuredAlgorithm";
 import { fetchYouTubeChannelStats } from "@/lib/youtube";
 import { fetchTwitchUser } from "@/lib/twitch";
-import { fetchTikTokUser } from "@/lib/tiktok";
+import { fetchTikTokUser, fetchTikTokVideos } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
 // Extend Creator with a totalViews field for this page
@@ -43,7 +43,7 @@ function mergeFollowers(
 }
 
 async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
-  const [ytStats, twitchStats, tiktokStats] = await Promise.all([
+  const [ytStats, twitchStats, tiktokStats, tiktokVideos] = await Promise.all([
     creator.platforms.youtube?.channelId
       ? fetchYouTubeChannelStats(creator.platforms.youtube.channelId)
       : Promise.resolve(null),
@@ -53,6 +53,9 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
     creator.platforms.tiktok?.username
       ? fetchTikTokUser(creator.platforms.tiktok.username)
       : Promise.resolve(null),
+    creator.platforms.tiktok?.username
+      ? fetchTikTokVideos(creator.platforms.tiktok.username, 10)
+      : Promise.resolve([]),
   ]);
 
   // Followers / subs (reach) — merge live + base safely
@@ -81,9 +84,10 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
   const youtubeViews = extractViewCount(ytStats);
   const twitchViews = extractViewCount(twitchStats);
 
-  // TikTok user/info doesn't expose lifetime views – only likes (heartCount),
-  // so we leave this as 0 for now to avoid mixing "likes" and "views".
-  const tiktokViews = 0;
+  // Sum views from fetched TikTok videos (recent video views, not lifetime)
+  const tiktokViews = Array.isArray(tiktokVideos)
+    ? tiktokVideos.reduce((sum, video) => sum + (video.viewCount ?? 0), 0)
+    : 0;
 
   const totalViews = youtubeViews + twitchViews + tiktokViews;
 
@@ -105,6 +109,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
     twitchViews,
     "TT views:",
     tiktokViews,
+    "(from", tiktokVideos?.length ?? 0, "videos)",
     "TOTAL views:",
     totalViews
   );
