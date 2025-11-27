@@ -20,9 +20,9 @@ export const CREATORS: Creator[] = [
         url: 'https://www.tiktok.com/@radanbs',
       },
       x: {
-        handle: 'radanbs',
+        handle: 'radan_bs',
         followers: 285,
-        url: 'https://x.com/radanbs',
+        url: 'https://x.com/radan_bs',
       },
     },
   },
