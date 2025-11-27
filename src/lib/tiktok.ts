@@ -107,7 +107,7 @@ async function tikApiGet(
         "x-rapidapi-key": TIKAPI_KEY,
         "x-rapidapi-host": TIKAPI_HOST,
       },
-      next: { revalidate: 21600 },
+      next: { revalidate: 3600 },  // 1 hour - fresher TikTok data
     });
 
     return res;

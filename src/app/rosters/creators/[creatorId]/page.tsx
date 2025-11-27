@@ -9,6 +9,9 @@ import { fetchYouTubeChannelStats } from "@/lib/youtube";
 import { fetchTikTokUser } from "@/lib/tiktok";
 import { fetchTwitchUser } from "@/lib/twitch";
 
+// Revalidate creator pages every 2 hours (7200 seconds) to keep stats fresh
+export const revalidate = 7200;
+
 interface PageProps {
   params: Promise<{ creatorId: string }>;
 }

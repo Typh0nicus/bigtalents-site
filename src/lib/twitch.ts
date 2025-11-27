@@ -105,7 +105,7 @@ export async function fetchTwitchVODs(
         "Client-ID": TWITCH_CLIENT_ID,
         Authorization: `Bearer ${token}`,
       },
-      next: { revalidate: 21600 },
+      next: { revalidate: 3600 },  // 1 hour - fresher VOD data
     });
 
     if (!res.ok) {
