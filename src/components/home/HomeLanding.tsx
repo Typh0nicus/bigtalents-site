@@ -429,10 +429,10 @@ function HeroSection() {
     <motion.section
       ref={containerRef}
       style={{ y, opacity }}
-      className="relative flex min-h-[100svh] items-center justify-center select-none"
+      className="relative z-0 flex min-h-[100svh] items-center justify-center select-none"
     >
-      {/* subtle extra fade at bottom so hero melts into News */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent via-[#020617]/60 to-[#020617]" />
+      {/* Smooth gradient transition at bottom - taller for seamless blend */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent via-[#020617]/70 to-[#020617]" />
 
       <div className="container relative z-10 max-w-4xl px-6 pb-6 text-center">
         <AnimatedHeading />
@@ -611,7 +611,10 @@ function HomeNewsSection() {
   if (!latestNews.length) return null;
 
   return (
-    <section className="relative select-none pb-16 pt-24 md:pb-20 md:pt-28 lg:pb-24 lg:pt-32">
+    <section className="relative z-10 select-none pb-16 pt-24 md:pb-20 md:pt-28 lg:pb-24 lg:pt-32">
+      {/* Smooth gradient transition from hero - creates seamless blend */}
+      <div className="pointer-events-none absolute inset-x-0 -top-32 h-32 bg-gradient-to-b from-transparent to-[#020617]" />
+      
       <div className="container relative z-10 px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -963,7 +966,7 @@ function FeaturedContentSection({
   return (
     <section
       ref={sectionRef}
-      className="relative select-none py-10 md:py-14 lg:py-20"
+      className="relative z-10 select-none py-10 md:py-14 lg:py-20"
     >
       {/* tiny micro-particles just in this band (kept subtle) */}
       {mounted && (
