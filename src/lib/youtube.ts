@@ -82,7 +82,7 @@ export async function fetchYouTubeVideos(
 
   try {
     const searchUrl = `${BASE_URL}/search?key=${YOUTUBE_API_KEY}&channelId=${channelId}&part=snippet&order=date&maxResults=${maxResults}&type=video`;
-    const searchRes = await fetch(searchUrl, { next: { revalidate: 3600 } });  // 1 hour - fresher video data
+    const searchRes = await fetch(searchUrl, { next: { revalidate: 21600 } });
 
     if (!searchRes.ok) {
       throw new Error(`YouTube API error: ${searchRes.status}`);
@@ -103,7 +103,7 @@ export async function fetchYouTubeVideos(
     if (!videoIds) return [];
 
     const statsUrl = `${BASE_URL}/videos?key=${YOUTUBE_API_KEY}&id=${videoIds}&part=snippet,statistics,contentDetails`;
-    const statsRes = await fetch(statsUrl, { next: { revalidate: 3600 } });  // 1 hour - fresher video data
+    const statsRes = await fetch(statsUrl, { next: { revalidate: 21600 } });
 
     if (!statsRes.ok) {
       throw new Error(`YouTube API error: ${statsRes.status}`);
