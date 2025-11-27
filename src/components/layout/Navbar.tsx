@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail, FiUsers } from "react-icons/fi";
 import { FaDiscord, FaTwitter, FaInstagram, FaCrown } from "react-icons/fa";
 
 type NavItem = {
@@ -25,8 +25,21 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/club", label: "Club", special: true },
+  { href: "/", label: "Home" },
   { href: "/news", label: "News" },
-  { href: "/rosters/creators", label: "Rosters" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/rosters/creators", 
+        label: "Creators",
+        icon: FiUsers,
+        description: "Meet our content creators"
+      }
+    ]
+  },
   { 
     href: "/creator-program", 
     label: "Creator Program",
@@ -124,7 +137,19 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
   { href: "/tournaments", label: "Tournaments" },
-  { href: "/rosters/creators", label: "Rosters" },
+  { 
+    href: "/rosters", 
+    label: "Rosters",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/rosters/creators", 
+        label: "Creators",
+        icon: FiUsers,
+        description: "Meet our content creators"
+      }
+    ]
+  },
   { href: "/club", label: "Club", special: true }
 ];
 
