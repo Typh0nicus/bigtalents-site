@@ -294,6 +294,110 @@ export async function fetchTikTokVideos(
   }
 }
 
+export async function fetchAllTikTokVideos(
+  username: string
+): Promise<TikTokVideo[]> {
+  if (!TIKAPI_KEY) {
+    console.error("TikAPI key not configured");
+    return [];
+  }
+
+  try {
+    // 1) Get secUid first
+    const userRes = await tikApiGet("/api/user/info", {
+      uniqueId: username,
+    });
+
+    if (!userRes) {
+      console.warn("TikAPI user/info request failed for", username);
+      return [];
+    }
+
+    const userText = await userRes.text();
+    if (!userRes.ok) {
+      console.warn("TikAPI user/info error:", userRes.status, userText);
+      return [];
+    }
+
+    let userJson: TikTokUserInfoRaw;
+    try {
+      userJson = JSON.parse(userText) as TikTokUserInfoRaw;
+    } catch (parseError) {
+      console.error("Error parsing TikAPI user/info JSON:", parseError);
+      return [];
+    }
+
+    const secUid = extractSecUid(userJson);
+    if (!secUid) {
+      console.warn("Could not extract secUid for", username);
+      return [];
+    }
+
+    // 2) Paginate through all videos
+    const allVideos: TikTokVideo[] = [];
+    let cursor = "0";
+    let hasMore = true;
+    const maxPages = 20; // Safety limit to prevent infinite loops
+    let pageCount = 0;
+
+    while (hasMore && pageCount < maxPages) {
+      const postsRes = await tikApiGet("/api/user/posts", {
+        secUid,
+        count: "30", // Max per request
+        cursor,
+      });
+
+      if (!postsRes) {
+        console.warn("TikAPI user/posts request failed for", username);
+        break;
+      }
+
+      const text = await postsRes.text();
+
+      if (!postsRes.ok) {
+        console.warn("TikAPI error (videos):", postsRes.status, text);
+        break;
+      }
+
+      if (!text.trim()) {
+        break;
+      }
+
+      let json: TikTokPostsResponse & { cursor?: string; hasMore?: boolean };
+      try {
+        json = JSON.parse(text) as TikTokPostsResponse & { cursor?: string; hasMore?: boolean };
+      } catch (error) {
+        console.error("Error parsing TikTok posts JSON:", error);
+        break;
+      }
+
+      const rawVideos = extractRawVideosFromResponse(json);
+      
+      if (rawVideos.length === 0) {
+        break;
+      }
+
+      const normalized = rawVideos
+        .map((item) => normalizePostItem(item, username))
+        .filter((v): v is TikTokVideo => v !== null);
+
+      allVideos.push(...normalized);
+
+      // Check for next page - the API returns hasMore and cursor for pagination
+      cursor = json.cursor ?? (json.data as { cursor?: string } | undefined)?.cursor ?? "";
+      hasMore = (json.hasMore ?? (json.data as { hasMore?: boolean } | undefined)?.hasMore ?? false) && cursor !== "";
+      pageCount++;
+    }
+
+    console.log(`TikTok: Fetched ${allVideos.length} total videos for ${username} (${pageCount} pages)`);
+
+    return allVideos;
+  } catch (error) {
+    console.error("Error fetching all TikTok videos:", error);
+    return [];
+  }
+}
+
 export async function fetchTikTokUser(
   username: string
 ): Promise<TikTokUser | null> {
