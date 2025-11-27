@@ -87,7 +87,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       </motion.div>
 
       {/* HERO */}
-      <section className="relative min-h-[65vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[45vh] sm:min-h-[55vh] md:min-h-[65vh] flex items-center justify-center overflow-hidden">
         {isMounted && (
           <div className="absolute inset-0 pointer-events-none">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -115,7 +115,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
           </div>
         )}
 
-        <div className="container relative z-10 px-4 py-16">
+        <div className="container relative z-10 px-3 sm:px-4 py-10 sm:py-14 md:py-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -133,8 +133,8 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               }}
               className="inline-flex mb-6"
             >
-              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50 ring-4 ring-[#D4AF37]/20">
-                <FaStar className="text-black text-5xl" />
+              <div className="p-3 sm:p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50 ring-4 ring-[#D4AF37]/20">
+                <FaStar className="text-black text-3xl sm:text-4xl md:text-5xl" />
               </div>
             </motion.div>
 
@@ -167,27 +167,27 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.0 }}
-              className="mb-8"
+              className="mb-6 sm:mb-8"
             >
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
-                <span className="inline-flex items-baseline gap-1 whitespace-nowrap">
-                  <span className="text-[#FFD700] font-semibold text-2xl sm:text-3xl">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 text-center">
+                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-[#FFD700]/20">
+                  <span className="text-[#FFD700] font-bold text-2xl sm:text-3xl md:text-4xl">
                     {formatCompact(combinedReach)}
                   </span>
-                  <span className="text-sm sm:text-base text-white/70">
+                  <span className="text-sm sm:text-base text-white/80 font-medium">
                     combined reach
                   </span>
-                </span>
+                </div>
 
                 {combinedViews > 0 && (
-                  <span className="inline-flex items-baseline gap-1 whitespace-nowrap">
-                    <span className="text-[#FFD700] font-semibold text-2xl sm:text-3xl">
+                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-[#FFD700]/20">
+                    <span className="text-[#FFD700] font-bold text-2xl sm:text-3xl md:text-4xl">
                       {formatCompact(combinedViews)}
                     </span>
-                    <span className="text-sm sm:text-base text-white/70">
+                    <span className="text-sm sm:text-base text-white/80 font-medium">
                       views
                     </span>
-                  </span>
+                  </div>
                 )}
               </div>
             </motion.div>
@@ -213,10 +213,10 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       {/* CREATOR CARDS */}
       <section
         id="creators"
-        className="container mx-auto px-4 pb-24 pt-16 relative z-10"
+        className="container mx-auto px-3 sm:px-4 pb-16 sm:pb-24 pt-8 sm:pt-12 md:pt-16 relative z-10"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10">
             {sortedCreators.map((creator, index) => (
               <CreatorCard key={creator.id} creator={creator} index={index} />
             ))}

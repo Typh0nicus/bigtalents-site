@@ -343,13 +343,13 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
               )}
             </AnimatePresence>
 
-            <div className="absolute bottom-0 left-0 right-0 p-6 z-30">
+            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-30">
               <div className="flex flex-col gap-1">
-                <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white line-clamp-1">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white line-clamp-1">
                   {creator.name}
                 </h3>
                 <p
-                  className={`text-[11px] sm:text-xs font-semibold uppercase tracking-[0.18em] bg-clip-text text-transparent ${tier.tierGradient}`}
+                  className={`text-[10px] sm:text-[11px] md:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.18em] bg-clip-text text-transparent ${tier.tierGradient}`}
                 >
                   {tier.label}
                 </p>
@@ -362,7 +362,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </div>
           </div>
 
-          <div className="relative p-6 bg-black/55 backdrop-blur-xl overflow-hidden">
+          <div className="relative p-4 sm:p-6 bg-black/55 backdrop-blur-xl overflow-hidden">
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
               animate={isHovered ? { x: ["-100%", "100%"] } : {}}
@@ -382,7 +382,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                       e.stopPropagation();
                       window.open(value.url, "_blank", "noopener,noreferrer");
                     }}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 border border-white/15 hover:border-white/40 transition-colors duration-200"
+                    className="flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-zinc-900 border border-white/15 hover:border-white/40 transition-colors duration-200 text-lg sm:text-base"
                   >
                     <SocialIcon platform={platformKey} />
                   </motion.button>
