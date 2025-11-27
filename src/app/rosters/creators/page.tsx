@@ -2,7 +2,7 @@ import { CREATORS } from "@/data/creators";
 import type { Creator } from "@/lib/featuredAlgorithm";
 import { fetchYouTubeChannelStats } from "@/lib/youtube";
 import { fetchTwitchUser } from "@/lib/twitch";
-import { fetchTikTokUser, fetchTikTokVideos } from "@/lib/tiktok";
+import { fetchTikTokUser, fetchAllTikTokVideos } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
 // Extend Creator with a totalViews field for this page
@@ -54,7 +54,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
       ? fetchTikTokUser(creator.platforms.tiktok.username)
       : Promise.resolve(null),
     creator.platforms.tiktok?.username
-      ? fetchTikTokVideos(creator.platforms.tiktok.username, 10)
+      ? fetchAllTikTokVideos(creator.platforms.tiktok.username)
       : Promise.resolve([]),
   ]);
 
@@ -109,7 +109,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
     twitchViews,
     "TT views:",
     tiktokViews,
-    "(from", tiktokVideos?.length ?? 0, "videos)",
+    "(from", Array.isArray(tiktokVideos) ? tiktokVideos.length : 0, "total videos)",
     "TOTAL views:",
     totalViews
   );
