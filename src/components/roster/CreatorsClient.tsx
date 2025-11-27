@@ -87,7 +87,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       </motion.div>
 
       {/* HERO */}
-      <section className="relative min-h-[45vh] sm:min-h-[55vh] md:min-h-[65vh] flex items-center justify-center overflow-hidden">
+      <section className="relative z-10 min-h-[45vh] sm:min-h-[55vh] md:min-h-[65vh] flex items-center justify-center overflow-hidden">
         {isMounted && (
           <div className="absolute inset-0 pointer-events-none">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -209,10 +209,10 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
       </section>
 
-      {/* CREATOR CARDS - overlaps with hero for seamless transition */}
+      {/* CREATOR CARDS - proper spacing below hero */}
       <section
         id="creators"
-        className="container mx-auto px-3 sm:px-4 pb-16 sm:pb-24 -mt-8 sm:-mt-12 relative z-10"
+        className="container mx-auto px-3 sm:px-4 pb-16 sm:pb-24 pt-8 sm:pt-12 relative z-20"
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10">

@@ -19,6 +19,11 @@ export const CREATORS: Creator[] = [
         followers: 0,
         url: 'https://www.tiktok.com/@radanbs',
       },
+      x: {
+        handle: 'radan_bs',
+        followers: 285,
+        url: 'https://x.com/radan_bs',
+      },
     },
   },
   {
@@ -47,7 +52,7 @@ export const CREATORS: Creator[] = [
       },
       x: {
         handle: 'Ivanoz7_',
-        followers: 706, 
+        followers: 915, 
         url: 'https://x.com/Ivanoz7_',
       },
     },
@@ -73,7 +78,7 @@ export const CREATORS: Creator[] = [
       },
       x: {
         handle: 'ZTBrawl',
-        followers: 627,
+        followers: 805,
         url: 'https://x.com/ZTBrawl',
       },
       discord: {
