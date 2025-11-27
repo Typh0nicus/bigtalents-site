@@ -169,25 +169,23 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               transition={{ duration: 0.6, delay: 1.0 }}
               className="mb-6 sm:mb-8"
             >
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-x-6 text-center">
-                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-[#FFD700]/20">
-                  <span className="text-[#FFD700] font-bold text-2xl sm:text-3xl md:text-4xl">
-                    {formatCompact(combinedReach)}
-                  </span>
-                  <span className="text-sm sm:text-base text-white/80 font-medium">
-                    combined reach
-                  </span>
-                </div>
-
+              <div className="flex items-center justify-center gap-2 text-center flex-wrap">
+                <span className="text-[#FFD700] font-bold text-xl sm:text-2xl md:text-3xl">
+                  {formatCompact(combinedReach)}
+                </span>
+                <span className="text-sm sm:text-base text-white/70 font-medium">
+                  combined reach
+                </span>
                 {combinedViews > 0 && (
-                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-[#FFD700]/20">
-                    <span className="text-[#FFD700] font-bold text-2xl sm:text-3xl md:text-4xl">
+                  <>
+                    <span className="text-white/40 mx-1">•</span>
+                    <span className="text-[#FFD700] font-bold text-xl sm:text-2xl md:text-3xl">
                       {formatCompact(combinedViews)}
                     </span>
-                    <span className="text-sm sm:text-base text-white/80 font-medium">
+                    <span className="text-sm sm:text-base text-white/70 font-medium">
                       views
                     </span>
-                  </div>
+                  </>
                 )}
               </div>
             </motion.div>
@@ -207,13 +205,14 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
           </motion.div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
+        {/* Smoother gradient transition - extends into the cards area */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
       </section>
 
-      {/* CREATOR CARDS */}
+      {/* CREATOR CARDS - overlaps with hero for seamless transition */}
       <section
         id="creators"
-        className="container mx-auto px-3 sm:px-4 pb-16 sm:pb-24 pt-8 sm:pt-12 md:pt-16 relative z-10"
+        className="container mx-auto px-3 sm:px-4 pb-16 sm:pb-24 -mt-8 sm:-mt-12 relative z-10"
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-10">
