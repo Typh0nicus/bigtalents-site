@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { FiExternalLink, FiFilter, FiCalendar, FiGlobe, FiAward } from "react-icons/fi";
+import { FiExternalLink, FiFilter, FiCalendar, FiGlobe, FiAward, FiChevronDown } from "react-icons/fi";
 import { FaTrophy, FaMedal, FaStar } from "react-icons/fa";
 import Link from "next/link";
 import { COMPETITIVE_RESULTS, type TournamentResult } from "@/data/competitiveResults";
@@ -254,9 +254,7 @@ function ScrollIndicator() {
           ease: "easeInOut",
         }}
       >
-        <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <FiChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.div>
     </motion.div>
   );
