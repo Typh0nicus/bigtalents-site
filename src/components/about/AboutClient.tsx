@@ -453,7 +453,7 @@ export default function AboutClient() {
               <Link href="/rosters" className="btn btn-primary rounded-2xl px-8 py-4 text-lg hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all">
                 View Rosters
               </Link>
-              <Link href="/tournaments" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">
+              <Link href="/matcherinos" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">
                 Browse Events
               </Link>
               <Link href="/creator-program" className="btn btn-outline rounded-2xl px-8 py-4 text-lg hover:bg-[#D4AF37]/10 transition-all">

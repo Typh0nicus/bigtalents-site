@@ -28,7 +28,7 @@ export function TournamentBracket({ tournamentSlug, isLive = false }: Tournament
         setLoading(true);
         setError(null);
         
-        const res = await fetch(`/api/tournaments/${tournamentSlug}/bracket`, {
+        const res = await fetch(`/api/matcherinos/${tournamentSlug}/bracket`, {
           cache: 'no-store',
         });
 

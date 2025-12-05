@@ -50,7 +50,7 @@ export function FeaturedSlice() {
     <section className="container py-10 md:py-14 overflow-x-hidden">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <h2 className="h2 text-center sm:text-left">Featured Tournaments</h2>
-        <Link href="/tournaments" className="btn btn-outline self-center sm:self-auto">
+        <Link href="/matcherinos" className="btn btn-outline self-center sm:self-auto">
           See All
         </Link>
       </div>

@@ -3,7 +3,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
-import { FiArrowDown } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -206,9 +206,9 @@ function ScrollIndicator() {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
   return (
     <motion.div style={{ opacity }} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60 select-none">
-      <span className="text-xs font-medium tracking-wide">SCROLL TO EXPLORE</span>
-      <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }} className="p-2 border border-white/20 rounded-full hover:border-[#D4AF37]/50 transition-colors duration-300">
-        <FiArrowDown size={16} />
+      <span className="text-xs sm:text-sm uppercase tracking-wider font-medium">Scroll to explore</span>
+      <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
+        <FiChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.div>
     </motion.div>
   );

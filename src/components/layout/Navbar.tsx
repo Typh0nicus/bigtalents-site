@@ -83,8 +83,7 @@ const NAV_ITEMS: NavItem[] = [
         description: "Download our brand assets"
       }
     ]
-  },
-  { href: "/tournaments", label: "Tournaments" }
+  }
 ];
 
 const LEFT_NAV_ITEMS: NavItem[] = [
@@ -136,7 +135,6 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 ];
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/tournaments", label: "Tournaments" },
   { 
     href: "/rosters", 
     label: "Rosters",
