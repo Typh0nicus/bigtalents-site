@@ -80,16 +80,13 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
       onHoverEnd={() => setIsHovered(false)}
       className="group relative"
     >
-      <motion.div 
-        className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] transition-all duration-500 hover:border-[#D4AF37]/30"
-        animate={isHovered ? { y: -8, scale: 1.01 } : { y: 0, scale: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
-      >
+      {/* No scale/y animation on hover - just border color change */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-white/20">
         {/* Image/Banner */}
         <div className="relative aspect-video overflow-hidden">
           <motion.div
             className="h-full w-full"
-            animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+            animate={isHovered ? { scale: 1.03 } : { scale: 1 }}
             transition={{ duration: 0.28, ease: EASE_OUT }}
           >
             {result.image ? (
@@ -141,10 +138,10 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
               {style.label}
             </span>
 
-            {/* Event type badge */}
+            {/* Event type badge - more subtle styling like TournamentCard */}
             <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] backdrop-blur-sm ${
               result.eventType === "lan"
-                ? "bg-[#D4AF37]/90 text-black border border-[#D4AF37]/50"
+                ? "bg-black/70 text-white border border-white/20"
                 : "bg-black/70 text-white/80 border border-white/15"
             }`}>
               {result.eventType}
@@ -199,7 +196,7 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
     </motion.article>
   );
 }
@@ -230,15 +227,15 @@ export default function TournamentsPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* Background with floating trophies */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* Background with floating trophies - absolute not fixed so it doesn't follow scroll */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-              radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
+              radial-gradient(1400px 700px at 20% 5%, rgba(212,175,55,0.08), transparent 60%),
+              radial-gradient(1200px 600px at 80% 15%, rgba(139,92,246,0.05), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(15,23,42,0.9), transparent 60%)
             `,
           }}
         />
@@ -252,7 +249,7 @@ export default function TournamentsPage() {
                 className="absolute"
                 style={{
                   left: `${(i * 7) % 100}%`,
-                  top: `${(i * 8) % 100}%`,
+                  top: `${15 + (i * 5) % 50}%`,
                 }}
                 animate={{
                   y: [0, -25, 0],
@@ -274,7 +271,7 @@ export default function TournamentsPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16">
+      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16 overflow-visible">
         <div className="container relative z-10 px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -282,7 +279,7 @@ export default function TournamentsPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-center max-w-3xl mx-auto"
           >
-            {/* Icon with glow */}
+            {/* Icon with softer glow - ensure no clipping */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -294,10 +291,10 @@ export default function TournamentsPage() {
               className="inline-flex mb-6 relative"
             >
               <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl blur-2xl"
+                className="absolute -inset-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-3xl blur-2xl"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.5, 0.3],
+                  scale: [1, 1.15, 1],
+                  opacity: [0.2, 0.35, 0.2],
                 }}
                 transition={{
                   duration: 3,
@@ -305,7 +302,7 @@ export default function TournamentsPage() {
                   ease: "easeInOut",
                 }}
               />
-              <div className="relative p-3.5 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl shadow-2xl shadow-[#D4AF37]/40 ring-2 ring-[#D4AF37]/20">
+              <div className="relative p-3.5 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl shadow-xl shadow-[#D4AF37]/30 ring-1 ring-[#D4AF37]/20">
                 <FaTrophy className="w-8 h-8 text-black" />
               </div>
             </motion.div>
@@ -317,7 +314,7 @@ export default function TournamentsPage() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 tracking-tight"
             >
-              <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent">
                 Competition Record
               </span>
             </motion.h1>

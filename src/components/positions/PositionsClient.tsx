@@ -90,7 +90,7 @@ export default function PositionsClient() {
               key={cat}
               className={`absolute px-3 py-1.5 rounded-full bg-gradient-to-r ${
                 CATEGORY_COLORS[cat as StaffCategory]
-              } backdrop-blur-sm border text-xs font-semibold opacity-20 pointer-events-none`}
+              } backdrop-blur-sm border text-xs font-semibold opacity-20 pointer-events-none hidden sm:block`}
               style={{
                 left: `${12 + i * 23}%`,
                 top: `${42 + (i % 2) * 12}%`,
@@ -98,6 +98,32 @@ export default function PositionsClient() {
               animate={{
                 y: [0, -15, 0],
                 rotate: [0, 5, 0],
+              }}
+              transition={{
+                duration: 5 + i,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              {cat}
+            </motion.div>
+          ))}
+        
+        {/* Mobile-friendly centered floaties */}
+        {isMounted &&
+          categories.slice(0, 2).map((cat, i) => (
+            <motion.div
+              key={`mobile-${cat}`}
+              className={`absolute px-2 py-1 rounded-full bg-gradient-to-r ${
+                CATEGORY_COLORS[cat as StaffCategory]
+              } backdrop-blur-sm border text-[10px] font-semibold opacity-15 pointer-events-none sm:hidden`}
+              style={{
+                left: `${20 + i * 40}%`,
+                top: `${35 + (i % 2) * 15}%`,
+              }}
+              animate={{
+                y: [0, -10, 0],
+                rotate: [0, 3, 0],
               }}
               transition={{
                 duration: 5 + i,
