@@ -56,15 +56,28 @@ function formatDate(dateString: string) {
 }
 
 function formatPrize(prize: number) {
-  // Format like "3000$+" or "180$+"
-  const rounded = Math.floor(prize);
-  return `${rounded}$+`;
+  // Format like "3k+" for 3021, "180+" for 182
+  if (prize >= 1000) {
+    const k = Math.floor(prize / 1000);
+    return `${k}k+`;
+  }
+  const rounded = Math.floor(prize / 10) * 10;
+  return `${rounded}+`;
 }
 
 function ResultCard({ result, index }: { result: TournamentResult; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isTapped, setIsTapped] = useState(false); // For mobile
   const style = getPlacementStyle(result.placementNum);
   const Icon = style.icon;
+  
+  // Combined state for showing links (hover on desktop, tap on mobile)
+  const showLinks = isHovered || isTapped;
+
+  const handleTap = () => {
+    // Toggle on tap for mobile
+    setIsTapped(prev => !prev);
+  };
 
   return (
     <motion.article
@@ -78,15 +91,15 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
       }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative"
+      onClick={handleTap}
+      className="group relative cursor-pointer"
     >
-      {/* No scale/y animation on hover - just border color change */}
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-white/20">
         {/* Image/Banner */}
         <div className="relative aspect-video overflow-hidden">
           <motion.div
             className="h-full w-full"
-            animate={isHovered ? { scale: 1.03 } : { scale: 1 }}
+            animate={showLinks ? { scale: 1.03 } : { scale: 1 }}
             transition={{ duration: 0.28, ease: EASE_OUT }}
           >
             {result.image ? (
@@ -110,7 +123,7 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
 
           {/* Shine effect on hover */}
           <AnimatePresence>
-            {isHovered && (
+            {showLinks && (
               <motion.div
                 key="shine"
                 className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -139,10 +152,10 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
               {style.label}
             </span>
 
-            {/* Event type badge */}
+            {/* Event type badge - glassy yellowish for LAN */}
             <span className={`rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.14em] backdrop-blur-sm ${
               result.eventType === "lan"
-                ? "bg-black/70 text-white border border-white/20"
+                ? "bg-[#D4AF37]/15 text-[#FFD700] border border-[#D4AF37]/30"
                 : "bg-black/70 text-white/80 border border-white/15"
             }`}>
               {result.eventType}
@@ -158,7 +171,7 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
           </h3>
 
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/60 mb-3 sm:mb-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/60">
             <div className="flex items-center gap-1 sm:gap-1.5">
               <FiCalendar className="text-[#D4AF37]" size={11} />
               <span>{formatDate(result.date)}</span>
@@ -166,36 +179,48 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
             {result.prizeWon && (
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <FiAward className="text-[#D4AF37]" size={11} />
-                <span className="text-[#D4AF37] font-medium">{formatPrize(result.prizeWon)}</span>
+                <span className="text-[#D4AF37] font-medium">${formatPrize(result.prizeWon)}</span>
               </div>
             )}
           </div>
 
-          {/* External Links - always visible */}
-          {(result.liquipedia || result.matcherino) && (
-            <div className="flex gap-2">
-              {result.liquipedia && (
-                <a
-                  href={result.liquipedia}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
-                >
-                  Liquipedia <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
-                </a>
-              )}
-              {result.matcherino && (
-                <a
-                  href={result.matcherino}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
-                >
-                  Matcherino <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
-                </a>
-              )}
-            </div>
-          )}
+          {/* External Links - slide down on hover/tap */}
+          <AnimatePresence>
+            {showLinks && (result.liquipedia || result.matcherino) && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, marginTop: 12 }}
+                exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: EASE_OUT }}
+                className="overflow-hidden"
+              >
+                <div className="flex gap-2 pt-1">
+                  {result.liquipedia && (
+                    <a
+                      href={result.liquipedia}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                    >
+                      Liquipedia <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
+                    </a>
+                  )}
+                  {result.matcherino && (
+                    <a
+                      href={result.matcherino}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                    >
+                      Matcherino <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.article>
@@ -227,7 +252,12 @@ export default function TournamentsPage() {
   const totalEvents = COMPETITIVE_RESULTS.length;
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: EASE_OUT }}
+      className="min-h-screen relative overflow-hidden bg-black text-white select-none"
+    >
       {/* Background with floating trophies - absolute not fixed so it doesn't follow scroll */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
@@ -235,7 +265,7 @@ export default function TournamentsPage() {
           style={{
             background: `
               radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-              radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(139,92,246,0.06), transparent 60%),
               radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
             `,
           }}
@@ -252,16 +282,18 @@ export default function TournamentsPage() {
                   left: `${(i * 5) % 100}%`,
                   top: `${(i * 7) % 100}%`,
                 }}
+                initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   y: [0, -30, 0],
                   x: [0, Math.sin(i) * 15, 0],
                   opacity: [0.2, 0.5, 0.2],
                   rotate: [0, 360],
+                  scale: 1,
                 }}
                 transition={{
                   duration: 8 + (i % 3),
                   repeat: Infinity,
-                  delay: i * 0.3,
+                  delay: 0.5 + i * 0.1,
                   ease: "easeInOut",
                 }}
               >
@@ -278,14 +310,14 @@ export default function TournamentsPage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: EASE_OUT }}
             className="text-center max-w-3xl mx-auto"
           >
             {/* Original style trophy badge - rounded-full with proper glow */}
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: EASE_OUT }}
+              transition={{ duration: 0.8, delay: 0.25, ease: EASE_OUT }}
               className="inline-flex mb-6"
             >
               <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50">
@@ -297,7 +329,7 @@ export default function TournamentsPage() {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: EASE_OUT }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
             >
               <span className="text-white">Competition</span>{" "}
@@ -310,7 +342,7 @@ export default function TournamentsPage() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.65 }}
+              transition={{ duration: 0.6, delay: 0.55, ease: EASE_OUT }}
               className="text-sm sm:text-base md:text-lg text-white/70 mb-6 leading-relaxed max-w-2xl mx-auto px-4"
             >
               BGT&apos;s competitive placements and achievements in Brawl Stars esports.
@@ -320,7 +352,7 @@ export default function TournamentsPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
+              transition={{ duration: 0.6, delay: 0.7, ease: EASE_OUT }}
               className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm"
             >
               <div className="flex items-center gap-2">
@@ -348,7 +380,7 @@ export default function TournamentsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: EASE_OUT }}
           className="flex flex-wrap items-center gap-2 mb-8 sm:mb-10"
         >
           {FILTERS.map((f) => (
@@ -366,7 +398,7 @@ export default function TournamentsPage() {
           ))}
         </motion.div>
 
-        {/* Results Grid */}
+        {/* Results Grid - added extra bottom margin for card expansion space */}
         {filteredResults.length > 0 ? (
           <motion.div 
             className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
@@ -376,13 +408,12 @@ export default function TournamentsPage() {
                 opacity: 1,
                 transition: {
                   staggerChildren: 0.08,
-                  delayChildren: 0.2,
+                  delayChildren: 0.6,
                 },
               },
             }}
             initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="show"
           >
             {filteredResults.map((result, index) => (
               <ResultCard key={result.id} result={result} index={index} />
@@ -408,6 +439,6 @@ export default function TournamentsPage() {
           </motion.div>
         )}
       </section>
-    </div>
+    </motion.div>
   );
 }
