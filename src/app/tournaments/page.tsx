@@ -285,35 +285,45 @@ export default function TournamentsPage() {
           }}
         />
 
-        {/* Floating Trophy Particles - Bigger and better distributed */}
+        {/* Floating Trophy Particles - Bigger and persistent */}
         {isMounted && (
-          <div className="opacity-25">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute"
-                style={{
-                  left: `${(i * 5) % 100}%`,
-                  top: `${(i * 7) % 100}%`,
-                }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{
-                  y: [0, -30, 0],
-                  x: [0, Math.sin(i) * 15, 0],
-                  opacity: [0.2, 0.5, 0.2],
-                  rotate: [0, 360],
-                  scale: 1,
-                }}
-                transition={{
-                  duration: 8 + (i % 3),
-                  repeat: Infinity,
-                  delay: 0.5 + i * 0.1,
-                  ease: "easeInOut",
-                }}
-              >
-                <FaTrophy className="text-[#D4AF37]" size={i % 3 === 0 ? 16 : i % 3 === 1 ? 12 : 8} />
-              </motion.div>
-            ))}
+          <div>
+            {Array.from({ length: 18 }).map((_, i) => {
+              // Distribute trophies more evenly across the viewport
+              const col = i % 6;
+              const row = Math.floor(i / 6);
+              const left = 8 + col * 15 + (row % 2) * 7; // staggered columns
+              const top = 10 + row * 30;
+              // Larger sizes
+              const sizes = [28, 22, 18, 24, 20, 26];
+              const size = sizes[i % sizes.length];
+              
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute"
+                  style={{
+                    left: `${left}%`,
+                    top: `${top}%`,
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{
+                    y: [0, -20, 0],
+                    x: [0, Math.sin(i) * 10, 0],
+                    rotate: [0, 15, -15, 0],
+                    scale: 1,
+                  }}
+                  transition={{
+                    y: { duration: 6 + (i % 4), repeat: Infinity, ease: "easeInOut" },
+                    x: { duration: 7 + (i % 3), repeat: Infinity, ease: "easeInOut" },
+                    rotate: { duration: 10 + (i % 5), repeat: Infinity, ease: "easeInOut" },
+                    scale: { duration: 0.6, delay: 0.3 + i * 0.05 },
+                  }}
+                >
+                  <FaTrophy className="text-[#D4AF37] opacity-30" size={size} />
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -394,8 +404,8 @@ export default function TournamentsPage() {
         </div>
       </section>
 
-      {/* Results Section */}
-      <section className="relative z-10 container mx-auto px-4 pb-24 sm:pb-32">
+      {/* Results Section - Added extra bottom padding for card expansion space */}
+      <section className="relative z-10 container mx-auto px-4 pb-40 sm:pb-48">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
