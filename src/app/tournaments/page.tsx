@@ -250,16 +250,30 @@ export default function TournamentsPage() {
   }, [filter]);
 
   const totalEvents = COMPETITIVE_RESULTS.length;
+  
+  // Calculate total prize money earned
+  const totalPrizeMoney = useMemo(() => {
+    return COMPETITIVE_RESULTS.reduce((sum, r) => sum + (r.prizeWon || 0), 0);
+  }, []);
+  
+  // Format total prize money (e.g., "3.2k" for 3205)
+  const formatTotalPrize = (amount: number) => {
+    if (amount >= 1000) {
+      const k = (amount / 1000).toFixed(1);
+      return `$${k}k`;
+    }
+    return `$${Math.floor(amount)}`;
+  };
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: EASE_OUT }}
-      className="min-h-screen relative overflow-hidden bg-black text-white select-none"
+      className="min-h-screen relative bg-black text-white select-none"
     >
-      {/* Background with floating trophies - absolute not fixed so it doesn't follow scroll */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Background with floating trophies - fixed position with z-0 to prevent stretching */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div
           className="absolute inset-0"
           style={{
@@ -353,7 +367,7 @@ export default function TournamentsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7, ease: EASE_OUT }}
-              className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm"
+              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -362,12 +376,18 @@ export default function TournamentsPage() {
                   Events
                 </span>
               </div>
-              <div className="w-px h-4 bg-white/10" />
+              <div className="w-px h-4 bg-white/10 hidden sm:block" />
               <div className="text-white/50">
                 <span className="text-[#D4AF37] font-bold">
                   {COMPETITIVE_RESULTS.filter(r => r.eventType === "lan").length}
                 </span>{" "}
-                LAN Tournaments
+                LAN
+              </div>
+              <div className="w-px h-4 bg-white/10 hidden sm:block" />
+              <div className="flex items-center gap-1.5 text-white/50">
+                <FiAward className="text-[#D4AF37]" size={14} />
+                <span className="text-[#D4AF37] font-bold">{formatTotalPrize(totalPrizeMoney)}</span>{" "}
+                Earned
               </div>
             </motion.div>
           </motion.div>
