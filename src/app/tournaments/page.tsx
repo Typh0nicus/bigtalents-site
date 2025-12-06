@@ -100,7 +100,7 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-900 to-black">
-                <Icon className="text-6xl text-[#D4AF37] opacity-30" />
+                <Icon className="text-5xl sm:text-6xl text-[#D4AF37] opacity-30" />
               </div>
             )}
           </motion.div>
@@ -131,15 +131,16 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
           </AnimatePresence>
 
           {/* Bottom badges on image */}
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2">
+          <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 flex items-center justify-between gap-2">
             {/* Placement badge */}
-            <span className={`inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/70 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] backdrop-blur-sm ${style.text}`}>
-              <Icon size={10} />
+            <span className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-white/15 bg-black/70 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.14em] backdrop-blur-sm ${style.text}`}>
+              <Icon size={9} className="sm:hidden" />
+              <Icon size={10} className="hidden sm:block" />
               {style.label}
             </span>
 
-            {/* Event type badge - more subtle styling like TournamentCard */}
-            <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] backdrop-blur-sm ${
+            {/* Event type badge */}
+            <span className={`rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.14em] backdrop-blur-sm ${
               result.eventType === "lan"
                 ? "bg-black/70 text-white border border-white/20"
                 : "bg-black/70 text-white/80 border border-white/15"
@@ -150,21 +151,21 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
         </div>
 
         {/* Content Section */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           {/* Tournament Name */}
-          <h3 className="font-semibold text-base sm:text-lg text-white line-clamp-2 transition-colors duration-150 group-hover:text-white mb-3 leading-tight">
+          <h3 className="font-semibold text-sm sm:text-base md:text-lg text-white line-clamp-2 transition-colors duration-150 group-hover:text-white mb-2 sm:mb-3 leading-tight">
             {result.name}
           </h3>
 
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-3 text-xs text-white/60 mb-4">
-            <div className="flex items-center gap-1.5">
-              <FiCalendar className="text-[#D4AF37]" size={12} />
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/60 mb-3 sm:mb-4">
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              <FiCalendar className="text-[#D4AF37]" size={11} />
               <span>{formatDate(result.date)}</span>
             </div>
             {result.prizeWon && (
-              <div className="flex items-center gap-1.5">
-                <FiAward className="text-[#D4AF37]" size={12} />
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <FiAward className="text-[#D4AF37]" size={11} />
                 <span className="text-[#D4AF37] font-medium">{formatPrize(result.prizeWon)}</span>
               </div>
             )}
@@ -178,9 +179,9 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
                   href={result.liquipedia}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                  className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
                 >
-                  Liquipedia <FiExternalLink size={10} />
+                  Liquipedia <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
                 </a>
               )}
               {result.matcherino && (
@@ -188,9 +189,9 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
                   href={result.matcherino}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                  className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
                 >
-                  Matcherino <FiExternalLink size={10} />
+                  Matcherino <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
                 </a>
               )}
             </div>
@@ -233,45 +234,46 @@ export default function TournamentsPage() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% 5%, rgba(212,175,55,0.08), transparent 60%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(139,92,246,0.05), transparent 60%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(15,23,42,0.9), transparent 60%)
+              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
             `,
           }}
         />
 
-        {/* Floating Trophy Particles */}
+        {/* Floating Trophy Particles - Bigger and better distributed */}
         {isMounted && (
-          <div className="opacity-20">
-            {Array.from({ length: 15 }).map((_, i) => (
+          <div className="opacity-25">
+            {Array.from({ length: 20 }).map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute"
                 style={{
-                  left: `${(i * 7) % 100}%`,
-                  top: `${15 + (i * 5) % 50}%`,
+                  left: `${(i * 5) % 100}%`,
+                  top: `${(i * 7) % 100}%`,
                 }}
                 animate={{
-                  y: [0, -25, 0],
-                  x: [0, Math.sin(i) * 10, 0],
-                  opacity: [0.15, 0.4, 0.15],
+                  y: [0, -30, 0],
+                  x: [0, Math.sin(i) * 15, 0],
+                  opacity: [0.2, 0.5, 0.2],
+                  rotate: [0, 360],
                 }}
                 transition={{
-                  duration: 7 + (i % 3),
+                  duration: 8 + (i % 3),
                   repeat: Infinity,
-                  delay: i * 0.4,
+                  delay: i * 0.3,
                   ease: "easeInOut",
                 }}
               >
-                <FaTrophy className="text-[#D4AF37]" size={i % 2 === 0 ? 10 : 6} />
+                <FaTrophy className="text-[#D4AF37]" size={i % 3 === 0 ? 16 : i % 3 === 1 ? 12 : 8} />
               </motion.div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16 overflow-visible">
+      {/* Hero Section - Raised a bit */}
+      <section className="relative pt-28 pb-10 md:pt-36 md:pb-14 overflow-visible">
         <div className="container relative z-10 px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -279,31 +281,15 @@ export default function TournamentsPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-center max-w-3xl mx-auto"
           >
-            {/* Icon with softer glow - ensure no clipping */}
+            {/* Original style trophy badge - rounded-full with proper glow */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.35,
-                ease: EASE_OUT,
-              }}
-              className="inline-flex mb-6 relative"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE_OUT }}
+              className="inline-flex mb-6"
             >
-              <motion.div
-                className="absolute -inset-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-3xl blur-2xl"
-                animate={{
-                  scale: [1, 1.15, 1],
-                  opacity: [0.2, 0.35, 0.2],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-              <div className="relative p-3.5 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl shadow-xl shadow-[#D4AF37]/30 ring-1 ring-[#D4AF37]/20">
-                <FaTrophy className="w-8 h-8 text-black" />
+              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50">
+                <FaTrophy className="text-black text-3xl sm:text-4xl" />
               </div>
             </motion.div>
 
@@ -312,10 +298,11 @@ export default function TournamentsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
             >
-              <span className="bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent">
-                Competition Record
+              <span className="text-white">Competition</span>{" "}
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+                Record
               </span>
             </motion.h1>
 
@@ -324,7 +311,7 @@ export default function TournamentsPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.65 }}
-              className="text-base sm:text-lg text-white/70 mb-6 leading-relaxed max-w-2xl mx-auto"
+              className="text-sm sm:text-base md:text-lg text-white/70 mb-6 leading-relaxed max-w-2xl mx-auto px-4"
             >
               BGT&apos;s competitive placements and achievements in Brawl Stars esports.
             </motion.p>
@@ -334,7 +321,7 @@ export default function TournamentsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="flex items-center justify-center gap-6 text-sm"
+              className="flex items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm"
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -356,19 +343,19 @@ export default function TournamentsPage() {
       </section>
 
       {/* Results Section */}
-      <section className="relative z-10 container mx-auto px-4 pb-32">
+      <section className="relative z-10 container mx-auto px-4 pb-24 sm:pb-32">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap items-center gap-2 mb-10"
+          className="flex flex-wrap items-center gap-2 mb-8 sm:mb-10"
         >
           {FILTERS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                 filter === f.key
                   ? "bg-[#D4AF37] text-black"
                   : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
@@ -382,7 +369,7 @@ export default function TournamentsPage() {
         {/* Results Grid */}
         {filteredResults.length > 0 ? (
           <motion.div 
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
             variants={{
               hidden: { opacity: 0 },
               show: {
@@ -405,16 +392,16 @@ export default function TournamentsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-20"
+            className="text-center py-16 sm:py-20"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/5 rounded-full mb-6">
-              <FaTrophy className="text-4xl text-white/20" />
+            <div className="inline-flex items-center justify-center w-16 sm:w-20 h-16 sm:h-20 bg-white/5 rounded-full mb-4 sm:mb-6">
+              <FaTrophy className="text-3xl sm:text-4xl text-white/20" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-3">No Results Found</h3>
-            <p className="text-white/60 mb-6">Try adjusting your filters</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">No Results Found</h3>
+            <p className="text-white/60 mb-4 sm:mb-6 text-sm sm:text-base">Try adjusting your filters</p>
             <button
               onClick={() => setFilter("all")}
-              className="btn btn-primary rounded-xl"
+              className="btn btn-primary rounded-xl text-sm sm:text-base"
             >
               Reset Filters
             </button>
