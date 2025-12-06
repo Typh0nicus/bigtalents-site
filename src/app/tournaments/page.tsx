@@ -70,6 +70,7 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
   const [isTapped, setIsTapped] = useState(false); // For mobile
   const style = getPlacementStyle(result.placementNum);
   const Icon = style.icon;
+  const displayPrize = result.prizePool ?? result.prizeWon;
   
   // Combined state for showing links (hover on desktop, tap on mobile)
   const showLinks = isHovered || isTapped;
@@ -176,12 +177,12 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
               <FiCalendar className="text-[#D4AF37]" size={11} />
               <span>{formatDate(result.date)}</span>
             </div>
-            {result.prizeWon && (
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <FiAward className="text-[#D4AF37]" size={11} />
-                <span className="text-[#D4AF37] font-medium">${formatPrize(result.prizeWon)}</span>
-              </div>
-            )}
+{displayPrize && (
+  <div className="flex items-center gap-1 sm:gap-1.5">
+    <FiAward className="text-[#D4AF37]" size={11} />
+    <span className="text-[#D4AF37] font-medium">${formatPrize(displayPrize)}</span>
+  </div>
+)}
           </div>
 
           {/* External Links - slide down on hover/tap */}
@@ -357,9 +358,9 @@ export default function TournamentsPage() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
             >
               <span className="text-white">Competition</span>{" "}
-              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
-                Record
-              </span>
+              <span className="bg-gradient-to-r from-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(212,175,55,0.25)]">
+  Record
+</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -372,34 +373,36 @@ export default function TournamentsPage() {
               BGT&apos;s competitive placements and achievements in Brawl Stars esports.
             </motion.p>
 
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7, ease: EASE_OUT }}
-              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-                <span className="text-white/60">
-                  <span className="text-[#D4AF37] font-bold">{totalEvents}</span>{" "}
-                  Events
-                </span>
-              </div>
-              <div className="w-px h-4 bg-white/10 hidden sm:block" />
-              <div className="text-white/50">
-                <span className="text-[#D4AF37] font-bold">
-                  {COMPETITIVE_RESULTS.filter(r => r.eventType === "lan").length}
-                </span>{" "}
-                LAN
-              </div>
-              <div className="w-px h-4 bg-white/10 hidden sm:block" />
-              <div className="flex items-center gap-1.5 text-white/50">
-                <FiAward className="text-[#D4AF37]" size={14} />
-                <span className="text-[#D4AF37] font-bold">{formatTotalPrize(totalPrizeMoney)}</span>{" "}
-                Earned
-              </div>
-            </motion.div>
+{/* Stats row */}
+<motion.div
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.7, ease: EASE_OUT }}
+  className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm"
+>
+  {/* LAN with pulsing dot */}
+  <div className="flex items-center gap-2">
+    <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+    <span className="text-white/60">
+      <span className="text-[#D4AF37] font-bold">
+        {COMPETITIVE_RESULTS.filter((r) => r.eventType === "lan").length}
+      </span>{" "}
+      LAN
+    </span>
+  </div>
+
+  <div className="w-px h-4 bg-white/10 hidden sm:block" />
+
+  {/* Earned */}
+  <div className="flex items-center gap-1.5 text-white/50">
+    <FiAward className="text-[#D4AF37]" size={14} />
+    <span className="text-[#D4AF37] font-bold">
+      {formatTotalPrize(totalPrizeMoney)}
+    </span>{" "}
+    Earned
+  </div>
+</motion.div>
+
           </motion.div>
         </div>
       </section>
