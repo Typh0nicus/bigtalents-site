@@ -48,7 +48,7 @@ function EmptyState() {
           Check back soon for new tournament announcements and registration details
         </p>
         <Link 
-          href="/tournaments"
+          href="/matcherinos"
           className="btn btn-outline rounded-xl inline-block hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300"
         >
           View Past Tournaments
@@ -145,7 +145,7 @@ export function FeaturedTournaments() {
             className="text-center mt-12"
           >
             <Link 
-              href="/tournaments"
+              href="/matcherinos"
               className="btn btn-outline rounded-xl inline-block hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300"
             >
               View All Tournaments

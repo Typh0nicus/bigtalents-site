@@ -1,147 +1,423 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { TOURNAMENTS } from "@/data/tournaments";
-import { TournamentCard } from "@/components/tournaments/TournamentCard";
-import { motion } from "framer-motion";
-import { FiSearch, FiX } from "react-icons/fi";
-import type { Variants } from "framer-motion";
+import { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { FiExternalLink, FiCalendar, FiAward } from "react-icons/fi";
+import { FaTrophy, FaMedal, FaStar } from "react-icons/fa";
+import { COMPETITIVE_RESULTS, type TournamentResult } from "@/data/competitiveResults";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
-function parseWhen(s?: string): number {
-  if (!s) return 0;
-  const t = Date.parse(
-    s.replace("GMT+1", "GMT+0100").replace("GMT", "GMT+0000")
-  );
-  return Number.isNaN(t) ? 0 : t;
-}
-
-type SortKey = "date" | "title" | "prize";
-type FilterKey = "all" | "upcoming" | "past";
-
-const SORTS: { key: SortKey; label: string }[] = [
-  { key: "date", label: "Date" },
-  { key: "title", label: "Title" },
-  { key: "prize", label: "Prize" },
-];
+type FilterKey = "all" | "lan" | "online";
 
 const FILTERS: { key: FilterKey; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "upcoming", label: "Upcoming" },
-  { key: "past", label: "Past" },
+  { key: "all", label: "All Events" },
+  { key: "lan", label: "LAN" },
+  { key: "online", label: "Online" },
 ];
 
-const gridStagger: Variants = {
-  show: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
-};
+// Placement styling
+function getPlacementStyle(placementNum: number) {
+  switch (placementNum) {
+    case 1:
+      return {
+        text: "text-[#FFD700]",
+        icon: FaTrophy,
+        label: "1st Place",
+      };
+    case 2:
+      return {
+        text: "text-[#C0C0C0]",
+        icon: FaMedal,
+        label: "2nd Place",
+      };
+    case 3:
+      return {
+        text: "text-[#CD7F32]",
+        icon: FaMedal,
+        label: "3rd Place",
+      };
+    default:
+      return {
+        text: "text-white/70",
+        icon: FaStar,
+        label: `Top ${placementNum}`,
+      };
+  }
+}
 
-const itemUp: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.28, ease: EASE_OUT },
-  },
-};
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
-export default function TournamentsPage() {
-  const [q, setQ] = useState("");
-  const [sort, setSort] = useState<SortKey>("date");
-  const [dir, setDir] = useState<"desc" | "asc">("desc");
-  const [filter, setFilter] = useState<FilterKey>("all");
+function formatPrize(prize: number) {
+  // Format like "3k+" for 3021, "180+" for 182
+  if (prize >= 1000) {
+    const k = Math.floor(prize / 1000);
+    return `${k}k+`;
+  }
+  const rounded = Math.floor(prize / 10) * 10;
+  return `${rounded}+`;
+}
 
-  const totalPrize = useMemo(
-    () => TOURNAMENTS
-      .filter(t => t.archived)
-      .reduce((acc, t) => acc + (t.prizeUsd ?? 0), 0),
-    []
-  );
+function ResultCard({ result, index }: { result: TournamentResult; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isTapped, setIsTapped] = useState(false); // For mobile
+  const style = getPlacementStyle(result.placementNum);
+  const Icon = style.icon;
+  
+  // Combined state for showing links (hover on desktop, tap on mobile)
+  const showLinks = isHovered || isTapped;
 
-  const filteredTournaments = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    
-    // Apply status filter
-    let tournaments = filter === "all" 
-      ? TOURNAMENTS 
-      : filter === "upcoming"
-      ? TOURNAMENTS.filter(t => !t.archived)
-      : TOURNAMENTS.filter(t => t.archived);
-
-    // Apply search
-    if (s) {
-      tournaments = tournaments.filter(
-        (t) =>
-          t.title.toLowerCase().includes(s) ||
-          (t.date?.toLowerCase().includes(s) ?? false)
-      );
-    }
-
-    // Sort tournaments
-    tournaments = [...tournaments].sort((a, b) => {
-      switch (sort) {
-        case "title": {
-          const A = a.title.toLowerCase();
-          const B = b.title.toLowerCase();
-          return A === B ? 0 : A < B ? -1 : 1;
-        }
-        case "prize": {
-          const A = a.prizeUsd ?? -Infinity;
-          const B = b.prizeUsd ?? -Infinity;
-          return A - B;
-        }
-        case "date":
-        default: {
-          const A = parseWhen(a.date);
-          const B = parseWhen(b.date);
-          return A - B;
-        }
-      }
-    });
-
-    if (dir === "desc") {
-      tournaments.reverse();
-    }
-
-    return tournaments;
-  }, [q, sort, dir, filter]);
-
-  const hasResults = filteredTournaments.length > 0;
+  const handleTap = () => {
+    // Toggle on tap for mobile
+    setIsTapped(prev => !prev);
+  };
 
   return (
-    <motion.section
-      className="container py-20 select-none"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: EASE_OUT }}
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ 
+        duration: 0.5, 
+        delay: index * 0.08,
+        ease: EASE_OUT 
+      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      onClick={handleTap}
+      className="group relative cursor-pointer"
     >
-      {/* Header */}
-      <motion.div
-        className="mb-12"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.25, ease: EASE_OUT }}
-      >
-        <h1 className="h2 mb-2">Tournaments</h1>
-        <p className="text-white/60 mb-6">
-          Total prizes awarded:{" "}
-<span className="text-[#D4AF37] font-bold">
-  ${(totalPrize + 13 + 30 + 30 + 50).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-</span>
-        </p>
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.8)] transition-all duration-300 hover:border-white/20">
+        {/* Image/Banner */}
+        <div className="relative aspect-video overflow-hidden">
+          <motion.div
+            className="h-full w-full"
+            animate={showLinks ? { scale: 1.03 } : { scale: 1 }}
+            transition={{ duration: 0.28, ease: EASE_OUT }}
+          >
+            {result.image ? (
+              <Image
+                src={result.image}
+                alt={result.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={index < 3}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-900 to-black">
+                <Icon className="text-5xl sm:text-6xl text-[#D4AF37] opacity-30" />
+              </div>
+            )}
+          </motion.div>
+          
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {/* Shine effect on hover */}
+          <AnimatePresence>
+            {showLinks && (
+              <motion.div
+                key="shine"
+                className="pointer-events-none absolute inset-0 overflow-hidden"
+                initial={{ x: "-140%", opacity: 0 }}
+                animate={{ x: "140%", opacity: [0, 1, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                <div
+                  className="h-full w-[60%] bg-white/25"
+                  style={{
+                    transform: "skewX(-18deg)",
+                    filter: "blur(4px)",
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Bottom badges on image */}
+          <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3 flex items-center justify-between gap-2">
+            {/* Placement badge */}
+            <span className={`inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-white/15 bg-black/70 px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.14em] backdrop-blur-sm ${style.text}`}>
+              <Icon size={9} className="sm:hidden" />
+              <Icon size={10} className="hidden sm:block" />
+              {style.label}
+            </span>
+
+            {/* Event type badge - glassy yellowish for LAN */}
+            <span className={`rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.14em] backdrop-blur-sm ${
+              result.eventType === "lan"
+                ? "bg-[#D4AF37]/15 text-[#FFD700] border border-[#D4AF37]/30"
+                : "bg-black/70 text-white/80 border border-white/15"
+            }`}>
+              {result.eventType}
+            </span>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="p-4 sm:p-5">
+          {/* Tournament Name */}
+          <h3 className="font-semibold text-sm sm:text-base md:text-lg text-white line-clamp-2 transition-colors duration-150 group-hover:text-white mb-2 sm:mb-3 leading-tight">
+            {result.name}
+          </h3>
+
+          {/* Meta information */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/60">
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              <FiCalendar className="text-[#D4AF37]" size={11} />
+              <span>{formatDate(result.date)}</span>
+            </div>
+            {result.prizeWon && (
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <FiAward className="text-[#D4AF37]" size={11} />
+                <span className="text-[#D4AF37] font-medium">${formatPrize(result.prizeWon)}</span>
+              </div>
+            )}
+          </div>
+
+          {/* External Links - slide down on hover/tap */}
+          <AnimatePresence>
+            {showLinks && (result.liquipedia || result.matcherino) && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, marginTop: 12 }}
+                exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: EASE_OUT }}
+                className="overflow-hidden"
+              >
+                <div className="flex gap-2 pt-1">
+                  {result.liquipedia && (
+                    <a
+                      href={result.liquipedia}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                    >
+                      Liquipedia <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
+                    </a>
+                  )}
+                  {result.matcherino && (
+                    <a
+                      href={result.matcherino}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                    >
+                      Matcherino <FiExternalLink size={9} className="sm:hidden" /><FiExternalLink size={10} className="hidden sm:block" />
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+export default function TournamentsPage() {
+  const [filter, setFilter] = useState<FilterKey>("all");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const filteredResults = useMemo(() => {
+    let results = [...COMPETITIVE_RESULTS];
+
+    // Filter by event type
+    if (filter !== "all") {
+      results = results.filter((r) => r.eventType === filter);
+    }
+
+    // Sort by date (newest first)
+    results.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return results;
+  }, [filter]);
+
+  const totalEvents = COMPETITIVE_RESULTS.length;
+  
+  // Calculate total prize money earned
+  const totalPrizeMoney = useMemo(() => {
+    return COMPETITIVE_RESULTS.reduce((sum, r) => sum + (r.prizeWon || 0), 0);
+  }, []);
+  
+  // Format total prize money (e.g., "3.2k" for 3205)
+  const formatTotalPrize = (amount: number) => {
+    if (amount >= 1000) {
+      const k = (amount / 1000).toFixed(1);
+      return `$${k}k`;
+    }
+    return `$${Math.floor(amount)}`;
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: EASE_OUT }}
+      className="min-h-screen relative bg-black text-white select-none"
+    >
+      {/* Background with floating trophies - fixed position with z-0 to prevent stretching */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(139,92,246,0.06), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
+            `,
+          }}
+        />
+
+        {/* Floating Trophy Particles - Bigger and persistent */}
+        {isMounted && (
+          <div>
+            {Array.from({ length: 18 }).map((_, i) => {
+              // Distribute trophies more evenly across the viewport
+              const col = i % 6;
+              const row = Math.floor(i / 6);
+              const left = 8 + col * 15 + (row % 2) * 7; // staggered columns
+              const top = 10 + row * 30;
+              // Larger sizes
+              const sizes = [28, 22, 18, 24, 20, 26];
+              const size = sizes[i % sizes.length];
+              
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute"
+                  style={{
+                    left: `${left}%`,
+                    top: `${top}%`,
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{
+                    y: [0, -20, 0],
+                    x: [0, Math.sin(i) * 10, 0],
+                    rotate: [0, 15, -15, 0],
+                    scale: 1,
+                  }}
+                  transition={{
+                    y: { duration: 6 + (i % 4), repeat: Infinity, ease: "easeInOut" },
+                    x: { duration: 7 + (i % 3), repeat: Infinity, ease: "easeInOut" },
+                    rotate: { duration: 10 + (i % 5), repeat: Infinity, ease: "easeInOut" },
+                    scale: { duration: 0.6, delay: 0.3 + i * 0.05 },
+                  }}
+                >
+                  <FaTrophy className="text-[#D4AF37] opacity-30" size={size} />
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Hero Section - Raised a bit */}
+      <section className="relative pt-28 pb-10 md:pt-36 md:pb-14 overflow-visible">
+        <div className="container relative z-10 px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15, ease: EASE_OUT }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            {/* Original style trophy badge - rounded-full with proper glow */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, delay: 0.25, ease: EASE_OUT }}
+              className="inline-flex mb-6"
+            >
+              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50">
+                <FaTrophy className="text-black text-3xl sm:text-4xl" />
+              </div>
+            </motion.div>
+
+            {/* Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: EASE_OUT }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
+            >
+              <span className="text-white">Competition</span>{" "}
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+                Record
+              </span>
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.55, ease: EASE_OUT }}
+              className="text-sm sm:text-base md:text-lg text-white/70 mb-6 leading-relaxed max-w-2xl mx-auto px-4"
+            >
+              BGT&apos;s competitive placements and achievements in Brawl Stars esports.
+            </motion.p>
+
+            {/* Stats row */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7, ease: EASE_OUT }}
+              className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+                <span className="text-white/60">
+                  <span className="text-[#D4AF37] font-bold">{totalEvents}</span>{" "}
+                  Events
+                </span>
+              </div>
+              <div className="w-px h-4 bg-white/10 hidden sm:block" />
+              <div className="text-white/50">
+                <span className="text-[#D4AF37] font-bold">
+                  {COMPETITIVE_RESULTS.filter(r => r.eventType === "lan").length}
+                </span>{" "}
+                LAN
+              </div>
+              <div className="w-px h-4 bg-white/10 hidden sm:block" />
+              <div className="flex items-center gap-1.5 text-white/50">
+                <FiAward className="text-[#D4AF37]" size={14} />
+                <span className="text-[#D4AF37] font-bold">{formatTotalPrize(totalPrizeMoney)}</span>{" "}
+                Earned
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Results Section - Added extra bottom padding for card expansion space */}
+      <section className="relative z-10 container mx-auto px-4 pb-40 sm:pb-48">
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: EASE_OUT }}
+          className="flex flex-wrap items-center gap-2 mb-8 sm:mb-10"
+        >
           {FILTERS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                 filter === f.key
                   ? "bg-[#D4AF37] text-black"
                   : "bg-white/5 text-white/70 hover:bg-white/10 border border-white/10"
@@ -150,98 +426,49 @@ export default function TournamentsPage() {
               {f.label}
             </button>
           ))}
-          <span className="text-white/40 text-sm ml-2">
-            {filteredTournaments.length} {filteredTournaments.length === 1 ? "tournament" : "tournaments"}
-          </span>
-        </div>
+        </motion.div>
 
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* Search */}
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
-            <input
-              placeholder="Search tournaments..."
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="w-full rounded-xl border border-white/15 bg-transparent pl-10 pr-10 py-2.5 text-sm outline-none focus:border-[#D4AF37] transition-colors duration-200"
-            />
-            {q && (
-              <button
-                onClick={() => setQ("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
-                aria-label="Clear search"
-              >
-                <FiX size={18} />
-              </button>
-            )}
-          </div>
-
-          {/* Sort */}
-          <div className="flex items-center gap-2">
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortKey)}
-              className="rounded-xl border border-white/15 bg-black px-4 py-2.5 text-sm outline-none focus:border-[#D4AF37] transition-colors duration-200"
-            >
-              {SORTS.map((s) => (
-                <option key={s.key} value={s.key} className="bg-black">
-                  Sort by {s.label}
-                </option>
-              ))}
-            </select>
-
-            <button
-              aria-label="Toggle sort direction"
-              onClick={() => setDir((d) => (d === "asc" ? "desc" : "asc"))}
-              className="rounded-xl border border-white/15 px-4 py-2.5 text-sm hover:bg-white/10 transition-colors duration-200 font-bold"
-              title={`Direction: ${dir.toUpperCase()}`}
-            >
-              {dir === "asc" ? "↑" : "↓"}
-            </button>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Results */}
-      {!hasResults ? (
-        <motion.div
-          className="mt-14 rounded-xl border border-white/10 bg-white/[0.02] p-12 text-center"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.3, ease: EASE_OUT }}
-        >
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
-            <FiSearch className="text-4xl text-white/30" />
-          </div>
-          <h3 className="text-2xl font-bold mb-2">No tournaments found</h3>
-          <p className="text-white/60 mb-6">Try adjusting your filters or search query</p>
-          <button
-            className="btn btn-primary rounded-xl"
-            onClick={() => {
-              setQ("");
-              setSort("date");
-              setDir("desc");
-              setFilter("all");
+        {/* Results Grid - added extra bottom margin for card expansion space */}
+        {filteredResults.length > 0 ? (
+          <motion.div 
+            className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.08,
+                  delayChildren: 0.6,
+                },
+              },
             }}
+            initial="hidden"
+            animate="show"
           >
-            Reset Filters
-          </button>
-        </motion.div>
-      ) : (
-        <motion.div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          variants={gridStagger}
-          initial="hidden"
-          animate="show"
-        >
-          {filteredTournaments.map((t, index) => (
-            <motion.div key={t.slug} variants={itemUp}>
-              <TournamentCard t={t} index={index} />
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
-    </motion.section>
+            {filteredResults.map((result, index) => (
+              <ResultCard key={result.id} result={result} index={index} />
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-16 sm:py-20"
+          >
+            <div className="inline-flex items-center justify-center w-16 sm:w-20 h-16 sm:h-20 bg-white/5 rounded-full mb-4 sm:mb-6">
+              <FaTrophy className="text-3xl sm:text-4xl text-white/20" />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3">No Results Found</h3>
+            <p className="text-white/60 mb-4 sm:mb-6 text-sm sm:text-base">Try adjusting your filters</p>
+            <button
+              onClick={() => setFilter("all")}
+              className="btn btn-primary rounded-xl text-sm sm:text-base"
+            >
+              Reset Filters
+            </button>
+          </motion.div>
+        )}
+      </section>
+    </motion.div>
   );
 }

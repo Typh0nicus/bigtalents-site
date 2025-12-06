@@ -33,7 +33,7 @@ export function TournamentCard({ t, index = 0 }: TournamentCardProps) {
       {/* Main Card */}
       <div className="card overflow-hidden h-full flex flex-col backdrop-blur-xl hover:-translate-y-1 transition-all duration-300 hover:shadow-2xl hover:shadow-[#D4AF37]/10">
         {/* Tournament Image/Banner - Clickable */}
-        <Link href={`/tournaments/${t.slug}`} className="block relative aspect-video overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
+        <Link href={`/matcherinos/${t.slug}`} className="block relative aspect-video overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
           {t.image ? (
             <Image
               src={t.image}
@@ -96,7 +96,7 @@ export function TournamentCard({ t, index = 0 }: TournamentCardProps) {
         {/* Content Section */}
         <div className="p-5 flex-1 flex flex-col bg-gradient-to-b from-transparent to-white/[0.02]">
           {/* Title - Clickable */}
-          <Link href={`/tournaments/${t.slug}`}>
+          <Link href={`/matcherinos/${t.slug}`}>
             <h3 className="font-bold text-xl mb-4 line-clamp-2 group-hover:text-[#D4AF37] transition-colors duration-300 cursor-pointer leading-tight">
               {t.title}
             </h3>
@@ -126,7 +126,7 @@ export function TournamentCard({ t, index = 0 }: TournamentCardProps) {
           {/* CTA Button */}
           <div className="mt-auto">
             <Link 
-              href={`/tournaments/${t.slug}`}
+              href={`/matcherinos/${t.slug}`}
               className="btn btn-primary w-full text-center inline-flex items-center justify-center gap-2 group/btn hover:shadow-lg hover:shadow-[#D4AF37]/30 transition-all duration-300"
             >
               {isUpcoming ? "View Details" : "View Bracket"}

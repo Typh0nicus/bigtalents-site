@@ -1,4 +1,4 @@
-// src/app/api/tournaments/[slug]/bracket/route.ts
+// src/app/api/matcherinos/[slug]/bracket/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { TOURNAMENTS } from "@/data/tournaments";
 import { parseMatcherino } from "@/lib/parseMatcherino";

@@ -28,7 +28,7 @@ import {
   FaPlay,
 } from "react-icons/fa";
 import {
-  FiArrowDown,
+  FiChevronDown,
   FiArrowRight,
   FiExternalLink,
 } from "react-icons/fi";
@@ -373,8 +373,8 @@ function ScrollIndicator() {
       style={{ opacity }}
       className="pointer-events-none absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-white/60 select-none"
     >
-      <span className="text-xs font-medium tracking-wide">
-        SCROLL TO EXPLORE
+      <span className="text-xs sm:text-sm uppercase tracking-wider font-medium">
+        Scroll to explore
       </span>
       <motion.div
         animate={{ y: [0, 8, 0] }}
@@ -383,9 +383,8 @@ function ScrollIndicator() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="rounded-full border border-white/20 p-2 transition-colors duration-300"
       >
-        <FiArrowDown size={16} />
+        <FiChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
       </motion.div>
     </motion.div>
   );
