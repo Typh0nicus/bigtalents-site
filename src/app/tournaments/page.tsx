@@ -3,12 +3,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { FiExternalLink, FiCalendar, FiAward, FiArrowRight } from "react-icons/fi";
+import { FiExternalLink, FiCalendar, FiAward } from "react-icons/fi";
 import { FaTrophy, FaMedal, FaStar } from "react-icons/fa";
 import { COMPETITIVE_RESULTS, type TournamentResult } from "@/data/competitiveResults";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
-const PARTICLE_COUNT = 18;
 
 type FilterKey = "all" | "lan" | "online";
 
@@ -18,7 +17,7 @@ const FILTERS: { key: FilterKey; label: string }[] = [
   { key: "online", label: "Online" },
 ];
 
-// Placement styling - more subtle colors
+// Placement styling
 function getPlacementStyle(placementNum: number) {
   switch (placementNum) {
     case 1:
@@ -54,6 +53,12 @@ function formatDate(dateString: string) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+function formatPrize(prize: number) {
+  // Format like "3000$+" or "180$+"
+  const rounded = Math.floor(prize);
+  return `${rounded}$+`;
 }
 
 function ResultCard({ result, index }: { result: TournamentResult; index: number }) {
@@ -163,57 +168,37 @@ function ResultCard({ result, index }: { result: TournamentResult; index: number
             {result.prizeWon && (
               <div className="flex items-center gap-1.5">
                 <FiAward className="text-[#D4AF37]" size={12} />
-                <span className="text-[#D4AF37] font-medium">${result.prizeWon.toLocaleString()}</span>
+                <span className="text-[#D4AF37] font-medium">{formatPrize(result.prizeWon)}</span>
               </div>
             )}
           </div>
 
-          {/* View Details CTA */}
-          <div className="flex items-center gap-1.5 text-[#D4AF37] opacity-80 transition group-hover:opacity-100">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em]">
-              View Details
-            </span>
-            <FiArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
-          </div>
-        </div>
-
-        {/* External Links - hover reveal */}
-        <AnimatePresence>
-          {isHovered && (result.liquipedia || result.matcherino) && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="border-t border-white/10"
-            >
-              <div className="flex gap-2 p-4">
-                {result.liquipedia && (
-                  <a
-                    href={result.liquipedia}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
-                  >
-                    Liquipedia <FiExternalLink size={10} />
-                  </a>
-                )}
-                {result.matcherino && (
-                  <a
-                    href={result.matcherino}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
-                  >
-                    Matcherino <FiExternalLink size={10} />
-                  </a>
-                )}
-              </div>
-            </motion.div>
+          {/* External Links - always visible */}
+          {(result.liquipedia || result.matcherino) && (
+            <div className="flex gap-2">
+              {result.liquipedia && (
+                <a
+                  href={result.liquipedia}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                >
+                  Liquipedia <FiExternalLink size={10} />
+                </a>
+              )}
+              {result.matcherino && (
+                <a
+                  href={result.matcherino}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-200"
+                >
+                  Matcherino <FiExternalLink size={10} />
+                </a>
+              )}
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </motion.div>
     </motion.article>
   );
@@ -245,54 +230,52 @@ export default function TournamentsPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* Enhanced Background - Positions style */}
-      <motion.div
-        className="fixed inset-0 overflow-hidden pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isMounted ? 1 : 0 }}
-        transition={{ duration: 0.8 }}
-      >
+      {/* Background with floating trophies */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.08), transparent 50%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(139,92,246,0.06), transparent 50%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(15,23,42,0.92), transparent 50%)
+              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
             `,
           }}
         />
 
-        {/* Floating Particles - like positions */}
+        {/* Floating Trophy Particles */}
         {isMounted && (
-          <div className="absolute inset-0 opacity-30">
-            {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+          <div className="opacity-20">
+            {Array.from({ length: 15 }).map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-px h-px bg-[#D4AF37] rounded-full"
+                className="absolute"
                 style={{
-                  left: `${(i * 6.66) % 100}%`,
-                  top: `${(i * 8.33) % 100}%`,
+                  left: `${(i * 7) % 100}%`,
+                  top: `${(i * 8) % 100}%`,
                 }}
                 animate={{
-                  y: [0, -30, 0],
-                  opacity: [0.2, 0.9, 0.2],
+                  y: [0, -25, 0],
+                  x: [0, Math.sin(i) * 10, 0],
+                  opacity: [0.15, 0.4, 0.15],
                 }}
                 transition={{
-                  duration: 4 + (i % 3),
+                  duration: 7 + (i % 3),
                   repeat: Infinity,
-                  delay: i * 0.2,
+                  delay: i * 0.4,
                   ease: "easeInOut",
                 }}
-              />
+              >
+                <FaTrophy className="text-[#D4AF37]" size={i % 2 === 0 ? 10 : 6} />
+              </motion.div>
             ))}
           </div>
         )}
-      </motion.div>
+      </div>
 
-      {/* Hero Section - Positions style */}
-      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
-        <div className="container relative z-10 px-4 py-20">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16">
+        <div className="container relative z-10 px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -349,7 +332,7 @@ export default function TournamentsPage() {
               BGT&apos;s competitive placements and achievements in Brawl Stars esports.
             </motion.p>
 
-            {/* Stats row - like positions */}
+            {/* Stats row */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -373,12 +356,10 @@ export default function TournamentsPage() {
             </motion.div>
           </motion.div>
         </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black to-transparent" />
       </section>
 
       {/* Results Section */}
-      <section className="relative z-10 container mx-auto px-4 pb-32 pt-4">
+      <section className="relative z-10 container mx-auto px-4 pb-32">
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
