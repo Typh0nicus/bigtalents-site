@@ -58,6 +58,34 @@ export const CREATORS: Creator[] = [
     },
   },
   {
+  id: "superlab",
+  name: "Superlab",
+  tier: "elite",
+  region: "NA",
+  avatar: "/images/creators/superlab.jpg",
+  banner: "/images/creators/superlab-banner.jpg",
+  platforms: {
+    youtube: {
+      channelId: "UC0VXAuazhUHrPL7lzwp0SBw",
+      subscribers: 0,
+      url: "https://youtube.com/@SuperL4B",
+    },
+    x: {
+      handle: "Superlab",
+      followers: 20000,
+      url: "https://x.com/superlab9",
+    },
+    instagram: {
+      handle: "SuperLab",
+      followers: 40400,
+      url: "https://instagram.com/superl4b",
+    },
+    discord: {
+      url: "https://discord.com/invite/zs5c7rMdbr",
+    },
+  },
+},
+  {
     id: 'ruffybs',
     name: 'Ruffy',
     tier: 'elite',
