@@ -1,23 +1,42 @@
 "use client";
 
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  AnimatePresence,
+} from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW, FaCrown, FaStar } from "react-icons/fa";
-import { FiExternalLink, FiUsers, FiGlobe } from "react-icons/fi";
-import { useState, useEffect, useRef } from "react";
+import {
+  FaDiscord,
+  FaYoutube,
+  FaTwitch,
+  FaWikipediaW,
+  FaCrown,
+} from "react-icons/fa";
+import { FiExternalLink, FiUsers, FiGlobe, FiCheck } from "react-icons/fi";
+import { useState, useEffect, useRef, useMemo } from "react";
 
-const PARTICLE_COUNT = 15;
+/* --------------------------------- Utils --------------------------------- */
 
-const PARTICLE_POSITIONS = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-  left: (i * 6.66) % 100,
-  top: (i * 8.33) % 100,
-}));
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+
+function cn(...classes: Array<string | undefined | false>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function formatUSD(amount: number) {
+  return `$${amount.toFixed(2)}`;
+}
+
+/* --------------------------------- Data ---------------------------------- */
 
 const CLUB_INFO = {
   name: "BGT (Big Talents)",
   tag: "#2GP8899V8",
-  description: "The most exclusive Brawl Stars club",
+  description: "Elite training club for high-level Brawl Stars players",
   region: "🇩🇪 Germany",
   brawlifyUrl: "https://brawlify.com/stats/club/2GP8899V8",
 };
@@ -30,64 +49,112 @@ const CLUB_STATS = [
 
 const ELITE_MEMBERS = [
   {
-    name: "HMB | Boss",
+    name: "Boss",
     image: "/images/club/boss.jpg",
     title: "World Champion",
     mainAchievement: "2024 BSC World Champion",
-    achievements: ["BSC 2024 World Champion", "International Champion"],
+    achievements: ["2025 World Runner-Up"],
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
     wiki: "https://liquipedia.net/brawlstars/BosS",
   },
   {
-    name: "TTM | Angelboy",
+    name: "Angelboy",
     image: "/images/club/angelboy.png",
-    title: "Worlds Finalist",
-    mainAchievement: "Worlds Finalist",
-    achievements: ["Worlds Finalist", "#1 Global Ranked"],
+    title: "Professional Player",
+    mainAchievement: "Multiple Worlds Finalist",
+    achievements: ["#1 Global Ranked"],
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
+  },
+  {
+    name: "Rup",
+    image: "/images/club/rup.png",
+    title: "Professional Coach",
+    mainAchievement: "World Finals Coach",
+    achievements: ["LCQ Player"],
+  },
+  {
+    name: "Dorian",
+    image: "/images/club/dorian.jpg",
+    title: "Professional Coach",
+    mainAchievement: "World Finals Coach",
   },
   {
     name: "Vital Shark",
     image: "/images/club/vital_shark.jpg",
     title: "Content Creator",
     mainAchievement: "1.2M YouTube",
-    achievements: ["1.2M YouTube", "Top Creator"],
+    achievements: ["Top Creator"],
     youtube: "https://www.youtube.com/@VITALxSHARK",
   },
   {
-    name: "Sniperbs_",
+    name: "Sniper",
     image: "/images/club/sniperbs_.jpg",
     title: "Professional Player",
     mainAchievement: "800K YouTube",
-    achievements: ["Professional Player", "800K YouTube"],
+    achievements: ["Pro-level competitor"],
     youtube: "https://www.youtube.com/@Sniperbs_",
     wiki: "https://liquipedia.net/brawlstars/Sniper",
   },
+  {
+    name: "Radan",
+    image: "/images/creators/radanbs.jpg",
+    title: "Ladder Master",
+    mainAchievement: "Top 4 Trophies",
+    achievements: ["230K Followers"],
+    youtube: "https://www.youtube.com/@radanbs",
+  },
 ];
 
-const MEMBERSHIP_TIERS = [
+const ACCESS_PASSES = [
   {
-    name: "Daily Access",
-    price: "$3.99",
+    name: "24h Pass",
+    price: 3.99,
     duration: "24 hours",
-    features: ["Club chat access", "Spectate games", "Community events", "Insider insights"],
+    tagline: "Short-term access for focused sessions",
+    features: [
+      "Club chat access",
+      "Scrim spectating",
+      "Community events",
+      "Basic coaching touchpoints",
+    ],
   },
   {
-    name: "Weekly Access",
-    price: "$19.99",
+    name: "7-Day Pass",
+    price: 19.99,
     duration: "7 days",
-    features: ["Everything in Daily", "Priority queue", "Weekly events", "Extended access"],
-    popular: true,
+    tagline: "Best for active weeks and event prep",
+    features: [
+      "Everything in 24h",
+      "Priority queue",
+      "Weekly training blocks",
+      "Extended VOD discussions",
+    ],
   },
   {
-    name: "Monthly VIP",
-    price: "$69.99",
+    name: "30-Day Pass",
+    price: 69.99,
     duration: "30 days",
-    features: ["Everything in Weekly", "VIP status", "Monthly events", "Maximum access"],
+    tagline: "Full month of structured improvement",
+    features: [
+      "Everything in 7-Day",
+      "Monthly training cycles",
+      "Advanced strategy sessions",
+      "Highest access tier",
+    ],
   },
 ];
+
+/* ------------------------------ Background ------------------------------- */
+
+const PARTICLE_COUNT = 14;
+const PARTICLE_POSITIONS = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+  left: (i * 7.14) % 100,
+  top: (i * 9.23) % 100,
+}));
+
+/* --------------------------------- Page ---------------------------------- */
 
 export default function ClubClient() {
   const [isMounted, setIsMounted] = useState(false);
@@ -100,27 +167,26 @@ export default function ClubClient() {
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.96]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => setIsMounted(true), []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
+      {/* Background */}
       <motion.div
-        className="absolute inset-0 overflow-hidden pointer-events-none"
+        className="fixed inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
       >
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.1), transparent 50%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 50%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 50%)
+              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.08), transparent 55%),
+              radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 55%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 55%)
             `,
           }}
         />
@@ -132,268 +198,222 @@ export default function ClubClient() {
                 key={i}
                 className="absolute w-px h-px bg-[#D4AF37] rounded-full"
                 style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
-                animate={{ y: [0, -40, 0], opacity: [0, 1, 0] }}
-                transition={{ duration: 4 + (i % 2), repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
+                animate={{ y: [0, -36, 0], opacity: [0.15, 0.7, 0.15] }}
+                transition={{
+                  duration: 4.2 + (i % 3),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.18,
+                }}
               />
             ))}
           </div>
         )}
       </motion.div>
 
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-20">
-        <motion.div style={{ opacity, scale }} className="container relative z-10 text-center px-4 py-20">
+      {/* HERO */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex items-center justify-center pt-20"
+      >
+        <motion.div
+          style={{ opacity, scale }}
+          className="container relative z-10 text-center px-4 py-20"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 30 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 26 }}
+            animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 26 }}
+            transition={{ duration: 0.8, ease: EASE_OUT }}
             className="max-w-4xl mx-auto"
           >
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: isMounted ? 1 : 0, rotate: isMounted ? 0 : -180 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ scale: 0, rotate: -160 }}
+              animate={{ scale: isMounted ? 1 : 0, rotate: isMounted ? 0 : -160 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: EASE_OUT }}
               className="inline-flex mb-8"
             >
-              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/30">
+              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/25">
                 <FaCrown className="text-black text-4xl" />
               </div>
             </motion.div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 18 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: EASE_OUT }}
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
             >
-              Welcome to{" "}
-              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Talents</span>
+              Elite{" "}
+              <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+                Club
+              </span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: isMounted ? 1 : 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-xl md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed"
+              transition={{ duration: 0.6, delay: 0.45, ease: EASE_OUT }}
+              className="text-lg sm:text-xl md:text-2xl text-white/75 mb-10 max-w-3xl mx-auto leading-relaxed"
             >
-              Train with world champions and elite players. Limited access club for serious players only.
+              Train with proven champions and top-tier creators. A high-standards
+              environment built for competitive growth.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="grid grid-cols-3 gap-8 mb-12 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 18 }}
+              transition={{ duration: 0.6, delay: 0.6, ease: EASE_OUT }}
+              className="grid grid-cols-3 gap-6 sm:gap-8 mb-12 max-w-3xl mx-auto"
             >
               {CLUB_STATS.map((stat, idx) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: isMounted ? 1 : 0, scale: isMounted ? 1 : 0.8 }}
-                  transition={{ delay: 0.9 + idx * 0.1 }}
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: isMounted ? 1 : 0, scale: isMounted ? 1 : 0.92 }}
+                  transition={{ delay: 0.65 + idx * 0.08 }}
                   className="text-center"
                 >
                   <stat.icon className="text-[#D4AF37] text-3xl mx-auto mb-3" />
-                  <div className="text-3xl font-black text-white mb-1">{stat.value}</div>
+                  <div className="text-3xl font-black text-white mb-1">
+                    {stat.value}
+                  </div>
                   <div className="text-sm text-white/60">{stat.label}</div>
                 </motion.div>
               ))}
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 20 }}
-              transition={{ duration: 0.6, delay: 1.1 }}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: isMounted ? 1 : 0, y: isMounted ? 0 : 14 }}
+              transition={{ duration: 0.6, delay: 0.8, ease: EASE_OUT }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <motion.a
                 href="https://discord.gg/bgt"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={isMounted ? { scale: 1.05 } : {}}
-                whileTap={isMounted ? { scale: 0.95 } : {}}
+                whileHover={isMounted ? { scale: 1.03 } : {}}
+                whileTap={isMounted ? { scale: 0.98 } : {}}
                 className="btn btn-primary rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
               >
-                <FaDiscord /> Join Elite Club
+                <FaDiscord /> Join Club
               </motion.a>
 
               <motion.a
                 href={CLUB_INFO.brawlifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={isMounted ? { scale: 1.05 } : {}}
-                whileTap={isMounted ? { scale: 0.95 } : {}}
+                whileHover={isMounted ? { scale: 1.03 } : {}}
+                whileTap={isMounted ? { scale: 0.98 } : {}}
                 className="btn btn-outline rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
               >
-                <FiExternalLink /> View Stats
+                <FiExternalLink /> Club Stats
               </motion.a>
             </motion.div>
           </motion.div>
         </motion.div>
       </section>
 
+      {/* LEGENDS */}
       <section className="container py-20 px-4 mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
+          transition={{ duration: 0.6, ease: EASE_OUT }}
+          className="mb-14"
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
             <h2 className="text-4xl md:text-5xl font-black">
               <span className="bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
-                Meet the Legends
+                Legends
               </span>
             </h2>
           </div>
-          <p className="text-white/70 text-lg max-w-2xl">World-class players and creators</p>
+          <p className="text-white/70 text-lg max-w-2xl">
+            A curated lineup of champions, pros, and top creators.
+          </p>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {ELITE_MEMBERS.map((member, i) => (
-            <MemberCard key={member.name} member={member} index={i} isMounted={isMounted} />
+            <MemberCard
+              key={member.name}
+              member={member}
+              index={i}
+              isMounted={isMounted}
+            />
           ))}
         </div>
       </section>
 
+      {/* ACCESS / PRICING */}
       <section className="container py-20 px-4 mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          transition={{ duration: 0.6, ease: EASE_OUT }}
+          className="mb-14 text-center"
         >
           <h2 className="text-4xl md:text-5xl font-black mb-4">
-            Choose Your{" "}
+            Access{" "}
             <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
-              Access
+              Passes
             </span>
           </h2>
-          <p className="text-white/70 text-lg max-w-2xl mx-auto">Flexible membership for every level of commitment</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {MEMBERSHIP_TIERS.map((tier, i) => (
-            <motion.div
-              key={tier.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={tier.popular ? { y: -16, scale: 1.02 } : { y: -8 }}
-              className="group relative"
-            >
-              {tier.popular && (
-                <motion.div
-                  className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37]/30 via-[#FFD700]/20 to-[#D4AF37]/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
-                  animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-              )}
-
-              <div
-                className={`relative h-full card p-8 transition-all duration-500 flex flex-col ${
-                  tier.popular
-                    ? "border-[#D4AF37]/50 bg-gradient-to-b from-black to-[#D4AF37]/5 scale-[1.02] shadow-2xl shadow-[#D4AF37]/30"
-                    : "border-white/15 bg-gradient-to-b from-white/5 to-white/[0.02] hover:border-[#D4AF37]/30"
-                }`}
-              >
-                {tier.popular && (
-                  <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    whileInView={{ scale: 1, rotate: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 + 0.3, duration: 0.6, type: "spring" }}
-                    className="absolute -top-4 left-1/2 transform -translate-x-1/2"
-                  >
-                    <div className="px-5 py-2 bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full text-black text-sm font-black shadow-lg shadow-[#D4AF37]/40 whitespace-nowrap">
-                      ⭐ MOST POPULAR
-                    </div>
-                  </motion.div>
-                )}
-
-                <div className="text-center mb-8 pt-2">
-                  <h3 className="text-2xl font-black mb-4 group-hover:text-[#D4AF37] transition-colors duration-300">
-                    {tier.name}
-                  </h3>
-                  <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
-                      {tier.price}
-                    </span>
-                  </div>
-                  <div className="text-sm text-white/50 font-medium">per {tier.duration}</div>
-                </div>
-
-                <ul className="space-y-4 mb-8 flex-1">
-                  {tier.features.map((feature, j) => (
-                    <motion.li
-                      key={j}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.15 + j * 0.08 }}
-                      className="flex items-center gap-3 text-sm"
-                    >
-                      <motion.div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700]" whileHover={{ scale: 1.5 }} />
-                      <span className="text-white/85 font-medium">{feature}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
-                    tier.popular
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-black shadow-lg shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/40"
-                      : "bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-[#D4AF37]/40"
-                  }`}
-                >
-                  Get Started
-                </motion.button>
-              </div>
-            </motion.div>
+        <div className="grid md:grid-cols-3 gap-7 max-w-6xl mx-auto">
+          {ACCESS_PASSES.map((tier, i) => (
+            <AccessCard key={tier.name} tier={tier} index={i} />
           ))}
         </div>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="text-center text-white/50 text-sm mt-12"
+          transition={{ delay: 0.25 }}
+          className="text-center text-white/45 text-xs sm:text-sm mt-10"
         >
-          Limited availability • Longer periods = cheaper prices
+          Availability may vary based on competitive schedule and event load.
         </motion.p>
       </section>
 
+      {/* CTA */}
       <section className="container py-24 px-4 mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center max-w-2xl mx-auto"
         >
-          <h2 className="text-4xl md:text-5xl font-black mb-6">Ready to Join?</h2>
+          <h2 className="text-4xl md:text-5xl font-black mb-6">
+            Ready to Train?
+          </h2>
 
-          <p className="text-xl text-white/70 mb-8">Limited slots available. Apply now for exclusive access.</p>
+          <p className="text-xl text-white/70 mb-8">
+            Join the environment where practice stays serious and standards stay high.
+          </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.a
               href="https://discord.gg/bgt"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               className="btn btn-primary rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center gap-2"
             >
-              <FaDiscord /> Apply Now
+              <FaDiscord /> Apply / Join
             </motion.a>
 
-            <Link href="/contact" className="btn btn-outline rounded-2xl px-8 py-4 text-lg">
+            <Link
+              href="/contact"
+              className="btn btn-outline rounded-2xl px-8 py-4 text-lg"
+            >
               Business Inquiries
             </Link>
           </div>
@@ -402,6 +422,8 @@ export default function ClubClient() {
     </div>
   );
 }
+
+/* ------------------------------- MemberCard ------------------------------ */
 
 function MemberCard({
   member,
@@ -414,92 +436,246 @@ function MemberCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const uniqueAchievements = useMemo(() => {
+    const all = [member.mainAchievement, ...(member.achievements ?? [])].filter(Boolean);
+    return Array.from(new Set(all));
+  }, [member.mainAchievement, member.achievements]);
+
+  const primaryLine = uniqueAchievements.slice(0, 2).join(" • ");
+  const chips = uniqueAchievements.slice(2, 5);
+
+  const showSocials = isHovered;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: index * 0.06, duration: 0.55, ease: EASE_OUT }}
       onHoverStart={() => isMounted && setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ y: -12 }}
+      whileHover={{ y: -10 }}
       className="group"
     >
-      <div className="relative rounded-3xl overflow-hidden border border-white/10 hover:border-[#D4AF37]/40 transition-all duration-500 shadow-lg hover:shadow-2xl hover:shadow-[#D4AF37]/15">
-        <div className="relative aspect-[4/5] bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0a]">
+      <div className="relative rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-400 shadow-lg hover:shadow-2xl hover:shadow-white/5">
+        {/* Subtle gold wash on hover (reduced) */}
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/[0.06] via-transparent to-transparent" />
+        </div>
+
+        <div className="relative aspect-[4/5] bg-gradient-to-br from-[#14141c] to-[#070707]">
           <Image
             src={member.image}
             alt={member.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover transition-all duration-700 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
             priority={index < 2}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
 
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent pointer-events-none"
-            animate={{ opacity: isHovered && isMounted ? 1 : 0 }}
-            transition={{ duration: 0.4 }}
-          />
-
-          <div className="absolute bottom-3 left-3 flex gap-2 z-10">
-            {member.youtube && (
-              <a
-                href={member.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${member.name} on YouTube`}
-                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-red-400 hover:bg-red-500 hover:text-white transition-all border border-white/20"
-              >
-                <FaYoutube size={16} />
-              </a>
-            )}
-            {member.twitch && (
-              <a
-                href={member.twitch}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${member.name} on Twitch`}
-                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-purple-400 hover:bg-purple-500 hover:text-white transition-all border border-white/20"
-              >
-                <FaTwitch size={16} />
-              </a>
-            )}
-            {member.wiki && (
-              <a
-                href={member.wiki}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${member.name} on Liquipedia`}
-                className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all border border-white/20"
-              >
-                <FaWikipediaW size={16} />
-              </a>
-            )}
-          </div>
-
+          {/* Title badge */}
           <div className="absolute top-3 right-3 z-10">
-            <div className="px-3 py-1.5 bg-white/10 backdrop-blur-md text-[#D4AF37] rounded-lg text-xs font-bold border border-[#D4AF37]/40">
+            <div className="px-3 py-1.5 bg-black/50 backdrop-blur-md text-[#FFD700] rounded-lg text-[10px] sm:text-xs font-bold border border-[#D4AF37]/25">
               {member.title}
             </div>
           </div>
+
+          {/* Socials - appear on hover */}
+          <AnimatePresence>
+            {showSocials && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.2, ease: EASE_OUT }}
+                className="absolute bottom-3 left-3 flex gap-2 z-10"
+              >
+                {member.youtube && (
+                  <a
+                    href={member.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} on YouTube`}
+                    className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-red-400 hover:bg-white/15 transition-all border border-white/15"
+                  >
+                    <FaYoutube size={16} />
+                  </a>
+                )}
+                {member.twitch && (
+                  <a
+                    href={member.twitch}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} on Twitch`}
+                    className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-purple-400 hover:bg-white/15 transition-all border border-white/15"
+                  >
+                    <FaTwitch size={16} />
+                  </a>
+                )}
+                {member.wiki && (
+                  <a
+                    href={member.wiki}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${member.name} on Liquipedia`}
+                    className="p-2.5 bg-white/10 backdrop-blur-md rounded-lg text-[#D4AF37] hover:bg-white/15 transition-all border border-white/15"
+                  >
+                    <FaWikipediaW size={16} />
+                  </a>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="p-6 bg-black/50 backdrop-blur-xl">
-          <h3 className="text-lg font-black mb-1 group-hover:text-[#D4AF37] transition-colors">{member.name}</h3>
-          <p className="text-sm text-[#D4AF37] font-semibold mb-3">{member.mainAchievement}</p>
+        {/* Text block */}
+        <div className="p-6 bg-black/45 backdrop-blur-xl">
+          <h3 className="text-lg font-black mb-1 group-hover:text-white transition-colors">
+            {member.name}
+          </h3>
 
-          <div className="space-y-2 pt-3 border-t border-white/10">
-            {member.achievements.map((ach, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <FaStar className="text-[#D4AF37] text-xs flex-shrink-0 mt-1" />
-                <span className="text-xs text-white/80">{ach}</span>
-              </div>
-            ))}
-          </div>
+          {primaryLine && (
+            <p className="text-sm text-[#D4AF37] font-semibold mb-3">
+              {primaryLine}
+            </p>
+          )}
+
+          {chips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {chips.map((ach) => (
+                <span
+                  key={ach}
+                  className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold text-white/75 tracking-wide"
+                >
+                  {ach}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+    </motion.div>
+  );
+}
+
+/* ------------------------------- AccessCard ------------------------------ */
+
+function AccessCard({
+  tier,
+  index,
+}: {
+  tier: (typeof ACCESS_PASSES)[number];
+  index: number;
+}) {
+  const prefersReduced = useReducedMotion();
+
+  // Soft “value hint” without naming a winner
+  const perDay =
+    tier.duration.includes("24")
+      ? tier.price
+      : tier.duration.includes("7")
+      ? tier.price / 7
+      : tier.duration.includes("30")
+      ? tier.price / 30
+      : null;
+
+  // Badge that keeps the style but removes the duplicate time mention
+  const badgeLabel = useMemo(() => {
+    if (tier.duration.includes("24")) return "ENTRY";
+    if (tier.duration.includes("7")) return "STANDARD";
+    if (tier.duration.includes("30")) return "FULL";
+    return "ACCESS";
+  }, [tier.duration]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 34 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.08, duration: 0.55, ease: EASE_OUT }}
+      className="relative group"
+    >
+      {/* Subtle ring glow - reduced gold */}
+      <motion.div
+        className="absolute -inset-1 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"
+        animate={
+          prefersReduced
+            ? {}
+            : { backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }
+        }
+        transition={{ duration: 3.5, repeat: Infinity }}
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(212,175,55,0.12), rgba(168,85,247,0.08), rgba(212,175,55,0.12))",
+        }}
+      />
+
+      <motion.div
+        whileHover={prefersReduced ? {} : { y: -6 }}
+        transition={{ duration: 0.25, ease: EASE_OUT }}
+        className={cn(
+          "relative h-full rounded-2xl border backdrop-blur-xl overflow-hidden flex flex-col",
+          "bg-gradient-to-b from-white/[0.04] to-white/[0.01]",
+          "border-white/10 hover:border-white/20",
+          "shadow-lg hover:shadow-2xl hover:shadow-white/5"
+        )}
+      >
+        {/* Very light accent wash */}
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/[0.05] via-transparent to-purple-500/[0.04]" />
+        </div>
+
+        <div className="p-8 relative z-10">
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h3 className="text-2xl font-black tracking-tight">
+                {tier.name}
+              </h3>
+              <p className="text-xs sm:text-sm text-white/55 mt-1">
+                {tier.tagline}
+              </p>
+            </div>
+
+            {/* Badge: style stays, redundancy goes */}
+            <div className="px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-[10px] font-semibold text-white/60 tracking-[0.12em]">
+              {badgeLabel}
+            </div>
+          </div>
+
+          <div className="flex items-end gap-2 mb-2">
+            <span className="text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+              {formatUSD(tier.price)}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            <span className="text-[10px] text-white/45">
+              {tier.duration}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-white/20" />
+            {perDay && (
+              <span className="text-[10px] text-white/40">
+                ~{formatUSD(perDay)} / day
+              </span>
+            )}
+          </div>
+
+          <ul className="space-y-3">
+            {tier.features.map((feature, i) => (
+              <li key={i} className="flex items-start gap-2.5">
+                <span className="mt-0.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/[0.06] border border-white/10">
+                  <FiCheck className="text-[#D4AF37]" size={10} />
+                </span>
+                <span className="text-sm text-white/80">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* No per-card CTA button.
+            The global "Ready to Train?" section is the only CTA. */}
+      </motion.div>
     </motion.div>
   );
 }
