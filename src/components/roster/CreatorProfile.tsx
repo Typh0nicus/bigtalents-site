@@ -128,15 +128,15 @@ const STAR_META: Record<
 > = {
   elite: {
     hex: "#D4AF37",
-    soft: "rgba(212,175,55,0.18)",
+    soft: "rgba(212,175,55,0.22)",
   },
   partnered: {
     hex: "#8B5CF6",
-    soft: "rgba(139,92,246,0.16)",
+    soft: "rgba(139,92,246,0.18)",
   },
   academy: {
     hex: "#34D399",
-    soft: "rgba(52,211,153,0.16)",
+    soft: "rgba(52,211,153,0.18)",
   },
 };
 
@@ -157,7 +157,9 @@ export default function CreatorProfile({
   const starMeta =
     (creator.tier && STAR_META[creator.tier]) || STAR_META.academy;
 
-  // RESTORED to the older star particle logic.
+  const isElite = creator.tier === "elite";
+
+  // ✅ KEEP the original star particle logic (length 7, same math).
   const starParticles = useMemo(
     () =>
       Array.from({ length: 7 }, (_, i) => ({
@@ -187,10 +189,11 @@ export default function CreatorProfile({
   const regionCode = creator.region || null;
   const creatorWithDiscord = creator as CreatorWithDiscord;
 
-  const heroHeight = "h-[300px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
+  // ✅ Mobile-friendly hero height (not inflated).
+  const heroHeight = "h-[280px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
 
   return (
-    <div className="min-h-screen overflow-x-hidden relative">
+    <div className="min-h-screen overflow-x-hidden relative select-none">
       {/* Background ambience */}
       {isMounted && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -245,25 +248,27 @@ export default function CreatorProfile({
             className="object-cover"
             priority
             sizes="100vw"
+            draggable={false}
           />
+
           {/* Base overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/22" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/28 via-transparent to-black/22" />
 
-          {/* Toned-down highlight overlay (kept) */}
+          {/* ✅ Toned-down highlight overlay (kept, subtle) */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
               background: `
-                radial-gradient(900px 520px at 28% 18%, rgba(212,175,55,0.045), transparent 65%),
-                radial-gradient(800px 480px at 78% 30%, rgba(212,175,55,0.03), transparent 70%)
+                radial-gradient(900px 520px at 28% 18%, rgba(212,175,55,0.04), transparent 65%),
+                radial-gradient(800px 480px at 78% 30%, rgba(212,175,55,0.028), transparent 70%)
               `,
             }}
-            animate={{ opacity: isHeroHovered && isMounted ? 0.55 : 0.25 }}
+            animate={{ opacity: isHeroHovered && isMounted ? 0.5 : 0.22 }}
             transition={{ duration: 0.45, ease: "easeOut" }}
           />
 
-          {/* Star effect - RESTORED animation + tier colors */}
+          {/* ✅ Star effect - ORIGINAL animation structure + tier colors */}
           <AnimatePresence>
             {isHeroHovered && isMounted && (
               <>
@@ -275,7 +280,9 @@ export default function CreatorProfile({
                   className="absolute top-6 right-6 sm:top-8 sm:right-8 z-20 p-3.5 sm:p-4 rounded-full"
                   style={{
                     background: `linear-gradient(135deg, ${starMeta.hex}, #FFD700)`,
-                    boxShadow: `0 0 30px ${starMeta.soft}`,
+                    boxShadow: isElite
+                      ? `0 0 38px ${starMeta.soft}, 0 0 90px ${starMeta.soft}`
+                      : `0 0 30px ${starMeta.soft}`,
                   }}
                 >
                   <FaStar className="text-black text-xl sm:text-2xl" />
@@ -310,8 +317,8 @@ export default function CreatorProfile({
           </AnimatePresence>
         </div>
 
-        {/* Back link */}
-        <div className="absolute top-20 sm:top-24 left-0 right-0 z-30">
+        {/* ✅ Back link (mobile-safe: avoids navbar collision) */}
+        <div className="absolute top-16 sm:top-24 left-0 right-0 z-30">
           <div className="container mx-auto px-4">
             <Link
               href="/rosters/creators"
@@ -325,24 +332,24 @@ export default function CreatorProfile({
 
         {/* Hero content */}
         <div className="absolute bottom-0 left-0 right-0">
-          <div className="container mx-auto px-4 pb-6 sm:pb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-6">
+          <div className="container mx-auto px-4 pb-5 sm:pb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-6">
               {/* Avatar */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.18 }}
-                className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-2xl group/avatar ring-1 ring-white/10 bg-black/40"
-                style={{
-                  boxShadow: `0 12px 40px ${ACCENT_SOFT}`,
-                }}
+                className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-2xl group/avatar bg-black/40"
+                // ✅ Remove gold glow that looked like a cut ring.
+                style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.55)" }}
               >
                 <Image
                   src={creator.avatar}
                   alt={creator.name}
                   fill
                   className="object-cover transition-all duration-500 group-hover/avatar:scale-110"
-                  sizes="144px"
+                  sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
+                  draggable={false}
                 />
                 <div
                   className="absolute inset-0 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-500"
@@ -354,7 +361,7 @@ export default function CreatorProfile({
               </motion.div>
 
               {/* Text block */}
-              <div className="flex-1 pb-1 sm:pb-2">
+              <div className="flex-1">
                 {/* Tier / region pill */}
                 <motion.div
                   initial={{ opacity: 0, x: -18 }}
@@ -375,9 +382,7 @@ export default function CreatorProfile({
                         ease: "easeInOut",
                       }}
                     />
-                    <span className={tierMeta.textClass}>
-                      {tierMeta.label}
-                    </span>
+                    <span className={tierMeta.textClass}>{tierMeta.label}</span>
                     {regionCode && (
                       <>
                         <span className="w-px h-3 bg-white/15" />
@@ -394,13 +399,13 @@ export default function CreatorProfile({
                   initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.26 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08] pb-1"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08] mb-0"
                 >
                   {creator.name}
                 </motion.h1>
 
-                {/* Solid accent rule (no fade) visible immediately */}
-                <div className="h-[2px] w-16 sm:w-20 md:w-24 rounded-full mb-3 bg-[#D4AF37]" />
+                {/* ✅ Solid accent rule (no fade) - spaced to avoid descenders */}
+                <div className="h-[2px] w-16 sm:w-20 md:w-24 rounded-full bg-[#D4AF37] mt-2 mb-3" />
 
                 {/* Quick stats */}
                 <motion.div
@@ -410,7 +415,7 @@ export default function CreatorProfile({
                   className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/70"
                 >
                   {totalReach > 0 && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
+                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
                       <FiUsers
                         className="w-3.5 h-3.5"
                         style={{ color: ACCENT_HEX }}
@@ -424,7 +429,7 @@ export default function CreatorProfile({
                     </div>
                   )}
                   {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
+                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
                       <FiTrendingUp
                         className="w-3.5 h-3.5"
                         style={{ color: ACCENT_HEX }}
@@ -454,7 +459,7 @@ export default function CreatorProfile({
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.14 }}
-                className="card p-6 sm:p-8 border-white/10 hover:border-white/20 transition-all duration-500"
+                className="card p-5 sm:p-8 border-white/10 hover:border-white/20 transition-all duration-500"
               >
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-2xl sm:text-3xl font-black flex items-center gap-3">
@@ -465,6 +470,7 @@ export default function CreatorProfile({
                     />
                     Latest Content
                   </h2>
+                  {/* ✅ Solid divider line */}
                   <div className="hidden sm:block h-px flex-1 max-w-[140px] bg-white/10" />
                 </div>
 
@@ -499,6 +505,7 @@ export default function CreatorProfile({
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-110"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            draggable={false}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-end p-3 sm:p-4">
                             <div className="w-full space-y-1">
@@ -533,11 +540,12 @@ export default function CreatorProfile({
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.14 }}
-                className="card p-6 sm:p-8 border-white/10"
+                className="card p-5 sm:p-8 border-white/10"
               >
                 <h2 className="text-xl sm:text-2xl font-black mb-2">
                   Content coming soon
                 </h2>
+                <div className="h-[2px] w-14 sm:w-16 rounded-full mb-3 bg-[#D4AF37]" />
                 <p className="text-white/60 text-sm sm:text-base">
                   We’ll surface the latest uploads once this creator’s feeds are
                   connected to the content pipeline.
@@ -552,10 +560,10 @@ export default function CreatorProfile({
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.22 }}
-              className="card p-6 border-white/10 hover:border-white/20 transition-all duration-500 lg:sticky lg:top-24"
+              className="card p-5 sm:p-6 border-white/10 hover:border-white/20 transition-all duration-500 lg:sticky lg:top-24"
             >
               <div className="flex items-center gap-2 mb-4">
-                {/* Solid side line (no fade) */}
+                {/* ✅ Solid side line (no fade) */}
                 <div className="w-1 h-5 sm:h-6 rounded-full bg-[#D4AF37]" />
                 <h3 className="text-lg sm:text-xl font-black">Connect</h3>
               </div>
@@ -630,12 +638,12 @@ function SocialLink({
       rel="noopener noreferrer"
       whileHover={{ x: 6, scale: 1.02 }}
       whileTap={{ scale: 0.995 }}
-      className="relative flex items-center gap-3 p-3 bg-white/5 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/25 group"
+      className="relative flex items-center gap-3 p-3 sm:p-3.5 bg-white/5 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/25 group"
       style={{
         boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
       }}
     >
-      {/* Social icons stay white (not gold) */}
+      {/* ✅ Social icons stay white (not gold) */}
       <Icon
         size={18}
         className="text-white/85 group-hover:text-white group-hover:scale-110 transition-all shrink-0 sm:w-5 sm:h-5"
