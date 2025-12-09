@@ -453,145 +453,82 @@ export default function CreatorProfile({
           </div>
         </div>
 
-        {/* ✅ MOBILE hero: ultra-premium glass card */}
+        {/* MOBILE hero: glass card (no Back button) */}
+<div className="sm:hidden absolute bottom-3 left-0 right-0 z-20">
+  <div className="container mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.12 }}
+      className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl
+                 px-4 py-3.5"
+      style={{ boxShadow: "0 14px 40px rgba(0,0,0,0.55)" }}
+    >
+      <div className="flex items-center gap-3">
         <div
-          className="sm:hidden absolute left-0 right-0 z-20"
-          // A little safer for device notches + unknown header overlays
-          style={{ bottom: "max(12px, env(safe-area-inset-bottom))" }}
+          className="relative w-14 h-14 rounded-xl overflow-hidden border border-white/10 bg-white/5"
+          style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
         >
-          <div className="container mx-auto px-4">
-            <motion.div
-              {...fadeUp}
-              transition={{ ...softSpring, delay: 0.12 }}
-              className="
-                relative
-                rounded-2xl
-                border border-white/10
-                bg-gradient-to-br from-black/75 via-black/55 to-black/75
-                backdrop-blur-2xl
-                shadow-2xl
-                p-4
-              "
-              style={{
-                boxShadow:
-                  "0 14px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.03)",
-              }}
-            >
-              {/* Inner glow ring for premium glass depth */}
-              <span
-                className="absolute -inset-px rounded-2xl pointer-events-none"
-                style={{
-                  boxShadow:
-                    "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 24px rgba(212,175,55,0.06)",
-                }}
-              />
-
-              {/* Mobile Back link (contained, clean) */}
-              <Link
-                href="/rosters/creators"
-                className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-[11px] mb-3"
-              >
-                <FiArrowLeft />
-                <span>Back to Creators</span>
-              </Link>
-
-              {/* Identity row */}
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ ...softSpring, delay: 0.16 }}
-                  className="
-                    relative w-14 h-14
-                    rounded-xl overflow-hidden
-                    border border-white/10
-                    bg-white/5
-                  "
-                  style={{
-                    boxShadow:
-                      "0 6px 18px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.02)",
-                  }}
-                >
-                  <Image
-                    src={creator.avatar}
-                    alt={creator.name}
-                    fill
-                    className="object-cover"
-                    sizes="56px"
-                    draggable={false}
-                  />
-                </motion.div>
-
-                {/* Text */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/80">
-                      <motion.span
-                        className={`w-1.5 h-1.5 rounded-full ${tierMeta.dotClass}`}
-                        animate={{ opacity: [0.6, 1, 0.6] }}
-                        transition={{
-                          duration: 1.6,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      />
-                      <span className={tierMeta.textClass}>
-                        {tierMeta.label}
-                      </span>
-                    </span>
-
-                    {regionCode && (
-                      <span className="text-[10px] tracking-[0.08em] uppercase text-white/45">
-                        {regionCode}
-                      </span>
-                    )}
-                  </div>
-
-                  <h1 className="text-2xl font-black tracking-tight text-white leading-[1.02] truncate">
-                    {creator.name}
-                  </h1>
-
-                  {/* Short accent rule */}
-                  <div className="h-[2px] w-12 rounded-full bg-[#D4AF37] mt-1.5" />
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div className="mt-3 flex flex-wrap gap-2">
-                {totalReach > 0 && (
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
-                    <FiUsers
-                      className="w-3.5 h-3.5"
-                      style={{ color: ACCENT_HEX }}
-                    />
-                    <span className="text-[10px] text-white/70">
-                      Total{" "}
-                      <span className="font-semibold text-white">
-                        {formatCompactNumber(totalReach)}
-                      </span>
-                    </span>
-                  </div>
-                )}
-
-                {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
-                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
-                    <FiTrendingUp
-                      className="w-3.5 h-3.5"
-                      style={{ color: ACCENT_HEX }}
-                    />
-                    <span className="text-[10px] text-white/70">
-                      Primary{" "}
-                      <span className="font-semibold text-white">
-                        {SOCIAL_CONFIG[primaryPlatformKey].label}
-                      </span>
-                    </span>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
+          <Image
+            src={creator.avatar}
+            alt={creator.name}
+            fill
+            className="object-cover"
+            sizes="56px"
+            draggable={false}
+          />
         </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/80">
+              <span className={`w-1.5 h-1.5 rounded-full ${tierMeta.dotClass}`} />
+              <span className={tierMeta.textClass}>{tierMeta.label}</span>
+            </span>
+
+            {regionCode && (
+              <span className="text-[10px] tracking-[0.08em] uppercase text-white/45">
+                {regionCode}
+              </span>
+            )}
+          </div>
+
+          <h1 className="text-2xl font-black tracking-tight text-white leading-[1.02] truncate">
+            {creator.name}
+          </h1>
+          <div className="h-[2px] w-12 rounded-full bg-[#D4AF37] mt-1.5" />
+        </div>
+      </div>
+
+      <div className="mt-2.5 flex flex-wrap gap-2">
+        {totalReach > 0 && (
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
+            <FiUsers className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
+            <span className="text-[10px] text-white/70">
+              Total{" "}
+              <span className="font-semibold text-white">
+                {formatCompactNumber(totalReach)}
+              </span>
+            </span>
+          </div>
+        )}
+
+        {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
+            <FiTrendingUp className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
+            <span className="text-[10px] text-white/70">
+              Primary{" "}
+              <span className="font-semibold text-white">
+                {SOCIAL_CONFIG[primaryPlatformKey].label}
+              </span>
+            </span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  </div>
+</div>
+
       </motion.section>
 
       {/* ✅ Mobile-only visual bridge to make flow feel intentional */}
