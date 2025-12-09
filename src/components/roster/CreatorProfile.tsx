@@ -24,12 +24,9 @@ import { SiTiktok } from "react-icons/si";
 import type { Creator } from "@/lib/featuredAlgorithm";
 
 const PARTICLE_COUNT = 14;
-
-// Standardized brand accent (gold) across the page (NOT tier-based).
 const ACCENT_HEX = "#D4AF37";
 const ACCENT_SOFT = "rgba(212,175,55,0.18)";
 
-// Icon type that safely allows style prop.
 type IconType = ComponentType<{
   size?: number;
   className?: string;
@@ -121,7 +118,6 @@ const TIER_META: Record<
   },
 };
 
-// Tier color is ONLY used for the star experience.
 const STAR_META: Record<
   NonNullable<Creator["tier"]>,
   { hex: string; soft: string }
@@ -151,13 +147,10 @@ export default function CreatorProfile({
 
   const tierMeta =
     (creator.tier && TIER_META[creator.tier]) || TIER_META.academy;
-
   const starMeta =
     (creator.tier && STAR_META[creator.tier]) || STAR_META.academy;
-
   const isElite = creator.tier === "elite";
 
-  // ✅ ORIGINAL star particle logic (7 particles).
   const starParticles = useMemo(
     () =>
       Array.from({ length: 7 }, (_, i) => ({
@@ -187,8 +180,7 @@ export default function CreatorProfile({
   const regionCode = creator.region || null;
   const creatorWithDiscord = creator as CreatorWithDiscord;
 
-  // ✅ Compact hero on phones.
-  const heroHeight = "h-[280px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
+  const heroHeight = "h-[250px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
 
   return (
     <div className="min-h-screen overflow-x-hidden relative select-none">
@@ -237,7 +229,7 @@ export default function CreatorProfile({
         onHoverStart={() => isMounted && setIsHeroHovered(true)}
         onHoverEnd={() => setIsHeroHovered(false)}
       >
-        {/* Banner media only clips itself */}
+        {/* Banner */}
         <div className="absolute inset-0 overflow-hidden">
           <Image
             src={creator.banner}
@@ -249,11 +241,9 @@ export default function CreatorProfile({
             draggable={false}
           />
 
-          {/* Base overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/22" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/28 via-transparent to-black/22" />
 
-          {/* Subtle highlight overlay */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -266,7 +256,7 @@ export default function CreatorProfile({
             transition={{ duration: 0.45, ease: "easeOut" }}
           />
 
-          {/* Star effect - original structure + tier color */}
+          {/* Star burst */}
           <AnimatePresence>
             {isHeroHovered && isMounted && (
               <>
@@ -312,7 +302,7 @@ export default function CreatorProfile({
           </AnimatePresence>
         </div>
 
-        {/* ✅ Desktop-only Back link overlay — SAFE BELOW NAVBAR */}
+        {/* DESKTOP back link */}
         <div className="hidden sm:block absolute left-0 right-0 z-30 top-20 md:top-24">
           <div className="container mx-auto px-4">
             <Link
@@ -325,16 +315,15 @@ export default function CreatorProfile({
           </div>
         </div>
 
-        {/* Hero content */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
-          <div className="container mx-auto px-4 pb-5 sm:pb-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-6">
-              {/* Avatar — no gold halo */}
+        {/* DESKTOP hero content */}
+        <div className="hidden sm:block absolute bottom-0 left-0 right-0 z-20">
+          <div className="container mx-auto px-4 pb-6 sm:pb-8">
+            <div className="flex flex-row items-end gap-6">
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.18 }}
-                className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-2xl group/avatar bg-black/40"
+                className="relative w-32 h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-2xl group/avatar bg-black/40"
                 style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.55)" }}
               >
                 <Image
@@ -342,7 +331,7 @@ export default function CreatorProfile({
                   alt={creator.name}
                   fill
                   className="object-cover transition-all duration-500 group-hover/avatar:scale-110"
-                  sizes="(max-width: 640px) 96px, (max-width: 1024px) 128px, 144px"
+                  sizes="144px"
                   draggable={false}
                 />
                 <div
@@ -354,27 +343,14 @@ export default function CreatorProfile({
                 />
               </motion.div>
 
-              {/* Text block */}
-              <div className="flex-1">
-                {/* ✅ Mobile back pill */}
-                <div className="sm:hidden mb-2">
-                  <Link
-                    href="/rosters/creators"
-                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/60 border border-white/10 text-white/80 hover:text-white transition-all backdrop-blur"
-                  >
-                    <FiArrowLeft />
-                    <span className="text-[11px]">Back to Creators</span>
-                  </Link>
-                </div>
-
-                {/* Tier / region pill */}
+              <div className="flex-1 pb-1">
                 <motion.div
                   initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.22 }}
-                  className="flex items-center flex-wrap gap-2 sm:gap-3 mb-2"
+                  className="flex items-center flex-wrap gap-3 mb-2"
                 >
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/70 border border-white/15 text-[11px] sm:text-xs text-white/85 backdrop-blur">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/70 border border-white/15 text-xs text-white/85 backdrop-blur">
                     <motion.span
                       className={`w-1.5 h-1.5 rounded-full ${tierMeta.dotClass}`}
                       animate={{
@@ -391,7 +367,7 @@ export default function CreatorProfile({
                     {regionCode && (
                       <>
                         <span className="w-px h-3 bg-white/15" />
-                        <span className="tracking-[0.08em] uppercase text-[10px] sm:text-[11px] text-white/60">
+                        <span className="tracking-[0.08em] uppercase text-[11px] text-white/60">
                           {regionCode}
                         </span>
                       </>
@@ -399,29 +375,29 @@ export default function CreatorProfile({
                   </span>
                 </motion.div>
 
-                {/* Name — ✅ line-height tweak is HERE */}
                 <motion.h1
                   initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.26 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] sm:leading-[1.08]"
+                  className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08]"
                 >
                   {creator.name}
                 </motion.h1>
 
-                {/* Underline — safe spacing for descenders */}
-                <div className="h-[2px] w-16 sm:w-20 md:w-24 rounded-full bg-[#D4AF37] mt-2 mb-3" />
+                <div className="h-[2px] w-20 md:w-24 rounded-full bg-[#D4AF37] mt-2 mb-3" />
 
-                {/* Quick stats */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.32 }}
-                  className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/70"
+                  className="flex flex-wrap items-center gap-3 text-xs text-white/70"
                 >
                   {totalReach > 0 && (
-                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
-                      <FiUsers className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
+                      <FiUsers
+                        className="w-3.5 h-3.5"
+                        style={{ color: ACCENT_HEX }}
+                      />
                       <span>
                         Total reach{" "}
                         <span className="font-semibold text-white">
@@ -431,8 +407,11 @@ export default function CreatorProfile({
                     </div>
                   )}
                   {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
-                    <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
-                      <FiTrendingUp className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
+                      <FiTrendingUp
+                        className="w-3.5 h-3.5"
+                        style={{ color: ACCENT_HEX }}
+                      />
                       <span>
                         Primary{" "}
                         <span className="font-semibold text-white">
@@ -446,12 +425,102 @@ export default function CreatorProfile({
             </div>
           </div>
         </div>
+
+        {/* MOBILE hero: glass card */}
+        <div className="sm:hidden absolute bottom-3 left-0 right-0 z-20">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl p-4"
+              style={{ boxShadow: "0 14px 40px rgba(0,0,0,0.55)" }}
+            >
+              <Link
+                href="/rosters/creators"
+                className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-[11px] mb-3"
+              >
+                <FiArrowLeft />
+                <span>Back to Creators</span>
+              </Link>
+
+              <div className="flex items-center gap-3">
+                <div
+                  className="relative w-14 h-14 rounded-xl overflow-hidden border border-white/10 bg-white/5"
+                  style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
+                >
+                  <Image
+                    src={creator.avatar}
+                    alt={creator.name}
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                    draggable={false}
+                  />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/80">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${tierMeta.dotClass}`}
+                      />
+                      <span className={tierMeta.textClass}>
+                        {tierMeta.label}
+                      </span>
+                    </span>
+                    {regionCode && (
+                      <span className="text-[10px] tracking-[0.08em] uppercase text-white/45">
+                        {regionCode}
+                      </span>
+                    )}
+                  </div>
+
+                  <h1 className="text-2xl font-black tracking-tight text-white leading-[1.02] truncate">
+                    {creator.name}
+                  </h1>
+                  <div className="h-[2px] w-12 rounded-full bg-[#D4AF37] mt-1.5" />
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {totalReach > 0 && (
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
+                    <FiUsers
+                      className="w-3.5 h-3.5"
+                      style={{ color: ACCENT_HEX }}
+                    />
+                    <span className="text-[10px] text-white/70">
+                      Total{" "}
+                      <span className="font-semibold text-white">
+                        {formatCompactNumber(totalReach)}
+                      </span>
+                    </span>
+                  </div>
+                )}
+                {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
+                    <FiTrendingUp
+                      className="w-3.5 h-3.5"
+                      style={{ color: ACCENT_HEX }}
+                    />
+                    <span className="text-[10px] text-white/70">
+                      Primary{" "}
+                      <span className="font-semibold text-white">
+                        {SOCIAL_CONFIG[primaryPlatformKey].label}
+                      </span>
+                    </span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </motion.section>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT (your grid + connect) */}
       <main className="container mx-auto px-4 py-7 sm:py-12">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto lg:items-start">
-          {/* Left: content */}
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             {latestVideos.length > 0 ? (
               <motion.div
@@ -462,13 +531,17 @@ export default function CreatorProfile({
               >
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
                   <h2 className="text-xl sm:text-3xl font-black flex items-center gap-3">
-                    <FiPlay className="shrink-0" style={{ color: ACCENT_HEX }} size={22} />
+                    <FiPlay
+                      className="shrink-0"
+                      style={{ color: ACCENT_HEX }}
+                      size={22}
+                    />
                     Latest Content
                   </h2>
                   <div className="hidden sm:block h-px flex-1 max-w-[140px] bg-white/10" />
                 </div>
 
-                {/* ✅ Mobile polished grid (2-col) */}
+                {/* Mobile 2-col grid */}
                 <div className="grid grid-cols-2 gap-3 sm:hidden">
                   {latestVideos.map((video, idx) => (
                     <motion.a
@@ -502,7 +575,7 @@ export default function CreatorProfile({
                   ))}
                 </div>
 
-                {/* ✅ Desktop/tablet premium grid */}
+                {/* Desktop / tablet grid */}
                 <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {latestVideos.map((video, idx) => {
                     const platformIcon =
@@ -554,7 +627,8 @@ export default function CreatorProfile({
                           <div
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                             style={{
-                              boxShadow: "inset 0 0 0 1px rgba(212,175,55,0.12)",
+                              boxShadow:
+                                "inset 0 0 0 1px rgba(212,175,55,0.12)",
                             }}
                           />
                         </div>
