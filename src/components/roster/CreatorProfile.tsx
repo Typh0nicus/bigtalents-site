@@ -22,11 +22,19 @@ import {
 } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 import type { Creator } from "@/lib/featuredAlgorithm";
+import type { Transition } from "framer-motion";
+
+const softSpring = {
+  type: "spring",
+  stiffness: 220,
+  damping: 24,
+} satisfies Transition;
 
 const PARTICLE_COUNT = 14;
 const ACCENT_HEX = "#D4AF37";
 const ACCENT_SOFT = "rgba(212,175,55,0.18)";
 
+// Icon type that safely allows style prop (fixes TS error).
 type IconType = ComponentType<{
   size?: number;
   className?: string;
@@ -118,6 +126,7 @@ const TIER_META: Record<
   },
 };
 
+// Tier color is ONLY used for the star experience.
 const STAR_META: Record<
   NonNullable<Creator["tier"]>,
   { hex: string; soft: string }
@@ -136,6 +145,11 @@ const STAR_META: Record<
   },
 };
 
+// Small motion presets to keep polish consistent.
+const fadeUp = {
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+};
 export default function CreatorProfile({
   creator,
   latestVideos,
@@ -147,10 +161,13 @@ export default function CreatorProfile({
 
   const tierMeta =
     (creator.tier && TIER_META[creator.tier]) || TIER_META.academy;
+
   const starMeta =
     (creator.tier && STAR_META[creator.tier]) || STAR_META.academy;
+
   const isElite = creator.tier === "elite";
 
+  // ✅ EXACT old burst logic (7 particles).
   const starParticles = useMemo(
     () =>
       Array.from({ length: 7 }, (_, i) => ({
@@ -180,10 +197,15 @@ export default function CreatorProfile({
   const regionCode = creator.region || null;
   const creatorWithDiscord = creator as CreatorWithDiscord;
 
-  const heroHeight = "h-[250px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
+  // ✅ Keep the banner stage tight on phones. The card is the hero on mobile.
+  const heroHeight = "h-[230px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
 
   return (
-    <div className="min-h-screen overflow-x-hidden relative select-none">
+    <div
+      className="min-h-screen overflow-x-hidden relative select-none"
+      // Extra safety for your "anti-text clicking filter".
+      style={{ WebkitUserSelect: "none", userSelect: "none" }}
+    >
       {/* Background ambience */}
       {isMounted && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -229,7 +251,7 @@ export default function CreatorProfile({
         onHoverStart={() => isMounted && setIsHeroHovered(true)}
         onHoverEnd={() => setIsHeroHovered(false)}
       >
-        {/* Banner */}
+        {/* Banner media only clips itself */}
         <div className="absolute inset-0 overflow-hidden">
           <Image
             src={creator.banner}
@@ -241,9 +263,11 @@ export default function CreatorProfile({
             draggable={false}
           />
 
+          {/* Base overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/22" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/28 via-transparent to-black/22" />
 
+          {/* Subtle highlight overlay */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -256,7 +280,7 @@ export default function CreatorProfile({
             transition={{ duration: 0.45, ease: "easeOut" }}
           />
 
-          {/* Star burst */}
+          {/* ✅ Star burst - unchanged structure */}
           <AnimatePresence>
             {isHeroHovered && isMounted && (
               <>
@@ -294,7 +318,10 @@ export default function CreatorProfile({
                       ease: "easeOut",
                     }}
                   >
-                    <FaStar className="text-xs" style={{ color: starMeta.hex }} />
+                    <FaStar
+                      className="text-xs"
+                      style={{ color: starMeta.hex }}
+                    />
                   </motion.div>
                 ))}
               </>
@@ -302,7 +329,7 @@ export default function CreatorProfile({
           </AnimatePresence>
         </div>
 
-        {/* DESKTOP back link */}
+        {/* ✅ Desktop-only Back link overlay — safe below navbar */}
         <div className="hidden sm:block absolute left-0 right-0 z-30 top-20 md:top-24">
           <div className="container mx-auto px-4">
             <Link
@@ -315,7 +342,7 @@ export default function CreatorProfile({
           </div>
         </div>
 
-        {/* DESKTOP hero content */}
+        {/* ✅ Desktop hero content (unchanged concept, refined rhythm) */}
         <div className="hidden sm:block absolute bottom-0 left-0 right-0 z-20">
           <div className="container mx-auto px-4 pb-6 sm:pb-8">
             <div className="flex flex-row items-end gap-6">
@@ -379,7 +406,7 @@ export default function CreatorProfile({
                   initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.26 }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08]"
+                  className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.06]"
                 >
                   {creator.name}
                 </motion.h1>
@@ -426,16 +453,40 @@ export default function CreatorProfile({
           </div>
         </div>
 
-        {/* MOBILE hero: glass card */}
-        <div className="sm:hidden absolute bottom-3 left-0 right-0 z-20">
+        {/* ✅ MOBILE hero: ultra-premium glass card */}
+        <div
+          className="sm:hidden absolute left-0 right-0 z-20"
+          // A little safer for device notches + unknown header overlays
+          style={{ bottom: "max(12px, env(safe-area-inset-bottom))" }}
+        >
           <div className="container mx-auto px-4">
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12 }}
-              className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl p-4"
-              style={{ boxShadow: "0 14px 40px rgba(0,0,0,0.55)" }}
+              {...fadeUp}
+              transition={{ ...softSpring, delay: 0.12 }}
+              className="
+                relative
+                rounded-2xl
+                border border-white/10
+                bg-gradient-to-br from-black/75 via-black/55 to-black/75
+                backdrop-blur-2xl
+                shadow-2xl
+                p-4
+              "
+              style={{
+                boxShadow:
+                  "0 14px 45px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.03)",
+              }}
             >
+              {/* Inner glow ring for premium glass depth */}
+              <span
+                className="absolute -inset-px rounded-2xl pointer-events-none"
+                style={{
+                  boxShadow:
+                    "inset 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 24px rgba(212,175,55,0.06)",
+                }}
+              />
+
+              {/* Mobile Back link (contained, clean) */}
               <Link
                 href="/rosters/creators"
                 className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-[11px] mb-3"
@@ -444,10 +495,23 @@ export default function CreatorProfile({
                 <span>Back to Creators</span>
               </Link>
 
+              {/* Identity row */}
               <div className="flex items-center gap-3">
-                <div
-                  className="relative w-14 h-14 rounded-xl overflow-hidden border border-white/10 bg-white/5"
-                  style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
+                {/* Avatar */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ ...softSpring, delay: 0.16 }}
+                  className="
+                    relative w-14 h-14
+                    rounded-xl overflow-hidden
+                    border border-white/10
+                    bg-white/5
+                  "
+                  style={{
+                    boxShadow:
+                      "0 6px 18px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.02)",
+                  }}
                 >
                   <Image
                     src={creator.avatar}
@@ -457,18 +521,26 @@ export default function CreatorProfile({
                     sizes="56px"
                     draggable={false}
                   />
-                </div>
+                </motion.div>
 
+                {/* Text */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1.5">
-                    <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/80">
-                      <span
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/80">
+                      <motion.span
                         className={`w-1.5 h-1.5 rounded-full ${tierMeta.dotClass}`}
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{
+                          duration: 1.6,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
                       />
                       <span className={tierMeta.textClass}>
                         {tierMeta.label}
                       </span>
                     </span>
+
                     {regionCode && (
                       <span className="text-[10px] tracking-[0.08em] uppercase text-white/45">
                         {regionCode}
@@ -479,10 +551,13 @@ export default function CreatorProfile({
                   <h1 className="text-2xl font-black tracking-tight text-white leading-[1.02] truncate">
                     {creator.name}
                   </h1>
+
+                  {/* Short accent rule */}
                   <div className="h-[2px] w-12 rounded-full bg-[#D4AF37] mt-1.5" />
                 </div>
               </div>
 
+              {/* Stats row */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {totalReach > 0 && (
                   <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
@@ -498,6 +573,7 @@ export default function CreatorProfile({
                     </span>
                   </div>
                 )}
+
                 {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
                   <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10">
                     <FiTrendingUp
@@ -518,9 +594,21 @@ export default function CreatorProfile({
         </div>
       </motion.section>
 
-      {/* MAIN CONTENT (your grid + connect) */}
+      {/* ✅ Mobile-only visual bridge to make flow feel intentional */}
+      <div className="sm:hidden container mx-auto px-4">
+        <div
+          className="h-px my-5 opacity-50"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(212,175,55,0.35), transparent)",
+          }}
+        />
+      </div>
+
+      {/* MAIN CONTENT */}
       <main className="container mx-auto px-4 py-7 sm:py-12">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto lg:items-start">
+          {/* Left: content */}
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             {latestVideos.length > 0 ? (
               <motion.div
@@ -541,7 +629,7 @@ export default function CreatorProfile({
                   <div className="hidden sm:block h-px flex-1 max-w-[140px] bg-white/10" />
                 </div>
 
-                {/* Mobile 2-col grid */}
+                {/* ✅ Mobile polished grid (2-col) */}
                 <div className="grid grid-cols-2 gap-3 sm:hidden">
                   {latestVideos.map((video, idx) => (
                     <motion.a
@@ -575,7 +663,7 @@ export default function CreatorProfile({
                   ))}
                 </div>
 
-                {/* Desktop / tablet grid */}
+                {/* ✅ Desktop/tablet premium grid */}
                 <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {latestVideos.map((video, idx) => {
                     const platformIcon =
@@ -742,6 +830,7 @@ function SocialLink({
       className="relative flex items-center gap-3 p-3 sm:p-3.5 bg-white/5 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/25 group"
       style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.25)" }}
     >
+      {/* Social icons stay white */}
       <Icon
         size={18}
         className="text-white/85 group-hover:text-white group-hover:scale-110 transition-all shrink-0 sm:w-5 sm:h-5"
