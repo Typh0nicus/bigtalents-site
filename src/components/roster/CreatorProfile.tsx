@@ -29,7 +29,7 @@ const PARTICLE_COUNT = 14;
 const ACCENT_HEX = "#D4AF37";
 const ACCENT_SOFT = "rgba(212,175,55,0.18)";
 
-// Icon type that safely allows style prop (fixes TS error).
+// Icon type that safely allows style prop.
 type IconType = ComponentType<{
   size?: number;
   className?: string;
@@ -147,9 +147,7 @@ export default function CreatorProfile({
   const [isMounted, setIsMounted] = useState(false);
   const [isHeroHovered, setIsHeroHovered] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => setIsMounted(true), []);
 
   const tierMeta =
     (creator.tier && TIER_META[creator.tier]) || TIER_META.academy;
@@ -159,7 +157,7 @@ export default function CreatorProfile({
 
   const isElite = creator.tier === "elite";
 
-  // ✅ KEEP the original star particle logic (length 7, same math).
+  // ✅ ORIGINAL star particle logic (7 particles).
   const starParticles = useMemo(
     () =>
       Array.from({ length: 7 }, (_, i) => ({
@@ -189,7 +187,7 @@ export default function CreatorProfile({
   const regionCode = creator.region || null;
   const creatorWithDiscord = creator as CreatorWithDiscord;
 
-  // ✅ Mobile-friendly hero height (not inflated).
+  // ✅ Compact hero on phones.
   const heroHeight = "h-[280px] sm:h-[360px] md:h-[400px] lg:h-[430px]";
 
   return (
@@ -255,7 +253,7 @@ export default function CreatorProfile({
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/22" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/28 via-transparent to-black/22" />
 
-          {/* ✅ Toned-down highlight overlay (kept, subtle) */}
+          {/* Subtle highlight overlay */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -268,7 +266,7 @@ export default function CreatorProfile({
             transition={{ duration: 0.45, ease: "easeOut" }}
           />
 
-          {/* ✅ Star effect - ORIGINAL animation structure + tier colors */}
+          {/* Star effect - original structure + tier color */}
           <AnimatePresence>
             {isHeroHovered && isMounted && (
               <>
@@ -306,10 +304,7 @@ export default function CreatorProfile({
                       ease: "easeOut",
                     }}
                   >
-                    <FaStar
-                      className="text-xs"
-                      style={{ color: starMeta.hex }}
-                    />
+                    <FaStar className="text-xs" style={{ color: starMeta.hex }} />
                   </motion.div>
                 ))}
               </>
@@ -317,8 +312,8 @@ export default function CreatorProfile({
           </AnimatePresence>
         </div>
 
-        {/* ✅ Back link (mobile-safe: avoids navbar collision) */}
-        <div className="absolute top-16 sm:top-24 left-0 right-0 z-30">
+        {/* ✅ Desktop-only Back link overlay — SAFE BELOW NAVBAR */}
+        <div className="hidden sm:block absolute left-0 right-0 z-30 top-20 md:top-24">
           <div className="container mx-auto px-4">
             <Link
               href="/rosters/creators"
@@ -331,16 +326,15 @@ export default function CreatorProfile({
         </div>
 
         {/* Hero content */}
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="absolute bottom-0 left-0 right-0 z-20">
           <div className="container mx-auto px-4 pb-5 sm:pb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-6">
-              {/* Avatar */}
+              {/* Avatar — no gold halo */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.18 }}
                 className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-2xl group/avatar bg-black/40"
-                // ✅ Remove gold glow that looked like a cut ring.
                 style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.55)" }}
               >
                 <Image
@@ -362,6 +356,17 @@ export default function CreatorProfile({
 
               {/* Text block */}
               <div className="flex-1">
+                {/* ✅ Mobile back pill */}
+                <div className="sm:hidden mb-2">
+                  <Link
+                    href="/rosters/creators"
+                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/60 border border-white/10 text-white/80 hover:text-white transition-all backdrop-blur"
+                  >
+                    <FiArrowLeft />
+                    <span className="text-[11px]">Back to Creators</span>
+                  </Link>
+                </div>
+
                 {/* Tier / region pill */}
                 <motion.div
                   initial={{ opacity: 0, x: -18 }}
@@ -394,17 +399,17 @@ export default function CreatorProfile({
                   </span>
                 </motion.div>
 
-                {/* Name */}
+                {/* Name — ✅ line-height tweak is HERE */}
                 <motion.h1
                   initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.26 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08] mb-0"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.05] sm:leading-[1.08]"
                 >
                   {creator.name}
                 </motion.h1>
 
-                {/* ✅ Solid accent rule (no fade) - spaced to avoid descenders */}
+                {/* Underline — safe spacing for descenders */}
                 <div className="h-[2px] w-16 sm:w-20 md:w-24 rounded-full bg-[#D4AF37] mt-2 mb-3" />
 
                 {/* Quick stats */}
@@ -416,10 +421,7 @@ export default function CreatorProfile({
                 >
                   {totalReach > 0 && (
                     <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
-                      <FiUsers
-                        className="w-3.5 h-3.5"
-                        style={{ color: ACCENT_HEX }}
-                      />
+                      <FiUsers className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
                       <span>
                         Total reach{" "}
                         <span className="font-semibold text-white">
@@ -430,10 +432,7 @@ export default function CreatorProfile({
                   )}
                   {primaryPlatformKey && SOCIAL_CONFIG[primaryPlatformKey] && (
                     <div className="inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-black/55 border border-white/15 backdrop-blur">
-                      <FiTrendingUp
-                        className="w-3.5 h-3.5"
-                        style={{ color: ACCENT_HEX }}
-                      />
+                      <FiTrendingUp className="w-3.5 h-3.5" style={{ color: ACCENT_HEX }} />
                       <span>
                         Primary{" "}
                         <span className="font-semibold text-white">
@@ -450,7 +449,7 @@ export default function CreatorProfile({
       </motion.section>
 
       {/* MAIN CONTENT */}
-      <main className="container mx-auto px-4 py-8 sm:py-12">
+      <main className="container mx-auto px-4 py-7 sm:py-12">
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto lg:items-start">
           {/* Left: content */}
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
@@ -459,22 +458,52 @@ export default function CreatorProfile({
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.14 }}
-                className="card p-5 sm:p-8 border-white/10 hover:border-white/20 transition-all duration-500"
+                className="card p-4 sm:p-8 border-white/10 hover:border-white/20 transition-all duration-500"
               >
                 <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-                  <h2 className="text-2xl sm:text-3xl font-black flex items-center gap-3">
-                    <FiPlay
-                      className="shrink-0"
-                      style={{ color: ACCENT_HEX }}
-                      size={22}
-                    />
+                  <h2 className="text-xl sm:text-3xl font-black flex items-center gap-3">
+                    <FiPlay className="shrink-0" style={{ color: ACCENT_HEX }} size={22} />
                     Latest Content
                   </h2>
-                  {/* ✅ Solid divider line */}
                   <div className="hidden sm:block h-px flex-1 max-w-[140px] bg-white/10" />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                {/* ✅ Mobile polished grid (2-col) */}
+                <div className="grid grid-cols-2 gap-3 sm:hidden">
+                  {latestVideos.map((video, idx) => (
+                    <motion.a
+                      key={video.id}
+                      href={video.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.08 + idx * 0.04 }}
+                      whileTap={{ scale: 0.985 }}
+                      className="group"
+                    >
+                      <div className="relative aspect-video rounded-lg overflow-hidden bg-white/5 border border-white/10 group-hover:border-white/25 transition-all">
+                        <Image
+                          src={video.thumbnail}
+                          alt={video.title}
+                          fill
+                          className="object-cover"
+                          sizes="50vw"
+                          draggable={false}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent p-2 flex items-end">
+                          <span className="text-[10px] font-semibold text-white/90 line-clamp-2">
+                            {video.title}
+                          </span>
+                        </div>
+                        <FiExternalLink className="absolute top-2 right-2 text-white/50 w-3.5 h-3.5" />
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+
+                {/* ✅ Desktop/tablet premium grid */}
+                <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {latestVideos.map((video, idx) => {
                     const platformIcon =
                       video.platform === "youtube" ? (
@@ -504,7 +533,7 @@ export default function CreatorProfile({
                             alt={video.title}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-110"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            sizes="(max-width: 1024px) 50vw, 33vw"
                             draggable={false}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex items-end p-3 sm:p-4">
@@ -525,8 +554,7 @@ export default function CreatorProfile({
                           <div
                             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                             style={{
-                              boxShadow:
-                                "inset 0 0 0 1px rgba(212,175,55,0.12)",
+                              boxShadow: "inset 0 0 0 1px rgba(212,175,55,0.12)",
                             }}
                           />
                         </div>
@@ -540,7 +568,7 @@ export default function CreatorProfile({
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.14 }}
-                className="card p-5 sm:p-8 border-white/10"
+                className="card p-4 sm:p-8 border-white/10"
               >
                 <h2 className="text-xl sm:text-2xl font-black mb-2">
                   Content coming soon
@@ -560,10 +588,9 @@ export default function CreatorProfile({
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.22 }}
-              className="card p-5 sm:p-6 border-white/10 hover:border-white/20 transition-all duration-500 lg:sticky lg:top-24"
+              className="card p-4 sm:p-6 border-white/10 hover:border-white/20 transition-all duration-500 lg:sticky lg:top-24"
             >
               <div className="flex items-center gap-2 mb-4">
-                {/* ✅ Solid side line (no fade) */}
                 <div className="w-1 h-5 sm:h-6 rounded-full bg-[#D4AF37]" />
                 <h3 className="text-lg sm:text-xl font-black">Connect</h3>
               </div>
@@ -639,11 +666,8 @@ function SocialLink({
       whileHover={{ x: 6, scale: 1.02 }}
       whileTap={{ scale: 0.995 }}
       className="relative flex items-center gap-3 p-3 sm:p-3.5 bg-white/5 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/25 group"
-      style={{
-        boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
-      }}
+      style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.25)" }}
     >
-      {/* ✅ Social icons stay white (not gold) */}
       <Icon
         size={18}
         className="text-white/85 group-hover:text-white group-hover:scale-110 transition-all shrink-0 sm:w-5 sm:h-5"
