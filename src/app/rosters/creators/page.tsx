@@ -144,7 +144,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
 }
 
 export const metadata = {
-  title: "Big Talents | Creators",
+  title: "Creators",
   description:
     "Meet the Elite, Partnered, and Academy creators representing Big Talents.",
 };
