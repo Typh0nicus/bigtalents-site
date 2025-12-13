@@ -87,6 +87,15 @@ function SocialIcon(props: { platform: PlatformKey }) {
   }
 }
 
+const ORDERED_PLATFORMS: PlatformKey[] = [
+  "youtube",
+  "twitch",
+  "tiktok",
+  "x",
+  "instagram",
+  "discord",
+] as const;
+
 interface CreatorCardProps {
   creator: Creator;
   index?: number;
@@ -102,24 +111,15 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
 
   const bgSrc = creator.avatar || "/images/rosters/player-cover.webp";
 
-  const orderedPlatforms: PlatformKey[] = useMemo(() => [
-    "youtube",
-    "twitch",
-    "tiktok",
-    "x",
-    "instagram",
-    "discord",
-  ], []);
-
   const platforms: PlatformEntry[] = useMemo(() => {
-    return orderedPlatforms
+    return ORDERED_PLATFORMS
       .map((key): PlatformEntry | null => {
         const value = creator.platforms[key];
         if (!value) return null;
         return [key, value] as PlatformEntry;
       })
       .filter((entry): entry is PlatformEntry => entry !== null);
-  }, [creator.platforms, orderedPlatforms]);
+  }, [creator.platforms]);
 
   const totalFans =
     (creator.platforms.youtube?.subscribers ?? 0) +
@@ -128,6 +128,8 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
     (creator.platforms.x?.followers ?? 0) +
     (creator.platforms.instagram?.followers ?? 0);
 
+  // Sparkle particles for hover effect - randomized once per render
+  // (not dependent on creator.id to avoid recreation on every creator change)
   const sparkleParticles = useMemo(
     () =>
       Array.from({ length: 3 }, (_, i) => ({
@@ -349,7 +351,8 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                     transition: "all 0.25s ease",
                   }}
                 >
-                  View
+                  <span className="hidden sm:inline">View Profile</span>
+                  <span className="sm:hidden">View</span>
                 </span>
               </motion.div>
             </div>
