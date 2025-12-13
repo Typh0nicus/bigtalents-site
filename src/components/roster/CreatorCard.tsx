@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
@@ -17,27 +17,35 @@ const TIER_CONFIG: Record<
   {
     label: string;
     gradient: string;
+    tierGradient: string;
     accentColor: string;
     borderColor: string;
+    glowIntensity: string;
   }
 > = {
   elite: {
-    label: "Elite",
+    label: "Elite Creator",
     gradient: "from-[#D4AF37] via-[#FFD700] to-[#D4AF37]",
+    tierGradient: "bg-gradient-to-r from-white via-[#FFD700] to-[#E8AA39]",
     accentColor: "#D4AF37",
     borderColor: "border-[#D4AF37]/30",
+    glowIntensity: "strong", // Best glow for elite
   },
   partnered: {
-    label: "Partnered",
+    label: "Partnered Creator",
     gradient: "from-purple-500 via-pink-500 to-purple-500",
+    tierGradient: "bg-gradient-to-r from-white via-purple-400 to-pink-400",
     accentColor: "#a855f7",
     borderColor: "border-purple-500/30",
+    glowIntensity: "medium",
   },
   academy: {
-    label: "Academy",
+    label: "Academy Creator",
     gradient: "from-sky-500 via-cyan-500 to-sky-500",
+    tierGradient: "bg-gradient-to-r from-white via-sky-400 to-cyan-400",
     accentColor: "#0ea5e9",
     borderColor: "border-sky-500/30",
+    glowIntensity: "none",
   },
 };
 
@@ -97,6 +105,17 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
     (creator.platforms.x?.followers ?? 0) +
     (creator.platforms.instagram?.followers ?? 0);
 
+  // Sparkle particles for hover effect
+  const sparkleParticles = useMemo(
+    () =>
+      Array.from({ length: 3 }, (_, i) => ({
+        x: (Math.random() - 0.5) * 40,
+        y: -10 - Math.random() * 18,
+        delay: i * 0.06,
+      })),
+    []
+  );
+
   return (
     <Link href={`/rosters/creators/${creator.id}`}>
       <motion.div
@@ -121,18 +140,69 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
             
-            {/* Tier Badge - Smaller on mobile */}
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
-              <div
-                className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border ${tierConfig.borderColor}`}
+            {/* Tier Badge - Original styling with gradient text */}
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
+              <p
+                className={`text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] sm:tracking-[0.15em] bg-clip-text text-transparent ${tierConfig.tierGradient}`}
               >
-                <span
-                  className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-gradient-to-r ${tierConfig.gradient} bg-clip-text text-transparent`}
-                >
-                  {tierConfig.label}
-                </span>
-              </div>
+                {tierConfig.label}
+              </p>
             </div>
+
+            {/* Sparkle particles on hover */}
+            <AnimatePresence>
+              {isHovered && !prefersReduced && (
+                <>
+                  {sparkleParticles.map((particle, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute bottom-10 left-10 z-20 pointer-events-none"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{
+                        opacity: [0, 0.9, 0],
+                        scale: [0, 1, 0.5],
+                        x: particle.x,
+                        y: particle.y,
+                      }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={{
+                        duration: 0.75,
+                        delay: particle.delay,
+                        ease: "easeOut",
+                      }}
+                    >
+                      <div
+                        className="h-1 w-1 rounded-full"
+                        style={{
+                          background:
+                            creator.tier === "elite"
+                              ? "#FFD700"
+                              : creator.tier === "partnered"
+                              ? "#c084fc"
+                              : "#38bdf8",
+                          boxShadow:
+                            creator.tier === "elite"
+                              ? "0 0 8px rgba(255,215,0,0.6)"
+                              : "0 0 7px rgba(255,255,255,0.25)",
+                        }}
+                      />
+                    </motion.div>
+                  ))}
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Persistent shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+                repeatDelay: 2,
+              }}
+            />
 
             {/* Stats Overlay - Bottom, more compact on mobile */}
             <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5">
@@ -193,19 +263,49 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           />
         </div>
 
-        {/* Glow Effect for Elite/Partnered */}
-        {(creator.tier === "elite" || creator.tier === "partnered") && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: isHovered && !prefersReduced ? [0.3, 0.6, 0.3] : 0,
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute -inset-[1px] rounded-2xl blur-xl pointer-events-none -z-10"
-            style={{
-              background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}40, transparent 70%)`,
-            }}
-          />
+        {/* Tier-specific Glow Effects */}
+        {tierConfig.glowIntensity === "strong" && (
+          <>
+            {/* Elite - Best glow with multiple layers */}
+            <motion.div
+              animate={{
+                opacity: [0.4, 0.7, 0.4],
+                scale: [0.98, 1.02, 0.98],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-2 rounded-2xl blur-2xl pointer-events-none -z-10"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}60, transparent 70%)`,
+              }}
+            />
+            <motion.div
+              animate={{
+                opacity: [0.2, 0.5, 0.2],
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute -inset-1 rounded-2xl blur-xl pointer-events-none -z-10"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}50, transparent 60%)`,
+                boxShadow: `0 0 40px ${tierConfig.accentColor}40`,
+              }}
+            />
+          </>
+        )}
+        {tierConfig.glowIntensity === "medium" && (
+          <>
+            {/* Partnered - Medium glow */}
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.5, 0.3],
+                scale: [0.99, 1.01, 0.99],
+              }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-1.5 rounded-2xl blur-xl pointer-events-none -z-10"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}45, transparent 65%)`,
+              }}
+            />
+          </>
         )}
       </motion.div>
     </Link>
