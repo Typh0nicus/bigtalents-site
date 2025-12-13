@@ -132,10 +132,10 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
             
-            {/* Tier wash on bottom portion - inspired by original */}
+            {/* Tier wash on bottom portion - inspired by original - toned down */}
             <motion.div
               className={`absolute inset-0 pointer-events-none ${tierConfig.accentGradient}`}
-              animate={{ opacity: isHovered ? 1 : 0 }}
+              animate={{ opacity: isHovered ? 0.4 : 0 }}
               transition={{ duration: 0.2 }}
             />
             
@@ -237,71 +237,71 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           {/* Shimmer Effect removed - tier wash is better */}
         </div>
 
-        {/* Tier-specific Glow Effects - Inspired by original design */}
+        {/* Tier-specific Glow Effects - Fixed positioning to eliminate gap */}
         {!prefersReduced && tierConfig.glowIntensity === "strong" && (
           <>
-            {/* Elite - Outer glow layer */}
+            {/* Elite - Outer glow layer - adjusted to eliminate gap */}
             <motion.div
-              className="absolute -inset-1.5 rounded-2xl blur-lg pointer-events-none -z-10"
+              className="absolute -inset-2 rounded-2xl blur-lg pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle, ${tierConfig.accentColor}33 0%, transparent 70%)`,
+                background: `radial-gradient(circle, ${tierConfig.accentColor}40 0%, transparent 70%)`,
               }}
               animate={{
-                opacity: [0.22, 0.5, 0.22],
-                scale: [0.985, 1.015, 0.985],
+                opacity: [0.28, 0.55, 0.28],
+                scale: [0.99, 1.01, 0.99],
               }}
               transition={{
-                duration: 2.2,
+                duration: 2.4,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
             />
-            {/* Elite - Inner glow with box shadow */}
+            {/* Elite - Inner glow with box shadow - tighter fit */}
             <motion.div
-              className="absolute -inset-0.5 rounded-2xl pointer-events-none -z-10"
+              className="absolute inset-0 rounded-2xl pointer-events-none -z-10"
               style={{
-                boxShadow: `0 0 22px ${tierConfig.accentColor}40, inset 0 0 14px ${tierConfig.accentColor}1f`,
+                boxShadow: `0 0 20px ${tierConfig.accentColor}45, inset 0 0 12px ${tierConfig.accentColor}20`,
               }}
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              animate={{ opacity: [0.35, 0.65, 0.35] }}
               transition={{
-                duration: 2.2,
+                duration: 2.4,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: 0.2,
+                delay: 0.3,
               }}
             />
           </>
         )}
         {!prefersReduced && tierConfig.glowIntensity === "medium" && (
           <>
-            {/* Partnered - Outer glow layer */}
+            {/* Partnered - Outer glow layer - adjusted to eliminate gap */}
             <motion.div
-              className="absolute -inset-1.5 rounded-2xl blur-lg pointer-events-none -z-10"
+              className="absolute -inset-2 rounded-2xl blur-lg pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle, ${tierConfig.accentColor}33 0%, transparent 70%)`,
+                background: `radial-gradient(circle, ${tierConfig.accentColor}40 0%, transparent 70%)`,
               }}
               animate={{
-                opacity: [0.22, 0.5, 0.22],
-                scale: [0.985, 1.015, 0.985],
+                opacity: [0.28, 0.55, 0.28],
+                scale: [0.99, 1.01, 0.99],
               }}
               transition={{
-                duration: 2.2,
+                duration: 2.4,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
             />
-            {/* Partnered - Inner glow with box shadow */}
+            {/* Partnered - Inner glow with box shadow - tighter fit */}
             <motion.div
-              className="absolute -inset-0.5 rounded-2xl pointer-events-none -z-10"
+              className="absolute inset-0 rounded-2xl pointer-events-none -z-10"
               style={{
-                boxShadow: `0 0 22px ${tierConfig.accentColor}40, inset 0 0 14px ${tierConfig.accentColor}1f`,
+                boxShadow: `0 0 20px ${tierConfig.accentColor}45, inset 0 0 12px ${tierConfig.accentColor}20`,
               }}
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              animate={{ opacity: [0.35, 0.65, 0.35] }}
               transition={{
-                duration: 2.2,
+                duration: 2.4,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: 0.2,
+                delay: 0.3,
               }}
             />
           </>
