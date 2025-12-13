@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
@@ -20,15 +20,17 @@ const TIER_CONFIG: Record<
     accentColor: string;
     borderColor: string;
     glowIntensity: string;
+    accentGradient: string; // For tier wash effect
   }
 > = {
   elite: {
     label: "Elite Creator",
     gradient: "from-[#D4AF37] via-[#FFD700] to-[#D4AF37]",
     tierGradient: "bg-gradient-to-r from-white via-[#FFD700] to-[#E8AA39]",
-    accentColor: "#D4AF37",
+    accentColor: "#E8AA39",
     borderColor: "border-[#D4AF37]/30",
     glowIntensity: "strong", // Best glow for elite
+    accentGradient: "bg-gradient-to-br from-[#E8AA39]/0 via-[#E8AA39]/8 to-transparent",
   },
   partnered: {
     label: "Partnered Creator",
@@ -37,6 +39,7 @@ const TIER_CONFIG: Record<
     accentColor: "#a855f7",
     borderColor: "border-purple-500/30",
     glowIntensity: "medium",
+    accentGradient: "bg-gradient-to-br from-purple-500/0 via-purple-500/10 to-transparent",
   },
   academy: {
     label: "Academy Creator",
@@ -45,6 +48,7 @@ const TIER_CONFIG: Record<
     accentColor: "#0ea5e9",
     borderColor: "border-sky-500/30",
     glowIntensity: "none",
+    accentGradient: "bg-gradient-to-br from-sky-500/0 via-sky-500/10 to-transparent",
   },
 };
 
@@ -127,6 +131,13 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+            
+            {/* Tier wash on bottom portion - inspired by original */}
+            <motion.div
+              className={`absolute inset-0 pointer-events-none ${tierConfig.accentGradient}`}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+            />
             
             {/* Tier Badge - Desktop only, positioned below name like original */}
             <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 z-20">
@@ -223,90 +234,74 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </div>
           </div>
 
-          {/* Shimmer Effect - sweeps on hover, no reverse */}
-          <AnimatePresence>
-            {isHovered && !prefersReduced && (
-              <motion.div
-                key="shine"
-                className="pointer-events-none absolute inset-0 overflow-hidden"
-                initial={{ x: "-140%", opacity: 0 }}
-                animate={{ x: "140%", opacity: [0, 1, 0] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
-              >
-                <div
-                  className="h-full w-[60%] bg-white/20"
-                  style={{
-                    transform: "skewX(-18deg)",
-                    filter: "blur(20px)",
-                  }}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Shimmer Effect removed - tier wash is better */}
         </div>
 
-        {/* Tier-specific Glow Effects - Active on both mobile and desktop - MUCH MORE APPARENT */}
+        {/* Tier-specific Glow Effects - Inspired by original design */}
         {!prefersReduced && tierConfig.glowIntensity === "strong" && (
           <>
-            {/* Elite - Best glow with multiple layers - STRONGEST */}
+            {/* Elite - Outer glow layer */}
             <motion.div
-              animate={{
-                opacity: [0.7, 1, 0.7],
-                scale: [0.96, 1.04, 0.96],
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -inset-4 rounded-2xl blur-3xl pointer-events-none -z-10"
+              className="absolute -inset-1.5 rounded-2xl blur-lg pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}90, ${tierConfig.accentColor}40 50%, transparent 70%)`,
+                background: `radial-gradient(circle, ${tierConfig.accentColor}33 0%, transparent 70%)`,
+              }}
+              animate={{
+                opacity: [0.22, 0.5, 0.22],
+                scale: [0.985, 1.015, 0.985],
+              }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             />
+            {/* Elite - Inner glow with box shadow */}
             <motion.div
-              animate={{
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute -inset-2 rounded-2xl blur-2xl pointer-events-none -z-10"
+              className="absolute -inset-0.5 rounded-2xl pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}80, ${tierConfig.accentColor}30 60%, transparent 70%)`,
-                boxShadow: `0 0 60px ${tierConfig.accentColor}60, 0 0 100px ${tierConfig.accentColor}40`,
+                boxShadow: `0 0 22px ${tierConfig.accentColor}40, inset 0 0 14px ${tierConfig.accentColor}1f`,
               }}
-            />
-            <motion.div
-              animate={{
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -inset-1 rounded-2xl blur-xl pointer-events-none -z-10"
-              style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}70, transparent 50%)`,
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.2,
               }}
             />
           </>
         )}
         {!prefersReduced && tierConfig.glowIntensity === "medium" && (
           <>
-            {/* Partnered - Medium glow - MORE VISIBLE */}
+            {/* Partnered - Outer glow layer */}
             <motion.div
-              animate={{
-                opacity: [0.5, 0.8, 0.5],
-                scale: [0.97, 1.03, 0.97],
-              }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -inset-3 rounded-2xl blur-2xl pointer-events-none -z-10"
+              className="absolute -inset-1.5 rounded-2xl blur-lg pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}75, ${tierConfig.accentColor}35 55%, transparent 70%)`,
-                boxShadow: `0 0 50px ${tierConfig.accentColor}50, 0 0 80px ${tierConfig.accentColor}30`,
+                background: `radial-gradient(circle, ${tierConfig.accentColor}33 0%, transparent 70%)`,
+              }}
+              animate={{
+                opacity: [0.22, 0.5, 0.22],
+                scale: [0.985, 1.015, 0.985],
+              }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             />
+            {/* Partnered - Inner glow with box shadow */}
             <motion.div
-              animate={{
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-              className="absolute -inset-1.5 rounded-2xl blur-xl pointer-events-none -z-10"
+              className="absolute -inset-0.5 rounded-2xl pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}65, transparent 55%)`,
+                boxShadow: `0 0 22px ${tierConfig.accentColor}40, inset 0 0 14px ${tierConfig.accentColor}1f`,
+              }}
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.2,
               }}
             />
           </>
