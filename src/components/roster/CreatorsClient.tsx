@@ -76,7 +76,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
   }, []);
 
   return (
-    <div className="relative w-full min-h-screen bg-black text-white antialiased">
+    <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
       {/* Modern gradient background with dot grid */}
       <div className="fixed inset-0 pointer-events-none">
         <div

@@ -145,8 +145,9 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                 </p>
               )}
             </div>
+          </div>
 
-            {/* Info Section - Different for mobile vs desktop */}
+          {/* Info Section - Different for mobile vs desktop */}
           <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5">
             {/* Mobile: View Profile button centered */}
             <div className="sm:hidden flex items-center justify-center">
