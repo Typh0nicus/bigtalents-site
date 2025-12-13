@@ -193,16 +193,18 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </AnimatePresence>
 
             {/* Persistent shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-                repeatDelay: 2,
-              }}
-            />
+            {!prefersReduced && (
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  repeatDelay: 2,
+                }}
+              />
+            )}
 
             {/* Stats Overlay - Bottom, more compact on mobile */}
             <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5">
@@ -264,7 +266,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         </div>
 
         {/* Tier-specific Glow Effects */}
-        {tierConfig.glowIntensity === "strong" && (
+        {!prefersReduced && tierConfig.glowIntensity === "strong" && (
           <>
             {/* Elite - Best glow with multiple layers */}
             <motion.div
@@ -291,7 +293,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             />
           </>
         )}
-        {tierConfig.glowIntensity === "medium" && (
+        {!prefersReduced && tierConfig.glowIntensity === "medium" && (
           <>
             {/* Partnered - Medium glow */}
             <motion.div
