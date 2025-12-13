@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
@@ -104,17 +104,6 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
     (creator.platforms.tiktok?.followers ?? 0) +
     (creator.platforms.x?.followers ?? 0) +
     (creator.platforms.instagram?.followers ?? 0);
-
-  // Sparkle particles for hover effect
-  const sparkleParticles = useMemo(
-    () =>
-      Array.from({ length: 3 }, (_, i) => ({
-        x: (Math.random() - 0.5) * 40,
-        y: -10 - Math.random() * 18,
-        delay: i * 0.06,
-      })),
-    []
-  );
 
   return (
     <Link href={`/rosters/creators/${creator.id}`}>
