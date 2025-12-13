@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
@@ -101,6 +101,18 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
       .filter((p) => p.value);
   }, [creator.platforms]);
 
+  // Sparkle particles for hover effect (from original design)
+  // Memoized to prevent recreation on every render for performance
+  const sparkleParticles = useMemo(
+    () =>
+      Array.from({ length: 3 }, (_, i) => ({
+        x: (Math.random() - 0.5) * 40,
+        y: -10 - Math.random() * 18,
+        delay: i * 0.06,
+      })),
+    []
+  );
+
   const totalFans =
     (creator.platforms.youtube?.subscribers ?? 0) +
     (creator.platforms.twitch?.followers ?? 0) +
@@ -138,6 +150,49 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
               animate={{ opacity: isHovered ? 0.4 : 0 }}
               transition={{ duration: 0.2 }}
             />
+
+            {/* Sparkle particles on hover - from original design */}
+            <AnimatePresence>
+              {isHovered && !prefersReduced && (
+                <>
+                  {sparkleParticles.map((particle, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute bottom-10 left-10 z-20 pointer-events-none"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{
+                        opacity: [0, 0.9, 0],
+                        scale: [0, 1, 0.5],
+                        x: particle.x,
+                        y: particle.y,
+                      }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={{
+                        duration: 0.75,
+                        delay: particle.delay,
+                        ease: "easeOut",
+                      }}
+                    >
+                      <div
+                        className="h-1 w-1 rounded-full"
+                        style={{
+                          background:
+                            creator.tier === "elite"
+                              ? "#FFD700"
+                              : creator.tier === "partnered"
+                              ? "#c084fc"
+                              : "#38bdf8",
+                          boxShadow:
+                            creator.tier === "elite"
+                              ? "0 0 8px rgba(255,215,0,0.6)"
+                              : "0 0 7px rgba(255,255,255,0.25)",
+                        }}
+                      />
+                    </motion.div>
+                  ))}
+                </>
+              )}
+            </AnimatePresence>
             
             {/* Tier Badge - Desktop only, positioned below name like original */}
             <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 z-20">
@@ -159,7 +214,15 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           </div>
 
           {/* Info Section - Different for mobile vs desktop */}
-          <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5">
+          <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5 overflow-hidden">
+            {/* Shine effect on footer - from original design */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none"
+              style={{ transform: "skewX(-20deg)" }}
+              animate={isHovered ? { x: ["-150%", "150%"] } : { x: "-150%" }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            />
+            
             {/* Mobile: View Profile button centered */}
             <div className="sm:hidden flex items-center justify-center">
               <motion.div

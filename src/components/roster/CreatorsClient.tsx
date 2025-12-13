@@ -110,75 +110,6 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       {/* Hero Section - Redesigned with raised content */}
       <section className="relative z-10 pt-24 lg:pt-32 pb-12 lg:pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          {/* Ambient Particles Canvas */}
-          <canvas
-            className="absolute inset-0 pointer-events-none opacity-40"
-            style={{ width: "100%", height: "100%" }}
-            ref={(canvas) => {
-              if (!canvas || typeof window === "undefined") return;
-              
-              const ctx = canvas.getContext("2d", { alpha: true });
-              if (!ctx) return;
-              
-              const isMobile = window.matchMedia("(max-width: 640px)").matches;
-              const particleCount = isMobile ? 25 : 50;
-              const particles: Array<{
-                x: number; y: number; vx: number; vy: number;
-                size: number; opacity: number; color: string;
-              }> = [];
-              
-              const resize = () => {
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-              };
-              
-              resize();
-              window.addEventListener("resize", resize);
-              
-              // Initialize particles
-              for (let i = 0; i < particleCount; i++) {
-                const colorChoice = Math.random();
-                particles.push({
-                  x: Math.random() * canvas.width,
-                  y: Math.random() * canvas.height,
-                  vx: (Math.random() - 0.5) * 0.3,
-                  vy: (Math.random() - 0.5) * 0.3,
-                  size: Math.random() * 2 + 1,
-                  opacity: Math.random() * 0.4 + 0.2,
-                  color: colorChoice < 0.5 ? "212,175,55" : colorChoice < 0.8 ? "255,215,0" : "139,92,246"
-                });
-              }
-              
-              const animate = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                particles.forEach(p => {
-                  p.x += p.vx;
-                  p.y += p.vy;
-                  
-                  if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                  if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                  
-                  ctx.beginPath();
-                  ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                  ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
-                  ctx.fill();
-                  
-                  // Subtle glow
-                  ctx.shadowBlur = 6;
-                  ctx.shadowColor = `rgba(${p.color},${p.opacity * 0.6})`;
-                  ctx.fill();
-                  ctx.shadowBlur = 0;
-                });
-                
-                requestAnimationFrame(animate);
-              };
-              
-              animate();
-            }}
-          />
-          
           <div className="text-center mb-16 lg:mb-20 relative z-10">
             {/* Star medallion */}
             <motion.div
@@ -221,7 +152,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               </span>
             </motion.h1>
 
-            {/* Description - More color variety */}
+            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -229,12 +160,10 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12"
             >
               Elite content creators dominating{" "}
-              <span className="text-red-500 font-bold">YouTube</span>,{" "}
-              <span className="text-purple-400 font-bold">Twitch</span>, and{" "}
-              <span className="text-white font-bold">TikTok</span>
+              <span className="text-[#FFD700] font-bold">YouTube, Twitch, and TikTok</span>
             </motion.p>
 
-            {/* Stats - More color variation */}
+            {/* Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -242,17 +171,17 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="flex flex-wrap items-center justify-center gap-8 lg:gap-12"
             >
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-400 mb-2">
+                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
                   {formatCompact(combinedReach)}
                 </div>
-                <div className="text-sm text-amber-200/60 uppercase tracking-wider">Total Reach</div>
+                <div className="text-sm text-white/50 uppercase tracking-wider">Total Reach</div>
               </div>
               {combinedViews > 0 && (
                 <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-amber-500 to-yellow-500 mb-2">
+                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
                     {formatCompact(combinedViews)}
                   </div>
-                  <div className="text-sm text-orange-200/60 uppercase tracking-wider">Total Views</div>
+                  <div className="text-sm text-white/50 uppercase tracking-wider">Total Views</div>
                 </div>
               )}
             </motion.div>
