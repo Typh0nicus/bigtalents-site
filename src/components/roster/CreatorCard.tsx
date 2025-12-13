@@ -102,14 +102,14 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
 
   const bgSrc = creator.avatar || "/images/rosters/player-cover.webp";
 
-  const orderedPlatforms: PlatformKey[] = [
+  const orderedPlatforms: PlatformKey[] = useMemo(() => [
     "youtube",
     "twitch",
     "tiktok",
     "x",
     "instagram",
     "discord",
-  ];
+  ], []);
 
   const platforms: PlatformEntry[] = useMemo(() => {
     return orderedPlatforms
@@ -119,7 +119,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         return [key, value] as PlatformEntry;
       })
       .filter((entry): entry is PlatformEntry => entry !== null);
-  }, [creator.platforms]);
+  }, [creator.platforms, orderedPlatforms]);
 
   const totalFans =
     (creator.platforms.youtube?.subscribers ?? 0) +
@@ -135,7 +135,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         y: -10 - Math.random() * 18,
         delay: i * 0.06,
       })),
-    [creator.id]
+    []
   );
 
   const showAura = isMounted && (creator.tier === "elite" || creator.tier === "partnered");
@@ -153,14 +153,14 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        whileHover={prefersReduced ? {} : { y: -12 }}
+        whileHover={prefersReduced ? {} : { y: -12, scale: 1.02 }}
         className="group cursor-pointer relative"
       >
         {/* Tier aura (same sizing system for elite + partnered) */}
         {showAura && (
           <>
             <motion.div
-              className="absolute -inset-1.5 rounded-3xl blur-lg pointer-events-none"
+              className="absolute -inset-1.5 rounded-2xl sm:rounded-3xl blur-lg pointer-events-none"
               style={{
                 background: `radial-gradient(circle, ${tier.glowColor}33 0%, transparent 70%)`,
               }}
@@ -176,7 +176,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
               }}
             />
             <motion.div
-              className="absolute -inset-0.5 rounded-3xl pointer-events-none"
+              className="absolute -inset-0.5 rounded-2xl sm:rounded-3xl pointer-events-none"
               style={{
                 boxShadow: `0 0 22px ${tier.glowColor}40, inset 0 0 14px ${tier.glowColor}1f`,
               }}
@@ -192,17 +192,17 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         )}
 
         <motion.div
-          className={`relative rounded-3xl overflow-hidden border border-white/10 bg-black/70 shadow-lg ${tier.borderHover} ${tier.shadowHover}`}
+          className={`relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-black/70 shadow-lg ${tier.borderHover} ${tier.shadowHover}`}
           transition={{ duration: 0.25, ease: "easeOut" }}
         >
           {/* Media */}
-          <div className="relative aspect-[4/5] bg-gradient-to-br from-zinc-900 to-black">
+          <div className="relative aspect-square sm:aspect-[3/4] md:aspect-[4/5] bg-gradient-to-br from-zinc-900 to-black">
             <Image
               src={bgSrc}
               alt={creator.name}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
-              sizes="(max-width:768px) 100vw, 420px"
+              sizes="(max-width:640px) 50vw, (max-width:1024px) 50vw, 420px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
@@ -212,6 +212,30 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
               animate={{ opacity: isHovered ? 1 : 0 }}
               transition={{ duration: 0.2 }}
             />
+
+            {/* Shimmer effect on hover */}
+            <AnimatePresence>
+              {isHovered && !prefersReduced && (
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{
+                      duration: 1.5,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                      repeatDelay: 0.5,
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Tiny sparkles on hover (clean + subtle) */}
             <AnimatePresence>
@@ -257,18 +281,18 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </AnimatePresence>
 
             {/* Name + tier */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 z-30">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white line-clamp-1">
+            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 z-30">
+              <div className="flex flex-col gap-0.5 sm:gap-1">
+                <h3 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tight text-white line-clamp-1">
                   {creator.name}
                 </h3>
                 <p
-                  className={`text-[10px] sm:text-[11px] md:text-xs font-semibold uppercase tracking-[0.15em] sm:tracking-[0.18em] bg-clip-text text-transparent ${tier.tierGradient}`}
+                  className={`text-[9px] sm:text-[10px] md:text-[11px] lg:text-xs font-semibold uppercase tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] bg-clip-text text-transparent ${tier.tierGradient}`}
                 >
                   {tier.label}
                 </p>
                 {totalFans > 0 && (
-                  <p className="text-xs sm:text-sm text-white/70">
+                  <p className="text-[10px] sm:text-xs md:text-sm text-white/70">
                     {formatFans(totalFans)} fans
                   </p>
                 )}
@@ -277,15 +301,15 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           </div>
 
           {/* Footer */}
-          <div className="relative p-4 sm:p-6 bg-black/55 backdrop-blur-xl overflow-hidden">
+          <div className="relative p-3 sm:p-4 md:p-6 bg-black/55 backdrop-blur-xl overflow-hidden">
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
               animate={isHovered && !prefersReduced ? { x: ["-100%", "100%"] } : {}}
               transition={{ duration: 0.55, ease: "easeInOut" }}
             />
 
-            <div className="relative flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            <div className="relative flex items-center justify-between gap-2 sm:gap-4">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {platforms.map(([platformKey, value]) => (
                   <motion.button
                     key={String(platformKey)}
@@ -299,7 +323,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                       window.open(value.url, "_blank", "noopener,noreferrer");
                     }}
                     aria-label={`${creator.name} on ${String(platformKey)}`}
-                    className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-zinc-900 border border-white/15 hover:border-white/35 transition-colors duration-200 text-lg sm:text-base"
+                    className="flex h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/15 hover:border-white/35 transition-colors duration-200 text-sm sm:text-base md:text-lg"
                   >
                     <SocialIcon platform={platformKey} />
                   </motion.button>
@@ -312,7 +336,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
               >
                 <span
-                  className="text-xs font-bold uppercase tracking-widest"
+                  className="text-[9px] sm:text-xs font-bold uppercase tracking-widest"
                   style={{
                     color: isHovered ? "transparent" : "white",
                     backgroundImage: isHovered
@@ -325,7 +349,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                     transition: "all 0.25s ease",
                   }}
                 >
-                  View Profile
+                  View
                 </span>
               </motion.div>
             </div>

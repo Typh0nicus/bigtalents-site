@@ -111,7 +111,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       </motion.div>
 
       {/* HERO */}
-      <section className="relative z-10 pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-center overflow-hidden">
+      <section className="relative z-10 pt-20 sm:pt-24 md:pt-28 pb-8 sm:pb-10 md:pb-14 flex items-center justify-center overflow-hidden">
         {/* Floating icons layer (only in hero) */}
         {isMounted && (
           <div className="pointer-events-none absolute inset-0">
@@ -132,7 +132,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                   ease: "easeInOut",
                 }}
               >
-                <FiPlay className="text-[#D4AF37] text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
+                <FiPlay className="text-[#D4AF37] text-lg sm:text-xl md:text-2xl drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
               </motion.div>
             ))}
           </div>
@@ -147,32 +147,32 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
           >
             {/* Star medallion */}
             <motion.div
-              className="inline-flex mb-6 sm:mb-7"
+              className="inline-flex mb-5 sm:mb-6 md:mb-7"
               initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             >
               <div
-                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur"
+                className="rounded-full p-2.5 sm:p-3.5 md:p-4 border border-white/10 bg-white/[0.03] backdrop-blur"
                 style={{
                   boxShadow:
                     "0 0 0 1px rgba(255,255,255,0.04), 0 16px 50px rgba(0,0,0,0.7)",
                 }}
               >
                 <div
-                  className="rounded-full p-3 sm:p-3.5"
+                  className="rounded-full p-2.5 sm:p-3 md:p-3.5"
                   style={{
                     background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
                     boxShadow: `0 0 26px rgba(212,175,55,0.4)`,
                   }}
                 >
-                  <FaStar className="text-black text-2xl sm:text-3xl" />
+                  <FaStar className="text-black text-xl sm:text-2xl md:text-3xl" />
                 </div>
               </div>
             </motion.div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight">
               <span className="text-white">OUR </span>
               <span
                 className="bg-clip-text text-transparent"
@@ -186,23 +186,23 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
             </h1>
 
             {/* Underline */}
-            <div className="mx-auto mt-4 mb-5 h-[2px] w-16 sm:w-20 rounded-full bg-[#D4AF37]/90" />
+            <div className="mx-auto mt-3 sm:mt-4 mb-4 sm:mb-5 h-[2px] w-12 sm:w-16 md:w-20 rounded-full bg-[#D4AF37]/90" />
 
             {/* Tagline */}
-            <p className="text-base sm:text-lg text-white/75 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-white/75 max-w-3xl mx-auto px-4">
               Big Talents creators across{" "}
               <span className="text-white">YouTube, Twitch, TikTok</span>.
             </p>
 
             {/* Inline stats */}
             <motion.div
-              className="mt-7 sm:mt-8"
+              className="mt-6 sm:mt-7 md:mt-8"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.18, ease: "easeOut" }}
             >
-              <div className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-sm sm:text-base text-white/70">
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#FFD700]">
+              <div className="flex flex-wrap items-baseline justify-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm md:text-base text-white/70">
+                <span className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#FFD700]">
                   {formatCompact(combinedReach)}
                 </span>
                 <span className="tracking-wide">combined reach</span>
@@ -210,7 +210,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                 {combinedViews > 0 && (
                   <>
                     <span className="text-white/30">•</span>
-                    <span className="text-2xl sm:text-3xl font-extrabold text-[#FFD700]">
+                    <span className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#FFD700]">
                       {formatCompact(combinedViews)}
                     </span>
                     <span className="tracking-wide">views</span>
@@ -221,7 +221,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
 
             {/* View creators link */}
             <motion.div
-              className="mt-7"
+              className="mt-6 sm:mt-7"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
@@ -239,25 +239,25 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       </section>
 
       {/* Fade into cards */}
-      <div className="pointer-events-none absolute inset-x-0 top-[52vh] sm:top-[56vh] h-40 bg-gradient-to-b from-transparent via-black/40 to-black" />
+      <div className="pointer-events-none absolute inset-x-0 top-[48vh] sm:top-[52vh] md:top-[56vh] h-40 bg-gradient-to-b from-transparent via-black/40 to-black" />
 
       {/* CREATOR GRID */}
       <section
         id="creators"
-        className="relative z-10 pb-20 sm:pb-24 pt-4 sm:pt-8"
+        className="relative z-10 pb-16 sm:pb-20 md:pb-24 pt-2 sm:pt-4 md:pt-8"
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-3 sm:px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-6 flex items-center justify-between gap-3">
-              <h2 className="text-[0.7rem] sm:text-xs font-medium uppercase tracking-[0.25em] text-white/55">
+            <div className="mb-4 sm:mb-5 md:mb-6 flex items-center justify-between gap-2 sm:gap-3">
+              <h2 className="text-[0.65rem] sm:text-[0.7rem] md:text-xs font-medium uppercase tracking-[0.22em] sm:tracking-[0.25em] text-white/55">
                 Active roster
               </h2>
-              <span className="text-[0.7rem] sm:text-xs text-white/40">
+              <span className="text-[0.65rem] sm:text-[0.7rem] md:text-xs text-white/40">
                 {sortedCreators.length} creators
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-8">
               {sortedCreators.map((creator, index) => (
                 <motion.div
                   key={creator.id}
