@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
 import { FaYoutube, FaTwitch, FaInstagram, FaTwitter } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
-import { HiArrowRight } from "react-icons/hi2";
 
 type CreatorTier = Creator["tier"];
 type PlatformKey = keyof Creator["platforms"];
@@ -147,23 +146,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
               )}
             </div>
 
-            {/* Hover Arrow - Hidden on mobile */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{
-                opacity: isHovered ? 1 : 0,
-                x: isHovered ? 0 : -10,
-              }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-4 right-4 hidden sm:block"
-            >
-              <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
-                <HiArrowRight className="text-white text-lg" />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Info Section - Different for mobile vs desktop */}
+            {/* Info Section - Different for mobile vs desktop */}
           <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5">
             {/* Mobile: View Profile button centered */}
             <div className="sm:hidden flex items-center justify-center">
@@ -239,55 +222,90 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </div>
           </div>
 
-          {/* Shimmer Effect on hover only (no persistent shimmer) */}
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: isHovered && !prefersReduced ? "100%" : "-100%" }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"
-          />
+          {/* Shimmer Effect - sweeps on hover, no reverse */}
+          <AnimatePresence>
+            {isHovered && !prefersReduced && (
+              <motion.div
+                key="shine"
+                className="pointer-events-none absolute inset-0 overflow-hidden"
+                initial={{ x: "-140%", opacity: 0 }}
+                animate={{ x: "140%", opacity: [0, 1, 0] }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                <div
+                  className="h-full w-[60%] bg-white/20"
+                  style={{
+                    transform: "skewX(-18deg)",
+                    filter: "blur(20px)",
+                  }}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Tier-specific Glow Effects - Active on both mobile and desktop */}
+        {/* Tier-specific Glow Effects - Active on both mobile and desktop - MUCH MORE APPARENT */}
         {!prefersReduced && tierConfig.glowIntensity === "strong" && (
           <>
-            {/* Elite - Best glow with multiple layers */}
+            {/* Elite - Best glow with multiple layers - STRONGEST */}
             <motion.div
               animate={{
-                opacity: [0.4, 0.7, 0.4],
-                scale: [0.98, 1.02, 0.98],
+                opacity: [0.7, 1, 0.7],
+                scale: [0.96, 1.04, 0.96],
               }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -inset-2 rounded-2xl blur-2xl pointer-events-none -z-10"
+              className="absolute -inset-4 rounded-2xl blur-3xl pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}60, transparent 70%)`,
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}90, ${tierConfig.accentColor}40 50%, transparent 70%)`,
               }}
             />
             <motion.div
               animate={{
-                opacity: [0.2, 0.5, 0.2],
+                opacity: [0.5, 0.8, 0.5],
               }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute -inset-2 rounded-2xl blur-2xl pointer-events-none -z-10"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}80, ${tierConfig.accentColor}30 60%, transparent 70%)`,
+                boxShadow: `0 0 60px ${tierConfig.accentColor}60, 0 0 100px ${tierConfig.accentColor}40`,
+              }}
+            />
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               className="absolute -inset-1 rounded-2xl blur-xl pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}50, transparent 60%)`,
-                boxShadow: `0 0 40px ${tierConfig.accentColor}40`,
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}70, transparent 50%)`,
               }}
             />
           </>
         )}
         {!prefersReduced && tierConfig.glowIntensity === "medium" && (
           <>
-            {/* Partnered - Medium glow */}
+            {/* Partnered - Medium glow - MORE VISIBLE */}
             <motion.div
               animate={{
-                opacity: [0.3, 0.5, 0.3],
-                scale: [0.99, 1.01, 0.99],
+                opacity: [0.5, 0.8, 0.5],
+                scale: [0.97, 1.03, 0.97],
               }}
               transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-3 rounded-2xl blur-2xl pointer-events-none -z-10"
+              style={{
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}75, ${tierConfig.accentColor}35 55%, transparent 70%)`,
+                boxShadow: `0 0 50px ${tierConfig.accentColor}50, 0 0 80px ${tierConfig.accentColor}30`,
+              }}
+            />
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
               className="absolute -inset-1.5 rounded-2xl blur-xl pointer-events-none -z-10"
               style={{
-                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}45, transparent 65%)`,
+                background: `radial-gradient(circle at 50% 50%, ${tierConfig.accentColor}65, transparent 55%)`,
               }}
             />
           </>

@@ -111,19 +111,42 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       <section className="relative z-10 pt-32 lg:pt-40 pb-16 lg:pb-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 lg:mb-20">
+            {/* Star medallion */}
+            <motion.div
+              className="inline-flex mb-6 sm:mb-7"
+              initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            >
+              <div
+                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur"
+                style={{
+                  boxShadow:
+                    "0 0 0 1px rgba(255,255,255,0.04), 0 16px 50px rgba(0,0,0,0.7)",
+                }}
+              >
+                <div
+                  className="rounded-full p-3 sm:p-3.5"
+                  style={{
+                    background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
+                    boxShadow: `0 0 26px rgba(212,175,55,0.4)`,
+                  }}
+                >
+                  <FaStar className="text-black text-2xl sm:text-3xl" />
+                </div>
+              </div>
+            </motion.div>
+
             {/* Title */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-6"
             >
               <span className="block text-white/90">Meet Our</span>
               <span
-                className="block bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: `linear-gradient(135deg, ${GOLD} 0%, #FFD700 50%, ${GOLD} 100%)`,
-                }}
+                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]"
               >
                 Creators
               </span>
