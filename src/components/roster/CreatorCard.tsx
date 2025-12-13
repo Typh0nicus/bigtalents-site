@@ -126,7 +126,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         className="group relative cursor-pointer h-full"
       >
         {/* Card Container */}
-        <div className="relative h-full rounded-2xl overflow-hidden bg-gradient-to-br from-zinc-900/50 to-black border border-white/10 backdrop-blur-sm">
+        <div className="relative h-full rounded-2xl overflow-hidden bg-gradient-to-br from-zinc-900/50 to-black border border-white/10 backdrop-blur-sm antialiased">
           {/* Image Section - More compact on mobile */}
           <div className="relative aspect-square sm:aspect-[3/4] overflow-hidden">
             <Image
@@ -140,77 +140,17 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
             
-            {/* Tier Badge - Original styling with gradient text */}
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
-              <p
-                className={`text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] sm:tracking-[0.15em] bg-clip-text text-transparent ${tierConfig.tierGradient}`}
-              >
-                {tierConfig.label}
-              </p>
-            </div>
-
-            {/* Sparkle particles on hover */}
-            <AnimatePresence>
-              {isHovered && !prefersReduced && (
-                <>
-                  {sparkleParticles.map((particle, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute bottom-10 left-10 z-20 pointer-events-none"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{
-                        opacity: [0, 0.9, 0],
-                        scale: [0, 1, 0.5],
-                        x: particle.x,
-                        y: particle.y,
-                      }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      transition={{
-                        duration: 0.75,
-                        delay: particle.delay,
-                        ease: "easeOut",
-                      }}
-                    >
-                      <div
-                        className="h-1 w-1 rounded-full"
-                        style={{
-                          background:
-                            creator.tier === "elite"
-                              ? "#FFD700"
-                              : creator.tier === "partnered"
-                              ? "#c084fc"
-                              : "#38bdf8",
-                          boxShadow:
-                            creator.tier === "elite"
-                              ? "0 0 8px rgba(255,215,0,0.6)"
-                              : "0 0 7px rgba(255,255,255,0.25)",
-                        }}
-                      />
-                    </motion.div>
-                  ))}
-                </>
-              )}
-            </AnimatePresence>
-
-            {/* Persistent shimmer effect */}
-            {!prefersReduced && (
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
-                animate={{ x: ["-100%", "100%"] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  repeatDelay: 2,
-                }}
-              />
-            )}
-
-            {/* Stats Overlay - Bottom, more compact on mobile */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5">
+            {/* Tier Badge - Desktop only, positioned below name like original */}
+            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 z-20">
               <h3 className="text-base sm:text-2xl font-black text-white mb-0.5 sm:mb-1 line-clamp-1">
                 {creator.name}
               </h3>
+              {/* Desktop: Show tier badge below name */}
+              <p
+                className={`hidden sm:block text-xs font-semibold uppercase tracking-[0.15em] bg-clip-text text-transparent ${tierConfig.tierGradient} mb-1`}
+              >
+                {tierConfig.label}
+              </p>
               {totalFans > 0 && (
                 <p className="text-xs sm:text-sm text-white/70 font-medium">
                   {formatFans(totalFans)} followers
@@ -234,29 +174,83 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             </motion.div>
           </div>
 
-          {/* Info Section - More compact on mobile */}
+          {/* Info Section - Different for mobile vs desktop */}
           <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5">
-            {/* Platforms */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-              {platforms.map(({ key, value }) => (
-                <button
-                  key={String(key)}
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (value?.url) window.open(value.url, "_blank", "noopener,noreferrer");
+            {/* Mobile: View Profile button centered */}
+            <div className="sm:hidden flex items-center justify-center">
+              <motion.div
+                className="relative text-center"
+                animate={isHovered ? { scale: 1.03 } : { scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              >
+                <span
+                  className="text-xs font-bold uppercase tracking-widest"
+                  style={{
+                    color: isHovered ? "transparent" : "white",
+                    backgroundImage: isHovered
+                      ? "linear-gradient(90deg,#D4AF37 0%,#FFD700 50%,#D4AF37 100%)"
+                      : "none",
+                    backgroundSize: "200% 100%",
+                    backgroundPosition: isHovered ? "100% 0" : "0 0",
+                    WebkitBackgroundClip: isHovered ? "text" : "unset",
+                    WebkitTextFillColor: isHovered ? "transparent" : "white",
+                    transition: "all 0.25s ease",
                   }}
-                  className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all duration-200"
-                  aria-label={`${creator.name} on ${String(key)}`}
                 >
-                  <SocialIcon platform={key} size="text-sm" />
-                </button>
-              ))}
+                  View Profile
+                </span>
+              </motion.div>
+            </div>
+            
+            {/* Desktop: Platform icons and View Profile */}
+            <div className="hidden sm:flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                {platforms.map(({ key, value }) => (
+                  <motion.button
+                    key={String(key)}
+                    type="button"
+                    whileHover={prefersReduced ? {} : { scale: 1.08, y: -1 }}
+                    whileTap={prefersReduced ? {} : { scale: 0.96 }}
+                    transition={{ type: "spring", stiffness: 420, damping: 20 }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (value?.url) window.open(value.url, "_blank", "noopener,noreferrer");
+                    }}
+                    aria-label={`${creator.name} on ${String(key)}`}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/15 hover:border-white/35 transition-colors duration-200 text-lg"
+                  >
+                    <SocialIcon platform={key} />
+                  </motion.button>
+                ))}
+              </div>
+
+              <motion.div
+                className="relative text-center"
+                animate={isHovered ? { scale: 1.03 } : { scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              >
+                <span
+                  className="text-xs font-bold uppercase tracking-widest"
+                  style={{
+                    color: isHovered ? "transparent" : "white",
+                    backgroundImage: isHovered
+                      ? "linear-gradient(90deg,#D4AF37 0%,#FFD700 50%,#D4AF37 100%)"
+                      : "none",
+                    backgroundSize: "200% 100%",
+                    backgroundPosition: isHovered ? "100% 0" : "0 0",
+                    WebkitBackgroundClip: isHovered ? "text" : "unset",
+                    WebkitTextFillColor: isHovered ? "transparent" : "white",
+                    transition: "all 0.25s ease",
+                  }}
+                >
+                  View Profile
+                </span>
+              </motion.div>
             </div>
           </div>
 
-          {/* Hover Shimmer Effect */}
+          {/* Shimmer Effect on hover only (no persistent shimmer) */}
           <motion.div
             initial={{ x: "-100%" }}
             animate={{ x: isHovered && !prefersReduced ? "100%" : "-100%" }}
@@ -265,7 +259,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           />
         </div>
 
-        {/* Tier-specific Glow Effects */}
+        {/* Tier-specific Glow Effects - Active on both mobile and desktop */}
         {!prefersReduced && tierConfig.glowIntensity === "strong" && (
           <>
             {/* Elite - Best glow with multiple layers */}

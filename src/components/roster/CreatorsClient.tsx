@@ -76,7 +76,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
   }, []);
 
   return (
-    <div className="relative w-full min-h-screen bg-black text-white">
+    <div className="relative w-full min-h-screen bg-black text-white antialiased">
       {/* Modern gradient background with dot grid */}
       <div className="fixed inset-0 pointer-events-none">
         <div
@@ -137,9 +137,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12"
             >
               Elite content creators dominating{" "}
-              <span className="text-red-500 font-bold">YouTube</span>,{" "}
-              <span className="text-purple-400 font-bold">Twitch</span>, and{" "}
-              <span className="text-white font-bold">TikTok</span>
+              <span className="text-[#FFD700] font-bold">YouTube, Twitch, and TikTok</span>
             </motion.p>
 
             {/* Stats */}
