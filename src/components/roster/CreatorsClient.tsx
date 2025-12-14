@@ -111,19 +111,28 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       <section className="relative z-10 pt-24 lg:pt-32 pb-12 lg:pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 lg:mb-20 relative z-10">
-            {/* Star medallion with heartbeat pulse */}
+            {/* Star medallion with smooth pulse and fade */}
             <motion.div
               className="inline-flex mb-6 sm:mb-7 relative"
               initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             >
-              {/* Subtle static glow */}
-              <div
-                className="absolute inset-0 rounded-full opacity-40"
+              {/* Pulsing atmospheric glow */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
                 style={{
-                  background: `radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 60%)`,
-                  filter: "blur(25px)",
+                  background: `radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 60%)`,
+                  filter: "blur(30px)",
+                }}
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 0.6, 0.4],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: [0.4, 0, 0.6, 1],
                 }}
               />
               
@@ -134,32 +143,24 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                     "0 0 0 1px rgba(255,255,255,0.04), 0 16px 50px rgba(0,0,0,0.7)",
                 }}
                 animate={{
-                  scale: [1, 1.08, 1.05, 1.08, 1],
+                  scale: [1, 1.12, 1],
+                  opacity: [1, 0.75, 1],
                 }}
                 transition={{
-                  duration: 2.5,
+                  duration: 3,
                   repeat: Infinity,
-                  ease: [0.4, 0, 0.2, 1],
-                  times: [0, 0.15, 0.25, 0.35, 1],
+                  ease: [0.4, 0, 0.6, 1],
                 }}
               >
-                <motion.div
+                <div
                   className="rounded-full p-3 sm:p-3.5"
                   style={{
                     background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
-                  }}
-                  animate={{
-                    opacity: [1, 1, 0.85, 1, 0.85, 1],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    times: [0, 0.1, 0.15, 0.25, 0.35, 1],
+                    boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)",
                   }}
                 >
                   <FaStar className="text-black text-2xl sm:text-3xl" />
-                </motion.div>
+                </div>
               </motion.div>
             </motion.div>
 
