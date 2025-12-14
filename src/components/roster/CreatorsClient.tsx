@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import type { Creator } from "@/lib/featuredAlgorithm";
 import { CreatorCard } from "@/components/roster/CreatorCard";
-import { FaStar } from "react-icons/fa";
-import { FiUsers, FiPlay } from "react-icons/fi";
+import { FaStar, FaTrophy } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi2";
 
 const GOLD = "#D4AF37";
 
@@ -32,7 +32,7 @@ interface CreatorsClientProps {
 export function CreatorsClient({ creators }: CreatorsClientProps) {
   const [isMounted, setIsMounted] = useState(false);
 
-  const { sortedCreators, combinedReach, combinedViews } = useMemo(() => {
+  const { sortedCreators, combinedReach, combinedViews, tierGroups } = useMemo(() => {
     const tierOrder: Record<Creator["tier"], number> = {
       elite: 0,
       partnered: 1,
@@ -56,10 +56,18 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       views += c.totalViews ?? 0;
     }
 
+    // Group by tier
+    const groups = {
+      elite: sorted.filter(c => c.tier === "elite"),
+      partnered: sorted.filter(c => c.tier === "partnered"),
+      academy: sorted.filter(c => c.tier === "academy"),
+    };
+
     return {
       sortedCreators: sorted,
       combinedReach: reach,
       combinedViews: views,
+      tierGroups: groups,
     };
   }, [creators]);
 
@@ -67,37 +75,21 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
     setIsMounted(true);
   }, []);
 
-  // Floating icons positions (hugging the edges of the hero, not the title)
-  const floatPositions = [
-    { left: "7%", top: "30%" },
-    { left: "18%", top: "18%" },
-    { left: "33%", top: "42%" },
-    { left: "63%", top: "20%" },
-    { left: "78%", top: "36%" },
-    { left: "90%", top: "24%" },
-  ];
-
   return (
-    <div className="relative w-full min-h-screen overflow-hidden bg-black text-white select-none">
-      {/* BACKGROUND: aurora + dot grid + vignette */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isMounted ? 1 : 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        {/* Auroras (stronger gold on the left) */}
+    <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
+      {/* Modern gradient background with dot grid */}
+      <div className="fixed inset-0 pointer-events-none">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-30"
           style={{
             background: `
-              radial-gradient(1300px 650px at 15% -10%, rgba(212,175,55,0.26), transparent 60%),
-              radial-gradient(1100px 550px at 82% 8%, rgba(139,92,246,0.22), transparent 60%),
-              radial-gradient(900px 520px at 10% 55%, rgba(30,64,175,0.18), transparent 65%)
+              radial-gradient(circle at 20% 20%, rgba(212,175,55,0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139,92,246,0.12) 0%, transparent 50%),
+              radial-gradient(circle at 40% 80%, rgba(59,130,246,0.1) 0%, transparent 50%)
             `,
           }}
         />
-        {/* Dot grid – more visible so it doesn't feel like dust */}
+        {/* Dot grid pattern for premium look */}
         <div
           className="absolute inset-0 opacity-[0.12]"
           style={{
@@ -106,172 +98,225 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
             backgroundSize: "24px 24px",
           }}
         />
-        {/* Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/80" />
-      </motion.div>
+        {/* Subtle grain texture */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
 
-      {/* HERO */}
-      <section className="relative z-10 pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-center overflow-hidden">
-        {/* Floating icons layer (only in hero) */}
-        {isMounted && (
-          <div className="pointer-events-none absolute inset-0">
-            {floatPositions.map((pos, i) => (
-              <motion.div
-                key={i}
-                className="absolute"
-                style={pos}
-                animate={{
-                  y: [0, -26, 0],
-                  opacity: [0.25, 0.6, 0.25],
-                  rotate: [0, 200, 360],
-                }}
-                transition={{
-                  duration: 8 + i * 0.7,
-                  repeat: Infinity,
-                  delay: i * 0.4,
-                  ease: "easeInOut",
-                }}
-              >
-                <FiPlay className="text-[#D4AF37] text-xl sm:text-2xl drop-shadow-[0_0_10px_rgba(212,175,55,0.6)]" />
-              </motion.div>
-            ))}
-          </div>
-        )}
-
-        <div className="container mx-auto px-4">
-          <motion.div
-            className="max-w-4xl mx-auto text-center"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            {/* Star medallion */}
+      {/* Hero Section - Redesigned with raised content */}
+      <section className="relative z-10 pt-24 lg:pt-32 pb-12 lg:pb-20 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 lg:mb-20 relative z-10">
+            {/* Star medallion with pulse fade on outer layer and animated star */}
             <motion.div
-              className="inline-flex mb-6 sm:mb-7"
+              className="inline-flex mb-6 sm:mb-7 relative"
               initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             >
-              <div
-                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur"
+              {/* Pulsing atmospheric glow */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 60%)`,
+                  filter: "blur(30px)",
+                }}
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 0.6, 0.4],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: [0.4, 0, 0.6, 1],
+                }}
+              />
+              
+              {/* Outer layer - pulse and fade only */}
+              <motion.div
+                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur relative z-10"
                 style={{
                   boxShadow:
                     "0 0 0 1px rgba(255,255,255,0.04), 0 16px 50px rgba(0,0,0,0.7)",
                 }}
+                animate={{
+                  scale: [1, 1.12, 1],
+                  opacity: [1, 0.75, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: [0.4, 0, 0.6, 1],
+                }}
               >
+                {/* Inner yellow star - static background, no pulse */}
                 <div
                   className="rounded-full p-3 sm:p-3.5"
                   style={{
                     background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
-                    boxShadow: `0 0 26px rgba(212,175,55,0.4)`,
+                    boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)",
                   }}
                 >
-                  <FaStar className="text-black text-2xl sm:text-3xl" />
+                  {/* Animated star icon */}
+                  <motion.div
+                    animate={{
+                      rotate: [0, 5, -5, 0],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <FaStar className="text-black text-2xl sm:text-3xl" />
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
-              <span className="text-white">OUR </span>
-              <span
-                className="bg-clip-text text-transparent"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #FFFFFF, #FFE28A, #D4AF37)",
-                }}
-              >
-                CREATORS
-              </span>
-            </h1>
-
-            {/* Underline */}
-            <div className="mx-auto mt-4 mb-5 h-[2px] w-16 sm:w-20 rounded-full bg-[#D4AF37]/90" />
-
-            {/* Tagline */}
-            <p className="text-base sm:text-lg text-white/75 max-w-3xl mx-auto">
-              Big Talents creators across{" "}
-              <span className="text-white">YouTube, Twitch, TikTok</span>.
-            </p>
-
-            {/* Inline stats */}
-            <motion.div
-              className="mt-7 sm:mt-8"
-              initial={{ opacity: 0, y: 6 }}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.18, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-6"
             >
-              <div className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-sm sm:text-base text-white/70">
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#FFD700]">
-                  {formatCompact(combinedReach)}
-                </span>
-                <span className="tracking-wide">combined reach</span>
-
-                {combinedViews > 0 && (
-                  <>
-                    <span className="text-white/30">•</span>
-                    <span className="text-2xl sm:text-3xl font-extrabold text-[#FFD700]">
-                      {formatCompact(combinedViews)}
-                    </span>
-                    <span className="tracking-wide">views</span>
-                  </>
-                )}
-              </div>
-            </motion.div>
-
-            {/* View creators link */}
-            <motion.div
-              className="mt-7"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
-            >
-              <a
-                href="#creators"
-                className="inline-flex items-center gap-2 text-white/40 hover:text-[#D4AF37] transition-colors text-xs sm:text-sm"
+              <span className="block text-white/90">Meet Our</span>
+              <span
+                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]"
               >
-                <FiUsers className="text-sm" />
-                <span>View Creators</span>
-              </a>
+                Creators
+              </span>
+            </motion.h1>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12"
+            >
+              Elite content creators dominating{" "}
+              <span className="text-[#FFD700] font-bold">YouTube, Twitch, and TikTok</span>
+            </motion.p>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex flex-wrap items-center justify-center gap-8 lg:gap-12"
+            >
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
+                  {formatCompact(combinedReach)}
+                </div>
+                <div className="text-sm text-white/50 uppercase tracking-wider">Total Reach</div>
+              </div>
+              {combinedViews > 0 && (
+                <div className="text-center">
+                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
+                    {formatCompact(combinedViews)}
+                  </div>
+                  <div className="text-sm text-white/50 uppercase tracking-wider">Total Views</div>
+                </div>
+              )}
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Fade into cards */}
-      <div className="pointer-events-none absolute inset-x-0 top-[52vh] sm:top-[56vh] h-40 bg-gradient-to-b from-transparent via-black/40 to-black" />
-
-      {/* CREATOR GRID */}
-      <section
-        id="creators"
-        className="relative z-10 pb-20 sm:pb-24 pt-4 sm:pt-8"
-      >
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-6 flex items-center justify-between gap-3">
-              <h2 className="text-[0.7rem] sm:text-xs font-medium uppercase tracking-[0.25em] text-white/55">
-                Active roster
-              </h2>
-              <span className="text-[0.7rem] sm:text-xs text-white/40">
-                {sortedCreators.length} creators
-              </span>
+      {/* Creator Sections by Tier */}
+      <section className="relative z-10 pb-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto space-y-20">
+          {/* Elite Tier */}
+          {tierGroups.elite.length > 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/20 to-[#FFD700]/20 border border-[#D4AF37]/30">
+                  <FaTrophy className="text-[#D4AF37] text-sm" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                    Elite Creators
+                  </span>
+                </div>
+                <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                {tierGroups.elite.map((creator, index) => (
+                  <motion.div
+                    key={creator.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <CreatorCard creator={creator} index={index} />
+                  </motion.div>
+                ))}
+              </div>
             </div>
+          )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
-              {sortedCreators.map((creator, index) => (
-                <motion.div
-                  key={creator.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.45, delay: index * 0.04 }}
-                  className="h-full"
-                >
-                  <CreatorCard creator={creator} index={index} />
-                </motion.div>
-              ))}
+          {/* Partnered Tier */}
+          {tierGroups.partnered.length > 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30">
+                  <FaStar className="text-purple-400 text-sm" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                    Partnered Creators
+                  </span>
+                </div>
+                <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                {tierGroups.partnered.map((creator, index) => (
+                  <motion.div
+                    key={creator.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <CreatorCard creator={creator} index={index} />
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Academy Tier */}
+          {tierGroups.academy.length > 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-8">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-sky-500/20 to-cyan-500/20 border border-sky-400/30">
+                  <HiSparkles className="text-sky-400 text-sm" />
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                    Academy Creators
+                  </span>
+                </div>
+                <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+                {tierGroups.academy.map((creator, index) => (
+                  <motion.div
+                    key={creator.id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <CreatorCard creator={creator} index={index} />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>
