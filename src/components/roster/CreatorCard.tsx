@@ -102,7 +102,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
   }, [creator.platforms]);
 
   // Sparkle particles for hover effect (from original design)
-  // Memoized to prevent recreation on every render for performance
+  // Memoized per creator to maintain consistent particle positions
   const sparkleParticles = useMemo(
     () =>
       Array.from({ length: 3 }, (_, i) => ({
@@ -110,7 +110,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         y: -10 - Math.random() * 18,
         delay: i * 0.06,
       })),
-    []
+    [creator.id]
   );
 
   const totalFans =
@@ -214,15 +214,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
           </div>
 
           {/* Info Section - Different for mobile vs desktop */}
-          <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5 overflow-hidden">
-            {/* Shine effect on footer - from original design */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none"
-              style={{ transform: "skewX(-20deg)" }}
-              animate={isHovered ? { x: ["-150%", "150%"] } : { x: "-150%" }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-            />
-            
+          <div className="relative p-2 sm:p-4 bg-black/40 backdrop-blur-sm border-t border-white/5">
             {/* Mobile: View Profile button centered */}
             <div className="sm:hidden flex items-center justify-center">
               <motion.div
