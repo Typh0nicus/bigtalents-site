@@ -111,119 +111,54 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       <section className="relative z-10 pt-24 lg:pt-32 pb-12 lg:pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 lg:mb-20 relative z-10">
-            {/* Star medallion with premium pulse */}
+            {/* Star medallion with heartbeat pulse */}
             <motion.div
               className="inline-flex mb-6 sm:mb-7 relative"
               initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
             >
-              {/* Outer ethereal glow ring - slowest */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
+              {/* Subtle static glow */}
+              <div
+                className="absolute inset-0 rounded-full opacity-40"
                 style={{
-                  background: `radial-gradient(circle, rgba(212,175,55,0.08) 0%, rgba(255,215,0,0.04) 40%, transparent 70%)`,
-                  filter: "blur(30px)",
-                }}
-                animate={{
-                  scale: [1, 1.6, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: [0.45, 0.05, 0.55, 0.95],
-                }}
-              />
-              
-              {/* Middle glow ring with shimmer */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: `radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(212,175,55,0.08) 50%, transparent 70%)`,
-                  filter: "blur(20px)",
-                }}
-                animate={{
-                  scale: [1, 1.35, 1],
-                  opacity: [0.4, 0.65, 0.4],
-                }}
-                transition={{
-                  duration: 3.2,
-                  repeat: Infinity,
-                  ease: [0.4, 0, 0.6, 1],
-                  delay: 0.4,
-                }}
-              />
-              
-              {/* Inner focused glow */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: `radial-gradient(circle, rgba(255,215,0,0.18) 0%, rgba(212,175,55,0.1) 40%, transparent 60%)`,
-                  filter: "blur(12px)",
-                }}
-                animate={{
-                  scale: [1, 1.15, 1],
-                  opacity: [0.5, 0.75, 0.5],
-                }}
-                transition={{
-                  duration: 2.4,
-                  repeat: Infinity,
-                  ease: [0.42, 0, 0.58, 1],
-                  delay: 0.8,
+                  background: `radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 60%)`,
+                  filter: "blur(25px)",
                 }}
               />
               
               <motion.div
-                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm relative z-10"
+                className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur relative z-10"
                 style={{
                   boxShadow:
-                    "0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)",
+                    "0 0 0 1px rgba(255,255,255,0.04), 0 16px 50px rgba(0,0,0,0.7)",
                 }}
                 animate={{
-                  boxShadow: [
-                    "0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px rgba(0,0,0,0.8), 0 0 35px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
-                    "0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px rgba(0,0,0,0.8), 0 0 55px rgba(255,215,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
-                    "0 0 0 1px rgba(255,255,255,0.06), 0 20px 60px rgba(0,0,0,0.8), 0 0 35px rgba(212,175,55,0.25), inset 0 1px 0 rgba(255,255,255,0.1)",
-                  ],
+                  scale: [1, 1.08, 1.05, 1.08, 1],
                 }}
                 transition={{
-                  duration: 3.2,
+                  duration: 2.5,
                   repeat: Infinity,
-                  ease: [0.42, 0, 0.58, 1],
+                  ease: [0.4, 0, 0.2, 1],
+                  times: [0, 0.15, 0.25, 0.35, 1],
                 }}
               >
                 <motion.div
-                  className="rounded-full p-3 sm:p-3.5 relative"
+                  className="rounded-full p-3 sm:p-3.5"
                   style={{
-                    background: `linear-gradient(135deg, ${GOLD} 0%, #FFD700 50%, #F4E5B0 100%)`,
+                    background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
                   }}
                   animate={{
-                    boxShadow: [
-                      "0 0 30px rgba(212,175,55,0.3), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2)",
-                      "0 0 45px rgba(255,215,0,0.5), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.15)",
-                      "0 0 30px rgba(212,175,55,0.3), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2)",
-                    ],
+                    opacity: [1, 1, 0.85, 1, 0.85, 1],
                   }}
                   transition={{
-                    duration: 3.2,
+                    duration: 2.5,
                     repeat: Infinity,
-                    ease: [0.42, 0, 0.58, 1],
+                    ease: "easeInOut",
+                    times: [0, 0.1, 0.15, 0.25, 0.35, 1],
                   }}
                 >
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.03, 1],
-                      rotate: [0, 3, 0],
-                    }}
-                    transition={{
-                      duration: 3.2,
-                      repeat: Infinity,
-                      ease: [0.42, 0, 0.58, 1],
-                    }}
-                  >
-                    <FaStar className="text-black text-2xl sm:text-3xl drop-shadow-sm" />
-                  </motion.div>
+                  <FaStar className="text-black text-2xl sm:text-3xl" />
                 </motion.div>
               </motion.div>
             </motion.div>
