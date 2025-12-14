@@ -111,7 +111,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
       <section className="relative z-10 pt-24 lg:pt-32 pb-12 lg:pb-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 lg:mb-20 relative z-10">
-            {/* Star medallion with smooth pulse and fade */}
+            {/* Star medallion with pulse fade on outer layer and animated star */}
             <motion.div
               className="inline-flex mb-6 sm:mb-7 relative"
               initial={{ opacity: 0, scale: 0.9, rotate: -8 }}
@@ -136,6 +136,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                 }}
               />
               
+              {/* Outer layer - pulse and fade only */}
               <motion.div
                 className="rounded-full p-3.5 sm:p-4 border border-white/10 bg-white/[0.03] backdrop-blur relative z-10"
                 style={{
@@ -152,6 +153,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                   ease: [0.4, 0, 0.6, 1],
                 }}
               >
+                {/* Inner yellow star - static background, no pulse */}
                 <div
                   className="rounded-full p-3 sm:p-3.5"
                   style={{
@@ -159,7 +161,20 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
                     boxShadow: "inset 0 2px 8px rgba(0,0,0,0.2)",
                   }}
                 >
-                  <FaStar className="text-black text-2xl sm:text-3xl" />
+                  {/* Animated star icon */}
+                  <motion.div
+                    animate={{
+                      rotate: [0, 5, -5, 0],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <FaStar className="text-black text-2xl sm:text-3xl" />
+                  </motion.div>
                 </div>
               </motion.div>
             </motion.div>
