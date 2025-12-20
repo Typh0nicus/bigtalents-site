@@ -160,13 +160,14 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]" : ""}>
+    <span className={highlight ? "bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
           variants={{ hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, visible: { opacity: 1, y: 0, filter: "blur(0px)" } }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className={ch === " " ? "inline-block w-2" : ""}
+          style={{ WebkitTextFillColor: highlight ? "transparent" : undefined }}
         >
           {ch}
         </motion.span>
