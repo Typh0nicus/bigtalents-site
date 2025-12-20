@@ -90,7 +90,7 @@ export function Footer() {
                   <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h3>
                   <ul className="space-y-3">
                     {[
-                      { label: "Tournaments", href: "/tournaments" },
+                      { label: "Achievements", href: "/achievements" },
                       { label: "Rosters", href: "/rosters" },
                       { label: "Creator Program", href: "/creator-program" },
                     ].map((link) => (

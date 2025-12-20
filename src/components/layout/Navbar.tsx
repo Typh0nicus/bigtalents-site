@@ -84,7 +84,7 @@ const NAV_ITEMS: NavItem[] = [
       }
     ]
   },
-  { href: "/tournaments", label: "Tournaments" }
+  { href: "/achievements", label: "Achievements" }
 ];
 
 const LEFT_NAV_ITEMS: NavItem[] = [
@@ -136,7 +136,7 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 ];
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/tournaments", label: "Tournaments" },
+  { href: "/achievements", label: "Achievements" },
   { 
     href: "/rosters", 
     label: "Rosters",
