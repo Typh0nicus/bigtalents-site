@@ -70,12 +70,11 @@ function Particles() {
           dy: Math.sin(angle) * speed,
           opacity: Math.random() * 0.6 + 0.3,
           pulsePhase: Math.random() * Math.PI * 2,
-          // Smart color distribution: 25% vibrant orange, 50% classic gold, 25% bright gold
-          color: goldVariant < 0.25
-            ? { r: 255, g: 187, b: 0 }      // Vibrant orange #FFBB00 - 25%
-            : goldVariant < 0.75
-            ? { r: 212, g: 175, b: 55 }     // Classic gold #D4AF37 - 50%
-            : { r: 255, g: 215, b: 0 },     // Bright gold #FFD700 - 25%
+          color: goldVariant < 0.7
+            ? { r: 212, g: 175, b: 55 }
+            : goldVariant < 0.9
+            ? { r: 255, g: 215, b: 0 }
+            : { r: 255, g: 235, b: 120 },
           glowSize: Math.random() * 10 + 6,
           maxSpeed: 1.5
         });
@@ -161,12 +160,12 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]" : ""}>
+    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
-          variants={{ hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, visible: { opacity: 1, y: 0, filter: "blur(0px)" } }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
+          transition={{ duration: 0.28, ease: "easeOut" }}
           className={ch === " " ? "inline-block w-2" : ""}
         >
           {ch}
@@ -229,35 +228,40 @@ export function Hero() {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none overflow-hidden">
+    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Enhanced gradients with vibrant orange - tasteful amounts */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(255,187,0,0.09), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(212,175,55,0.06), transparent 50%),
-              radial-gradient(800px 600px at 50% 100%, rgba(255,215,0,0.04), transparent 50%)
+              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.08), transparent 50%),
+              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.05), transparent 50%),
+              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.03), transparent 50%)
             `
           }}
         />
-        
-        {/* Subtle grid overlay - very refined */}
-        <GridOverlay opacity={0.025} size={28} />
-        
         <Particles />
         
-        {/* Subtle noise texture for depth */}
+        {/* Subtle grid overlay with fade at top for navbar */}
+        <div className="absolute inset-0">
+          <GridOverlay opacity={0.025} size={28} />
+          {/* Fade out dots at top to acknowledge navbar presence */}
+          <div 
+            className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, transparent 100%)',
+              backdropFilter: 'blur(2px)',
+              WebkitBackdropFilter: 'blur(2px)',
+            }}
+          />
+        </div>
+        
         <div
-          className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
+          className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
           }}
         />
-        
-        {/* Gloss blur overlay on top */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-black/20 pointer-events-none" />
       </div>
 
       <div className="container relative z-10 text-center max-w-4xl px-6 pb-6">
