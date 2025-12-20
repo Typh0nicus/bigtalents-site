@@ -8,9 +8,9 @@ interface GridOverlayProps {
 }
 
 export function GridOverlay({ 
-  opacity = 0.12, 
-  size = 20,
-  color = "255,187,0", // RGB for vibrant orange/gold
+  opacity = 0.03, // Much more subtle default
+  size = 24,
+  color = "255,255,255", // White dots, not gold
   className = "" 
 }: GridOverlayProps) {
   return (

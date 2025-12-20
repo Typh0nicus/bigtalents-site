@@ -20,8 +20,6 @@ import { SiTiktok } from "react-icons/si";
 import type { IconType } from "react-icons";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { GridOverlay } from "@/components/ui/GridOverlay";
-import { GoldFlourish } from "@/components/ui/GoldFlourish";
 
 /* -------------------------------- Types ------------------------------- */
 
@@ -226,27 +224,19 @@ export function CreatorProgram() {
 
   return (
     <div className="w-full min-h-screen select-none overflow-x-hidden">
-      {/* Decorative flourishes */}
-      <GoldFlourish position="top-left" />
-      <GoldFlourish position="top-right" />
-      
       {/* Hero Section */}
       <section className="relative py-32 w-full">
         <motion.div className="absolute inset-0 overflow-hidden" style={{ y: isMounted ? y : undefined }}>
-          {/* Enhanced gradients with vibrant orange */}
           <div
             className="absolute inset-0"
             style={{
               background: `
-                radial-gradient(1400px 700px at 20% -5%, rgba(255,187,0,0.14), transparent 50%),
-                radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.10), transparent 50%),
-                radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.08), transparent 50%)
+                radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.12), transparent 50%),
+                radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.08), transparent 50%),
+                radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.06), transparent 50%)
               `,
             }}
           />
-          
-          {/* Grid overlay for premium feel */}
-          <GridOverlay opacity={0.08} size={24} />
 
           {!prefersReduced && isMounted && (
             <div className="absolute inset-0 opacity-30">
@@ -285,15 +275,15 @@ export function CreatorProgram() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: isMounted ? 1 : 0, scale: isMounted ? 1 : 0.8 }}
               transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#FFBB00]/20 to-purple-500/20 rounded-full mb-8 ring-1 ring-[#FFBB00]/30 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37]/20 to-purple-500/20 rounded-full mb-8 ring-1 ring-[#D4AF37]/30 backdrop-blur-sm"
             >
               <motion.span
                 className="relative flex h-2.5 w-2.5"
                 animate={isMounted ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFBB00] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FFBB00]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#D4AF37]" />
               </motion.span>
               <span className="text-sm font-bold bg-gradient-to-r from-[#D4AF37] to-purple-400 bg-clip-text text-transparent">
                 Now Accepting Applications
@@ -301,7 +291,7 @@ export function CreatorProgram() {
             </motion.div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight px-4">
-              <span className="bg-gradient-to-r from-white via-[#FFBB00] to-[#FFD700] bg-clip-text text-transparent text-glow-subtle">
+              <span className="bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent">
                 Creator Program
               </span>
             </h1>

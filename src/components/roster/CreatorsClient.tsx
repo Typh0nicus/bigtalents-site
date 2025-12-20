@@ -6,8 +6,6 @@ import type { Creator } from "@/lib/featuredAlgorithm";
 import { CreatorCard } from "@/components/roster/CreatorCard";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
-import { GridOverlay } from "@/components/ui/GridOverlay";
-import { GoldFlourish } from "@/components/ui/GoldFlourish";
 
 const GOLD = "#D4AF37";
 
@@ -79,28 +77,30 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
-      {/* Decorative flourishes */}
-      <GoldFlourish position="top-left" className="z-10" />
-      <GoldFlourish position="top-right" className="z-10" />
-      
-      {/* Enhanced gradient background with grid */}
+      {/* Modern gradient background with dot grid */}
       <div className="fixed inset-0 pointer-events-none">
         <div
           className="absolute inset-0 opacity-30"
           style={{
             background: `
-              radial-gradient(circle at 20% 20%, rgba(255,187,0,0.18) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(139,92,246,0.14) 0%, transparent 50%),
-              radial-gradient(circle at 40% 80%, rgba(59,130,246,0.12) 0%, transparent 50%)
+              radial-gradient(circle at 20% 20%, rgba(212,175,55,0.15) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139,92,246,0.12) 0%, transparent 50%),
+              radial-gradient(circle at 40% 80%, rgba(59,130,246,0.1) 0%, transparent 50%)
             `,
           }}
         />
-        {/* Premium dot grid pattern */}
-        <GridOverlay opacity={0.15} size={24} />
-        
+        {/* Dot grid pattern for premium look */}
+        <div
+          className="absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.45) 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
         {/* Subtle grain texture */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           }}
@@ -179,7 +179,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               </motion.div>
             </motion.div>
 
-            {/* Title with enhanced glow */}
+            {/* Title */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -188,7 +188,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
             >
               <span className="block text-white/90">Meet Our</span>
               <span
-                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] text-glow-subtle"
+                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]"
               >
                 Creators
               </span>
@@ -202,7 +202,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12"
             >
               Elite content creators dominating{" "}
-              <span className="text-[#FFBB00] font-bold">YouTube, Twitch, and TikTok</span>
+              <span className="text-[#FFD700] font-bold">YouTube, Twitch, and TikTok</span>
             </motion.p>
 
             {/* Stats */}
@@ -213,14 +213,14 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="flex flex-wrap items-center justify-center gap-8 lg:gap-12"
             >
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] to-[#FFD700] mb-2">
+                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
                   {formatCompact(combinedReach)}
                 </div>
                 <div className="text-sm text-white/50 uppercase tracking-wider">Total Reach</div>
               </div>
               {combinedViews > 0 && (
                 <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] to-[#FFD700] mb-2">
+                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
                     {formatCompact(combinedViews)}
                   </div>
                   <div className="text-sm text-white/50 uppercase tracking-wider">Total Views</div>

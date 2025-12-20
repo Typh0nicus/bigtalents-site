@@ -31,28 +31,8 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'glow': '0 0 30px rgba(212,175,55,0.2)',
-        'glow-vibrant': '0 0 40px rgba(255,187,0,0.3)',
-        'dramatic': '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,187,0,0.15)',
-      },
-      animation: {
-        'shimmer': 'shimmer 3s infinite',
-        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
-        'scanline': 'scanline 8s linear infinite',
-      },
-      keyframes: {
-        shimmer: {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' },
-        },
-        'glow-pulse': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(255,187,0,0.2)' },
-          '50%': { boxShadow: '0 0 40px rgba(255,187,0,0.4), 0 0 60px rgba(255,187,0,0.2)' },
-        },
-        scanline: {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(100%)' },
-        },
+        'glow': '0 0 20px rgba(212,175,55,0.1)',
+        'elegant': '0 20px 60px rgba(0,0,0,0.5)',
       },
     },
   },
