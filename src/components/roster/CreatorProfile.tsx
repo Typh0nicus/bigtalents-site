@@ -333,7 +333,7 @@ export default function CreatorProfile({
         <div className="hidden sm:block absolute left-0 right-0 z-30 top-20 md:top-24">
           <div className="container mx-auto px-4">
             <Link
-              href="/rosters/creators"
+              href="/creators"
               className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-all group/back"
             >
               <FiArrowLeft className="group-hover/back:-translate-x-1 transition-transform" />

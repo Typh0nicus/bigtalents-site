@@ -33,7 +33,7 @@ const NAV_ITEMS: NavItem[] = [
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/rosters/creators", 
+        href: "/creators", 
         label: "Creators",
         icon: FiUsers,
         description: "Meet our content creators"
@@ -143,7 +143,7 @@ const RIGHT_NAV_ITEMS: NavItem[] = [
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/rosters/creators", 
+        href: "/creators", 
         label: "Creators",
         icon: FiUsers,
         description: "Meet our content creators"

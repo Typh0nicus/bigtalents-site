@@ -98,7 +98,7 @@ Across every tier, the philosophy is the same: **we help you grow, you stay inde
 
 Highlights of the BGT Creator Program include:
 
-- Creator spotlights and dedicated profile pages on **/rosters/creators**  
+- Creator spotlights and dedicated profile pages on **/creators**  
 - Priority access to sponsored events, showmatches and activations around our teams and projects  
 - Graphic and branding support for thumbnails, overlays and social media identity  
 - Internal feedback channels with BGT staff, players and other creators  
