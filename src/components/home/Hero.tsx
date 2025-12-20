@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -159,13 +160,14 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
+    <span className={highlight ? "bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
-          variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ duration: 0.28, ease: "easeOut" }}
+          variants={{ hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, visible: { opacity: 1, y: 0, filter: "blur(0px)" } }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className={ch === " " ? "inline-block w-2" : ""}
+          style={{ WebkitTextFillColor: highlight ? "transparent" : undefined }}
         >
           {ch}
         </motion.span>
@@ -240,6 +242,19 @@ export function Hero() {
           }}
         />
         <Particles />
+        
+        {/* Subtle grid overlay with fade at top for navbar */}
+        <div className="absolute inset-0">
+          <GridOverlay opacity={0.025} size={28} />
+          {/* Very subtle fade at top to acknowledge navbar - smooth gradient to zero */}
+          <div 
+            className="absolute inset-x-0 top-0 h-48 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.04) 60%, rgba(0,0,0,0) 100%)',
+            }}
+          />
+        </div>
+        
         <div
           className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
           style={{

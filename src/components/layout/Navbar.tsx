@@ -33,7 +33,7 @@ const NAV_ITEMS: NavItem[] = [
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/rosters/creators", 
+        href: "/creators", 
         label: "Creators",
         icon: FiUsers,
         description: "Meet our content creators"
@@ -84,7 +84,7 @@ const NAV_ITEMS: NavItem[] = [
       }
     ]
   },
-  { href: "/tournaments", label: "Tournaments" }
+  { href: "/achievements", label: "Achievements" }
 ];
 
 const LEFT_NAV_ITEMS: NavItem[] = [
@@ -136,14 +136,14 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 ];
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/tournaments", label: "Tournaments" },
+  { href: "/achievements", label: "Achievements" },
   { 
     href: "/rosters", 
     label: "Rosters",
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/rosters/creators", 
+        href: "/creators", 
         label: "Creators",
         icon: FiUsers,
         description: "Meet our content creators"

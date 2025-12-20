@@ -121,7 +121,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
     (creator.platforms.instagram?.followers ?? 0);
 
   return (
-    <Link href={`/rosters/creators/${creator.id}`}>
+    <Link href={`/creators/${creator.id}`}>
       <motion.div
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
