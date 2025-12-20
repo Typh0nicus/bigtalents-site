@@ -245,13 +245,11 @@ export function Hero() {
         {/* Subtle grid overlay with fade at top for navbar */}
         <div className="absolute inset-0">
           <GridOverlay opacity={0.025} size={28} />
-          {/* Fade out dots at top to acknowledge navbar presence */}
+          {/* Very subtle fade at top to acknowledge navbar - toned down to avoid glitches */}
           <div 
-            className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+            className="absolute inset-x-0 top-0 h-40 pointer-events-none"
             style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, transparent 100%)',
-              backdropFilter: 'blur(2px)',
-              WebkitBackdropFilter: 'blur(2px)',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)',
             }}
           />
         </div>
