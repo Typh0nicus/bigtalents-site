@@ -6,6 +6,8 @@ import Image from "next/image";
 import { FiExternalLink, FiCalendar, FiAward } from "react-icons/fi";
 import { FaTrophy, FaMedal, FaStar } from "react-icons/fa";
 import { COMPETITIVE_RESULTS, type TournamentResult } from "@/data/competitiveResults";
+import { EnergyLines } from "@/components/ui/EnergyLines";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -273,18 +275,25 @@ export default function TournamentsPage() {
       transition={{ duration: 0.6, ease: EASE_OUT }}
       className="min-h-screen relative bg-black text-white select-none"
     >
-      {/* Background with floating trophies - fixed position with z-0 to prevent stretching */}
+      {/* Background with energy effects and trophy silhouettes - fixed position */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Enhanced gradients with vibrant orange */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-              radial-gradient(1200px 600px at 80% 10%, rgba(139,92,246,0.06), transparent 60%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
+              radial-gradient(1400px 700px at 20% -10%, rgba(255,187,0,0.15), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(139,92,246,0.08), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.08), transparent 60%)
             `,
           }}
         />
+        
+        {/* Grid overlay */}
+        <GridOverlay opacity={0.06} size={20} />
+        
+        {/* Energy lines for dynamic feel */}
+        <EnergyLines count={4} className="opacity-40" />
 
         {/* Floating Trophy Particles - Bigger and persistent */}
         {isMounted && (
@@ -338,19 +347,32 @@ export default function TournamentsPage() {
             transition={{ duration: 0.8, delay: 0.15, ease: EASE_OUT }}
             className="text-center max-w-3xl mx-auto"
           >
-            {/* Original style trophy badge - rounded-full with proper glow */}
+            {/* Original style trophy badge - with enhanced glow */}
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.8, delay: 0.25, ease: EASE_OUT }}
-              className="inline-flex mb-6"
+              className="inline-flex mb-6 relative"
             >
-              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50">
+              {/* Pulsing glow background */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-[#FFBB00] to-[#FFD700] rounded-full blur-2xl"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.4, 0.6, 0.4],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <div className="relative p-4 bg-gradient-to-br from-[#FFBB00] to-[#FFD700] rounded-full shadow-2xl shadow-[#FFBB00]/50 ring-2 ring-[#FFBB00]/30">
                 <FaTrophy className="text-black text-3xl sm:text-4xl" />
               </div>
             </motion.div>
 
-            {/* Heading */}
+            {/* Heading with glow effect */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -358,7 +380,7 @@ export default function TournamentsPage() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
             >
               <span className="text-white">Competition</span>{" "}
-              <span className="bg-gradient-to-r from-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(212,175,55,0.25)]">
+              <span className="bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent text-glow-subtle">
   Record
 </span>
             </motion.h1>

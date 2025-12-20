@@ -4,6 +4,8 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import { GoldFlourish } from "@/components/ui/GoldFlourish";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -69,11 +71,11 @@ function Particles() {
           dy: Math.sin(angle) * speed,
           opacity: Math.random() * 0.6 + 0.3,
           pulsePhase: Math.random() * Math.PI * 2,
-          color: goldVariant < 0.7
-            ? { r: 212, g: 175, b: 55 }
-            : goldVariant < 0.9
-            ? { r: 255, g: 215, b: 0 }
-            : { r: 255, g: 235, b: 120 },
+          color: goldVariant < 0.5
+            ? { r: 255, g: 187, b: 0 }      // Vibrant orange/gold #FFBB00
+            : goldVariant < 0.8
+            ? { r: 212, g: 175, b: 55 }     // Classic gold #D4AF37
+            : { r: 255, g: 215, b: 0 },     // Bright gold #FFD700
           glowSize: Math.random() * 10 + 6,
           maxSpeed: 1.5
         });
@@ -159,7 +161,7 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
+    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] text-glow-subtle" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
@@ -227,25 +229,41 @@ export function Hero() {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
+    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none overflow-hidden">
+      {/* Decorative gold flourishes in corners */}
+      <GoldFlourish position="top-left" />
+      <GoldFlourish position="top-right" />
+      <GoldFlourish position="bottom-left" className="hidden md:block" />
+      <GoldFlourish position="bottom-right" className="hidden md:block" />
+      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Enhanced radial gradients with vibrant orange */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.08), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.05), transparent 50%),
-              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.03), transparent 50%)
+              radial-gradient(1400px 800px at 15% -10%, rgba(255,187,0,0.12), transparent 50%),
+              radial-gradient(1200px 600px at 85% 10%, rgba(255,215,0,0.08), transparent 50%),
+              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.06), transparent 50%)
             `
           }}
         />
+        
+        {/* Grid overlay for premium look */}
+        <GridOverlay opacity={0.08} size={24} />
+        
         <Particles />
+        
+        {/* Noise texture for depth */}
         <div
-          className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
+          className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
           }}
         />
+        
+        {/* Subtle scanline effect */}
+        <div className="scanline-overlay opacity-30" />
       </div>
 
       <div className="container relative z-10 text-center max-w-4xl px-6 pb-6">

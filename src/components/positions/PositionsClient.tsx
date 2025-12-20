@@ -11,6 +11,7 @@ import {
 } from "@/data/staffRoles";
 import { FiArrowRight } from "react-icons/fi";
 import { FaShieldAlt } from "react-icons/fa";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const PARTICLE_COUNT = 18;
 
@@ -38,23 +39,27 @@ export default function PositionsClient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* Enhanced Background */}
+      {/* Enhanced Background with grid */}
       <motion.div
         className="fixed inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
         transition={{ duration: 0.8 }}
       >
+        {/* Enhanced gradients with vibrant orange */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.08), transparent 50%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(139,92,246,0.06), transparent 50%),
+              radial-gradient(1400px 700px at 20% -5%, rgba(255,187,0,0.10), transparent 50%),
+              radial-gradient(1200px 600px at 80% 15%, rgba(139,92,246,0.08), transparent 50%),
               radial-gradient(1000px 500px at 50% 100%, rgba(15,23,42,0.92), transparent 50%)
             `,
           }}
         />
+        
+        {/* Grid overlay */}
+        <GridOverlay opacity={0.06} size={20} />
 
         {isMounted && (
           <div className="absolute inset-0 opacity-30">
@@ -152,11 +157,12 @@ export default function PositionsClient() {
               }}
               className="inline-flex mb-6 relative"
             >
+              {/* Pulsing energy glow */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl blur-2xl"
+                className="absolute inset-0 bg-gradient-to-br from-[#FFBB00] to-[#FFD700] rounded-2xl blur-2xl"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.5, 0.3],
+                  scale: [1, 1.3, 1],
+                  opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{
                   duration: 3,
@@ -165,7 +171,7 @@ export default function PositionsClient() {
                 }}
               />
 
-              <div className="relative p-3.5 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-2xl shadow-2xl shadow-[#D4AF37]/40 ring-2 ring-[#D4AF37]/20">
+              <div className="relative p-3.5 bg-gradient-to-br from-[#FFBB00] to-[#FFD700] rounded-2xl shadow-2xl shadow-[#FFBB00]/50 ring-2 ring-[#FFBB00]/30">
                 <FaShieldAlt className="w-8 h-8 text-black" />
               </div>
             </motion.div>
@@ -176,7 +182,7 @@ export default function PositionsClient() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 tracking-tight"
             >
-              <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white via-[#FFBB00] to-[#FFD700] bg-clip-text text-transparent text-glow-subtle">
                 Join the Team
               </span>
             </motion.h1>
