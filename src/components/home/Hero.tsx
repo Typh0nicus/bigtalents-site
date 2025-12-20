@@ -164,9 +164,9 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
-          variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ duration: 0.28, ease: "easeOut" }}
-          className={ch === " " ? "inline-block w-2" : ""}
+          variants={{ hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, visible: { opacity: 1, y: 0, filter: "blur(0px)" } }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className={ch === " " ? "inline-block w-3" : ""}
         >
           {ch}
         </motion.span>
@@ -245,11 +245,11 @@ export function Hero() {
         {/* Subtle grid overlay with fade at top for navbar */}
         <div className="absolute inset-0">
           <GridOverlay opacity={0.025} size={28} />
-          {/* Very subtle fade at top to acknowledge navbar - toned down to avoid glitches */}
+          {/* Very subtle fade at top to acknowledge navbar - smooth gradient to zero */}
           <div 
-            className="absolute inset-x-0 top-0 h-40 pointer-events-none"
+            className="absolute inset-x-0 top-0 h-48 pointer-events-none"
             style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.04) 60%, rgba(0,0,0,0) 100%)',
             }}
           />
         </div>
