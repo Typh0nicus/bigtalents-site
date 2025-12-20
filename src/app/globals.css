@@ -42,15 +42,17 @@ input, textarea, select, button {
   /* Enhanced Gold/Orange Palette - Brand Guidelines */
   --gold: #d4af37;
   --gold-vibrant: #FFBB00; /* Primary Orange/Gold - More vibrant */
-  --gold-light: #E0B84F; /* Light gold for highlights */
+  --gold-light: #E0B84F; /* Light gold for highlights (separate from scale) */
+  
+  /* Gold color scale (properly ordered from light to dark) */
   --gold-50: #fffbf1;
   --gold-100: #fef5e1;
   --gold-400: #f2cc60;
-  --gold-500: #d4af37;
-  --gold-600: #b8941f;
-  --gold-700: #8b6914;
-  --gold-800: #5c4409;
-  --gold-900: #3d2d06;
+  --gold-500: #d4af37;  /* Base gold */
+  --gold-600: #b8941f;  /* Darker than 500 */
+  --gold-700: #8b6914;  /* Darker than 600 */
+  --gold-800: #5c4409;  /* Darker than 700 */
+  --gold-900: #3d2d06;  /* Darkest */
   
   /* New Brand Colors from Guidelines */
   --orange-vibrant: #FFBB00;
@@ -259,8 +261,10 @@ html, body {
   }
 
   .btn-primary:hover::before {
-    width: 300px;
-    height: 300px;
+    width: 200%;
+    height: 200%;
+    max-width: 300px;
+    max-height: 300px;
   }
 }
 
@@ -527,9 +531,11 @@ input:focus, textarea:focus, select:focus {
   padding: 1px;
   background: linear-gradient(90deg, var(--gold), var(--gold-light));
   border-radius: inherit;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: subtract;
+  mask-composite: exclude;
 }
 
 ::-webkit-scrollbar {
