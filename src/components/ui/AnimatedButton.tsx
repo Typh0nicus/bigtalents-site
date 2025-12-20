@@ -40,7 +40,7 @@ const baseClasses =
 
 const variants: Record<NonNullable<BaseButtonProps["variant"]>, string> = {
   primary:
-    "bg-[var(--gold)] text-black hover:bg-[var(--gold-600)] focus:ring-[var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed",
+    "bg-[var(--gold)] text-black hover:bg-[var(--gold-light)] focus:ring-[var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed",
   outline:
     "border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 focus:ring-white/50 disabled:opacity-50",
   ghost: "text-white hover:bg-white/10 focus:ring-white/50 disabled:opacity-50",

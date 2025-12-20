@@ -42,14 +42,15 @@ input, textarea, select, button {
   /* Enhanced Gold/Orange Palette - Brand Guidelines */
   --gold: #d4af37;
   --gold-vibrant: #FFBB00; /* Primary Orange/Gold - More vibrant */
+  --gold-light: #E0B84F; /* Light gold for highlights */
   --gold-50: #fffbf1;
   --gold-100: #fef5e1;
   --gold-400: #f2cc60;
   --gold-500: #d4af37;
-  --gold-600: #e0b84f;
-  --gold-700: #b8941f;
-  --gold-800: #8b6914;
-  --gold-900: #5c4409;
+  --gold-600: #b8941f;
+  --gold-700: #8b6914;
+  --gold-800: #5c4409;
+  --gold-900: #3d2d06;
   
   /* New Brand Colors from Guidelines */
   --orange-vibrant: #FFBB00;
@@ -237,32 +238,34 @@ html, body {
 }
 
 .btn-primary { 
-  background: linear-gradient(135deg, var(--orange-vibrant), var(--gold-600)); 
+  background: linear-gradient(135deg, var(--orange-vibrant), var(--gold-light)); 
   color: #111;
   position: relative;
   overflow: hidden;
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
 
-.btn-primary:hover::before {
-  width: 300px;
-  height: 300px;
+  .btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+  }
 }
 
 .btn-primary:hover { 
-  background: linear-gradient(135deg, var(--gold-600), var(--orange-vibrant)); 
+  background: linear-gradient(135deg, var(--gold-light), var(--orange-vibrant)); 
   box-shadow: 0 0 30px rgba(255,187,0,0.4);
 }
 
@@ -492,14 +495,14 @@ input:focus, textarea:focus, select:focus {
 }
 
 .text-gradient-gold {
-  background: linear-gradient(90deg, var(--gold), var(--gold-600));
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-vibrant {
-  background: linear-gradient(135deg, var(--orange-vibrant), var(--gold-600), var(--gold));
+  background: linear-gradient(135deg, var(--orange-vibrant), var(--gold-light), var(--gold));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -522,7 +525,7 @@ input:focus, textarea:focus, select:focus {
   position: absolute;
   inset: 0;
   padding: 1px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-600));
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
   border-radius: inherit;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: xor;

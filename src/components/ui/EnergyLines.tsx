@@ -38,7 +38,7 @@ export function EnergyLines({ count = 5, className = "" }: EnergyLinesProps) {
           }}
           initial={{ x: "-100%", opacity: 0 }}
           animate={{
-            x: ["100%", "200%"],
+            x: ["100%", "150%"],
             opacity: [0, line.opacity, 0],
           }}
           transition={{
@@ -64,7 +64,7 @@ export function EnergyLines({ count = 5, className = "" }: EnergyLinesProps) {
           }}
           initial={{ x: "-100%", opacity: 0 }}
           animate={{
-            x: ["100%", "200%"],
+            x: ["100%", "150%"],
             opacity: [0, 0.4, 0],
           }}
           transition={{

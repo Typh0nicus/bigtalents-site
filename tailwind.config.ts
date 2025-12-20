@@ -15,11 +15,12 @@ const config: Config = {
           100: '#FEF5E1',
           400: '#F2CC60',
           500: '#D4AF37',
-          600: '#E0B84F',
-          700: '#B8941F',
-          800: '#8B6914',
-          900: '#5C4409',
+          600: '#B8941F', // Darker than 500
+          700: '#8B6914',
+          800: '#5C4409',
+          900: '#3D2D06',
           vibrant: '#FFBB00',
+          light: '#E0B84F', // Separate light variant
         },
         orange: {
           vibrant: '#FFBB00',
