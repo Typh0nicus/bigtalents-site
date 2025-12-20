@@ -164,9 +164,13 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
-          variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
-          transition={{ duration: 0.28, ease: "easeOut" }}
-          className={ch === " " ? "inline-block w-2" : ""}
+          variants={{ 
+            hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, 
+            visible: { opacity: 1, y: 0, filter: "blur(0px)" } 
+          }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className={ch === " " ? "inline-block w-2.5" : ""}
+          style={{ willChange: "transform, opacity, filter", transform: "translate3d(0, 0, 0)" }}
         >
           {ch}
         </motion.span>
@@ -183,6 +187,7 @@ function AnimatedHeading() {
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
       aria-label="Big Talents. Bigger Stages."
+      style={{ lineHeight: "1.35" }}
     >
       <AnimatedChunk text="Big Talents. " />
       <br />
