@@ -160,7 +160,7 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
+    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
