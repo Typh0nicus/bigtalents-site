@@ -164,9 +164,9 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
-          variants={{ hidden: { opacity: 0, y: 14, filter: "blur(8px)" }, visible: { opacity: 1, y: 0, filter: "blur(0px)" } }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className={ch === " " ? "inline-block w-3" : ""}
+          variants={{ hidden: { opacity: 0, y: 14 }, visible: { opacity: 1, y: 0 } }}
+          transition={{ duration: 0.28, ease: "easeOut" }}
+          className={ch === " " ? "inline-block w-2" : ""}
         >
           {ch}
         </motion.span>
@@ -178,7 +178,7 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 leading-relaxed text-center select-none"
+      className="h1 leading-tight text-center select-none"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
