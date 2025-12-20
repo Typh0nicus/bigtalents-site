@@ -6,6 +6,7 @@ import type { Creator } from "@/lib/featuredAlgorithm";
 import { CreatorCard } from "@/components/roster/CreatorCard";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const GOLD = "#D4AF37";
 
@@ -77,27 +78,24 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
-      {/* Modern gradient background with dot grid */}
+      {/* Enhanced gradient background with vibrant accents */}
       <div className="fixed inset-0 pointer-events-none">
         <div
           className="absolute inset-0 opacity-30"
           style={{
             background: `
-              radial-gradient(circle at 20% 20%, rgba(212,175,55,0.15) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(139,92,246,0.12) 0%, transparent 50%),
-              radial-gradient(circle at 40% 80%, rgba(59,130,246,0.1) 0%, transparent 50%)
+              radial-gradient(circle at 20% 20%, rgba(255,187,0,0.14) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(212,175,55,0.10) 0%, transparent 50%),
+              radial-gradient(circle at 40% 80%, rgba(255,215,0,0.08) 0%, transparent 50%)
             `,
           }}
         />
-        {/* Dot grid pattern for premium look */}
-        <div
-          className="absolute inset-0 opacity-[0.12]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.45) 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
+        
+        {/* Refined grid overlay */}
+        <GridOverlay opacity={0.03} size={26} />
+        
+        {/* Gloss blur overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
         {/* Subtle grain texture */}
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -179,7 +177,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               </motion.div>
             </motion.div>
 
-            {/* Title */}
+            {/* Title with enhanced gradient */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -188,7 +186,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
             >
               <span className="block text-white/90">Meet Our</span>
               <span
-                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]"
+                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]"
               >
                 Creators
               </span>
@@ -202,10 +200,9 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12"
             >
               Elite content creators dominating{" "}
-              <span className="text-[#FFD700] font-bold">YouTube, Twitch, and TikTok</span>
+              <span className="text-[#FFBB00] font-bold">YouTube, Twitch, and TikTok</span>
             </motion.p>
-
-            {/* Stats */}
+            {/* Stats with vibrant gradients */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -213,14 +210,14 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="flex flex-wrap items-center justify-center gap-8 lg:gap-12"
             >
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
+                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] mb-2">
                   {formatCompact(combinedReach)}
                 </div>
                 <div className="text-sm text-white/50 uppercase tracking-wider">Total Reach</div>
               </div>
               {combinedViews > 0 && (
                 <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] to-[#FFD700] mb-2">
+                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] mb-2">
                     {formatCompact(combinedViews)}
                   </div>
                   <div className="text-sm text-white/50 uppercase tracking-wider">Total Views</div>

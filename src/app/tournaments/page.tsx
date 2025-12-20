@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FiExternalLink, FiCalendar, FiAward } from "react-icons/fi";
 import { FaTrophy, FaMedal, FaStar } from "react-icons/fa";
 import { COMPETITIVE_RESULTS, type TournamentResult } from "@/data/competitiveResults";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
@@ -273,63 +274,27 @@ export default function TournamentsPage() {
       transition={{ duration: 0.6, ease: EASE_OUT }}
       className="min-h-screen relative bg-black text-white select-none"
     >
-      {/* Background with floating trophies - fixed position with z-0 to prevent stretching */}
+      {/* Enhanced background with subtle grid */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-              radial-gradient(1200px 600px at 80% 10%, rgba(139,92,246,0.06), transparent 60%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
+              radial-gradient(1400px 700px at 20% -10%, rgba(255,187,0,0.10), transparent 60%),
+              radial-gradient(1200px 600px at 80% 10%, rgba(212,175,55,0.07), transparent 60%),
+              radial-gradient(1000px 500px at 50% 100%, rgba(255,215,0,0.05), transparent 60%)
             `,
           }}
         />
-
-        {/* Floating Trophy Particles - Bigger and persistent */}
-        {isMounted && (
-          <div>
-            {Array.from({ length: 18 }).map((_, i) => {
-              // Distribute trophies more evenly across the viewport
-              const col = i % 6;
-              const row = Math.floor(i / 6);
-              const left = 8 + col * 15 + (row % 2) * 7; // staggered columns
-              const top = 10 + row * 30;
-              // Larger sizes
-              const sizes = [28, 22, 18, 24, 20, 26];
-              const size = sizes[i % sizes.length];
-              
-              return (
-                <motion.div
-                  key={i}
-                  className="absolute"
-                  style={{
-                    left: `${left}%`,
-                    top: `${top}%`,
-                  }}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{
-                    y: [0, -20, 0],
-                    x: [0, Math.sin(i) * 10, 0],
-                    rotate: [0, 15, -15, 0],
-                    scale: 1,
-                  }}
-                  transition={{
-                    y: { duration: 6 + (i % 4), repeat: Infinity, ease: "easeInOut" },
-                    x: { duration: 7 + (i % 3), repeat: Infinity, ease: "easeInOut" },
-                    rotate: { duration: 10 + (i % 5), repeat: Infinity, ease: "easeInOut" },
-                    scale: { duration: 0.6, delay: 0.3 + i * 0.05 },
-                  }}
-                >
-                  <FaTrophy className="text-[#D4AF37] opacity-30" size={size} />
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+        
+        {/* Subtle grid overlay */}
+        <GridOverlay opacity={0.02} size={28} />
+        
+        {/* Gloss blur overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
       </div>
 
-      {/* Hero Section - Raised a bit */}
+      {/* Hero Section with clean emblem similar to creators */}
       <section className="relative pt-28 pb-10 md:pt-36 md:pb-14 overflow-visible">
         <div className="container relative z-10 px-4">
           <motion.div
@@ -338,19 +303,38 @@ export default function TournamentsPage() {
             transition={{ duration: 0.8, delay: 0.15, ease: EASE_OUT }}
             className="text-center max-w-3xl mx-auto"
           >
-            {/* Original style trophy badge - rounded-full with proper glow */}
+            {/* Trophy emblem - clean style similar to creators page */}
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.25, ease: EASE_OUT }}
-              className="inline-flex mb-6"
+              initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex mb-6 sm:mb-7 relative"
             >
-              <div className="p-4 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full shadow-2xl shadow-[#D4AF37]/50">
+              {/* Subtle atmospheric glow - not excessive */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(255,187,0,0.15) 0%, transparent 60%)`,
+                  filter: "blur(25px)",
+                }}
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: [0.4, 0, 0.6, 1],
+                }}
+              />
+              
+              {/* Clean emblem container */}
+              <div className="relative p-3.5 sm:p-4 bg-gradient-to-br from-[#FFBB00] to-[#D4AF37] rounded-full shadow-lg">
                 <FaTrophy className="text-black text-3xl sm:text-4xl" />
               </div>
             </motion.div>
 
-            {/* Heading */}
+            {/* Heading with animated text */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -358,9 +342,9 @@ export default function TournamentsPage() {
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 tracking-tight"
             >
               <span className="text-white">Competition</span>{" "}
-              <span className="bg-gradient-to-r from-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(212,175,55,0.25)]">
-  Record
-</span>
+              <span className="bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+                Record
+              </span>
             </motion.h1>
 
             {/* Subtitle */}
