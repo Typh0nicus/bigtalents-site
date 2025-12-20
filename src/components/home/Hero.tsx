@@ -178,7 +178,7 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 leading-tight text-center select-none"
+      className="h1 leading-relaxed text-center select-none"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
