@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import { GridOverlay } from "@/components/ui/GridOverlay";
+import { GoldVineFlourish } from "@/components/ui/GoldVineFlourish";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -242,16 +243,22 @@ export function Hero() {
         />
         <Particles />
         
-        {/* Subtle grid overlay with fade at top for navbar */}
+        {/* Enhanced grid overlay */}
         <div className="absolute inset-0">
-          <GridOverlay opacity={0.025} size={28} />
-          {/* Very subtle fade at top to acknowledge navbar - smooth gradient to zero */}
+          <GridOverlay opacity={0.03} size={40} />
+          {/* Very subtle fade at top for navbar */}
           <div 
             className="absolute inset-x-0 top-0 h-48 pointer-events-none"
             style={{
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.04) 60%, rgba(0,0,0,0) 100%)',
             }}
           />
+        </div>
+        
+        {/* Vine flourishes - desktop only */}
+        <div className="hidden lg:block">
+          <GoldVineFlourish position="top-left" />
+          <GoldVineFlourish position="top-right" />
         </div>
         
         <div

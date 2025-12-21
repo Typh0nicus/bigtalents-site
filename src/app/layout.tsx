@@ -5,7 +5,15 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Outfit } from "next/font/google";
 
-// Display font for headings
+// Body font - Outfit for readability
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-outfit",
+});
+
+// Display font for headings - Outfit for variable
 const heading = Outfit({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
@@ -85,7 +93,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${heading.variable}`}>
+    <html lang="en" className={`${heading.variable} ${outfit.variable}`}>
       <body className="safe-areas">
         <Navbar />
         {children}
