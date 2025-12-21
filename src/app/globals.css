@@ -66,7 +66,8 @@ input, textarea, select, button {
   --border-hover: rgba(255,255,255,.20);
   --border-gold-glow: rgba(255,187,0,.5);
   
-  --font-heading: ui-sans-serif;
+  --font-heading: var(--font-display, ui-sans-serif);
+  --font-body: var(--font-body, ui-sans-serif);
   
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
@@ -132,7 +133,7 @@ html, body {
 
 /* ===== Headings use display font only ========================= */
 .h1, .h2, .h3, .display, .heading {
-  font-family: var(--font-heading), ui-sans-serif, system-ui, -apple-system,
+  font-family: var(--font-display), var(--font-heading), ui-sans-serif, system-ui, -apple-system,
     Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans",
     "Apple Color Emoji", "Segoe UI Emoji";
   letter-spacing: -0.02em;
@@ -140,6 +141,11 @@ html, body {
   font-weight: 900;
   word-wrap: break-word;
   overflow-wrap: break-word;
+}
+
+/* Font utilities */
+.font-display {
+  font-family: var(--font-display), var(--font-heading), ui-sans-serif, system-ui, -apple-system;
 }
 
 /* ===== Typography Scale ======================================= */
@@ -468,6 +474,24 @@ input:focus, textarea:focus, select:focus {
 /* Subtle text shadow for premium feel - not excessive glow */
 .text-refined {
   text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ===== Enhanced Text Effects for Premium Esports Look ========= */
+/* 3D Gold text effect matching graphics */
+.text-3d-gold {
+  background: linear-gradient(180deg, #FFD700 0%, #FFBB00 45%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)) drop-shadow(0 4px 8px rgba(255,187,0,0.2));
+}
+
+/* Esports label style - spaced uppercase */
+.label-esports {
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .border-gradient {

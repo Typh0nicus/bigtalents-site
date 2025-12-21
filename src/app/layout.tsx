@@ -3,14 +3,22 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Outfit } from "next/font/google";
+import { Outfit, Big_Shoulders_Display } from "next/font/google";
 
-// Display font for headings
-const heading = Outfit({
+// Body/secondary font
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-  variable: "--font-heading",
+  variable: "--font-body",
+});
+
+// Display font for headings - esports aesthetic
+const displayFont = Big_Shoulders_Display({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  display: "swap",
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -85,7 +93,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${heading.variable}`}>
+    <html lang="en" className={`${displayFont.variable} ${outfit.variable}`}>
       <body className="safe-areas">
         <Navbar />
         {children}

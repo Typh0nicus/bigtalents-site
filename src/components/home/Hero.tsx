@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import { GridOverlay } from "@/components/ui/GridOverlay";
+import { GoldFlourish } from "@/components/ui/GoldFlourish";
+import { AtmosphericFog } from "@/components/ui/AtmosphericFog";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -178,7 +180,7 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 leading-tight text-center select-none tracking-wide"
+      className="h1 font-display leading-tight text-center select-none tracking-wide"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
@@ -186,7 +188,9 @@ function AnimatedHeading() {
     >
       <AnimatedChunk text="Big Talents. " />
       <br />
-      <AnimatedChunk text="Bigger Stages." highlight />
+      <span className="text-3d-gold">
+        <AnimatedChunk text="Bigger Stages." />
+      </span>
     </motion.h1>
   );
 }
@@ -260,6 +264,15 @@ export function Hero() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
           }}
         />
+        
+        {/* Atmospheric fog at bottom */}
+        <AtmosphericFog position="bottom" opacity={0.12} height="300px" />
+        
+        {/* Gold flourishes - desktop only */}
+        <div className="hidden lg:block">
+          <GoldFlourish position="top-left" size={150} />
+          <GoldFlourish position="top-right" size={150} />
+        </div>
       </div>
 
       <div className="container relative z-10 text-center max-w-4xl px-6 pb-6">

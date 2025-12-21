@@ -182,11 +182,11 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-6"
+              className="text-5xl sm:text-6xl lg:text-8xl font-black font-display tracking-tight mb-6"
             >
               <span className="block text-white/90">Meet Our</span>
               <span
-                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]"
+                className="block text-3d-gold"
               >
                 Creators
               </span>
@@ -237,7 +237,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/20 to-[#FFD700]/20 border border-[#D4AF37]/30">
                   <FaTrophy className="text-[#D4AF37] text-sm" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                  <span className="label-esports text-white">
                     Elite Creators
                   </span>
                 </div>
@@ -265,7 +265,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30">
                   <FaStar className="text-purple-400 text-sm" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                  <span className="label-esports text-white">
                     Partnered Creators
                   </span>
                 </div>
@@ -293,7 +293,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-sky-500/20 to-cyan-500/20 border border-sky-400/30">
                   <HiSparkles className="text-sky-400 text-sm" />
-                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                  <span className="label-esports text-white">
                     Academy Creators
                   </span>
                 </div>

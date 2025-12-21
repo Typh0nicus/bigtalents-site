@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 export type NewsItem = {
   slug: string;
@@ -62,6 +62,7 @@ export function NewsCard({
   featured?: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const prefersReduced = useReducedMotion();
 
   const summary = buildSummary(item);
   const category = getCategory(item.tags);
@@ -82,9 +83,24 @@ export function NewsCard({
         whileHover={{ y: -6, scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-colors duration-300 hover:border-[#FFD700]/60"
+        className="relative group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-colors duration-300 hover:border-[#FFD700]/60"
         style={{ WebkitTapHighlightColor: "transparent" }}
       >
+        {/* Subtle gold glow on hover */}
+        {!prefersReduced && isHovered && (
+          <motion.div
+            className="absolute -inset-[4px] rounded-2xl pointer-events-none -z-10"
+            style={{
+              background: "radial-gradient(circle, rgba(255, 187, 0, 0.2) 0%, transparent 70%)",
+              filter: "blur(12px)",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+
         {/* IMAGE HEADER */}
         <div className="relative aspect-[16/9] overflow-hidden">
           <motion.div

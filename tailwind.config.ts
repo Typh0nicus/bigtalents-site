@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)', 'ui-sans-serif', 'system-ui'],
+        body: ['var(--font-body)', 'ui-sans-serif', 'system-ui'],
+      },
       colors: {
         gold: {
           DEFAULT: '#D4AF37',
