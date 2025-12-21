@@ -39,27 +39,26 @@ export default function PositionsClient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* Enhanced Background with grid */}
+      {/* BGT Background System */}
       <motion.div
         className="fixed inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Enhanced gradients with vibrant orange */}
+        {/* BGT gold corner glow */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -5%, rgba(255,187,0,0.09), transparent 50%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(212,175,55,0.06), transparent 50%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(139,92,246,0.04), transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
             `,
           }}
         />
         
-        {/* Refined grid overlay */}
-        <GridOverlay opacity={0.025} size={28} />
+        {/* BGT Grid overlay */}
+        <GridOverlay />
         
         {/* Gloss blur overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
