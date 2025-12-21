@@ -325,8 +325,8 @@ export default function ClubClient() {
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
-            <h2 className="text-4xl md:text-5xl font-black">
-              <span className="bg-gradient-to-r from-white to-[#D4AF37] bg-clip-text text-transparent">
+            <h2 className="h2 font-technopath">
+              <span className="text-gold-3d">
                 Legends
               </span>
             </h2>
@@ -357,9 +357,9 @@ export default function ClubClient() {
           transition={{ duration: 0.6, ease: EASE_OUT }}
           className="mb-14 text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-black mb-4">
+          <h2 className="h2 font-technopath mb-4">
             Access{" "}
-            <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">
+            <span className="text-gold-3d">
               Passes
             </span>
           </h2>

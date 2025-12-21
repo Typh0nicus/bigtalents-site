@@ -107,8 +107,8 @@ export function FeaturedContent({ content }: { content: ScoredContent[] }) {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6 md:mb-8 lg:mb-10"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+          <h2 className="h2 font-technopath">
+            <span className="text-gold-3d">
               Featured Content
             </span>
           </h2>

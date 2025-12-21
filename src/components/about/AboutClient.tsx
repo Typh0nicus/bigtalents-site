@@ -149,8 +149,8 @@ export default function AboutClient() {
               </div>
             </motion.div>
 
-            <h1 className="text-5xl md:text-7xl font-black mb-6">
-              About <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Big Talents</span>
+            <h1 className="h1 font-technopath mb-6">
+              About <span className="text-gold-3d">Big Talents</span>
             </h1>
 
             <p className="text-xl text-white/80 mb-8 leading-relaxed max-w-3xl mx-auto">
@@ -233,8 +233,8 @@ export default function AboutClient() {
                 <div className="w-1 h-12 bg-gradient-to-b from-[#D4AF37] to-[#FFD700] rounded-full" />
               </motion.div>
 
-              <h2 className="text-4xl md:text-5xl font-black mb-6">
-                Our <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Story</span>
+              <h2 className="h2 font-technopath mb-6">
+                Our <span className="text-gold-3d">Story</span>
               </h2>
 
               <div className="space-y-4 text-white/80 text-lg leading-relaxed">
@@ -289,8 +289,8 @@ export default function AboutClient() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              Our <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Values</span>
+            <h2 className="h2 font-technopath mb-4">
+              Our <span className="text-gold-3d">Values</span>
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
               The principles that guide everything we do
@@ -334,8 +334,8 @@ export default function AboutClient() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              What We <span className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">Offer</span>
+            <h2 className="h2 font-technopath mb-4">
+              What We <span className="text-gold-3d">Offer</span>
             </h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
               A complete esports ecosystem for players, creators, and fans
