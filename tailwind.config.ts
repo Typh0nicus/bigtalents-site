@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        technopath: ['Technopath', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        technopath: ['Technopath', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', '"Apple Color Emoji"', '"Segoe UI Emoji"', 'sans-serif'],
       },
       colors: {
         gold: {
