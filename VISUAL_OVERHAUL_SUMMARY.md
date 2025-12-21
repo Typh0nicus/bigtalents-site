@@ -8,12 +8,12 @@ This implementation successfully upgrades the BigTalents website visual quality 
 ### 1. Typography Enhancement ✅
 
 **Files Modified:**
-- `src/app/layout.tsx` - Added Big Shoulders Display font
+- `src/app/layout.tsx` - Added Teko font (esports display font)
 - `src/app/globals.css` - Updated heading styles and added font utilities
 - `tailwind.config.ts` - Added font family configuration
 
 **Changes:**
-- Imported **Big Shoulders Display** from Google Fonts (weights: 700, 800, 900)
+- Imported **Teko** from Google Fonts (weights: 500, 600, 700) - A condensed, geometric esports-style font similar to TECHNOPATH
 - Added `--font-display` CSS variable for the esports heading font
 - Kept Outfit as body/secondary font for readability
 - Added `.font-display` utility class for manual application
@@ -162,7 +162,9 @@ All effects use modern CSS with fallbacks:
 
 ## Build Notes
 
-**Network Dependency:** The implementation uses Google Fonts (Big Shoulders Display). During local development in restricted environments, font loading may fail. This is expected and will work correctly in production deployment (Netlify) with internet access.
+**Font Choice:** The implementation uses **Teko** from Google Fonts, which provides a condensed, geometric esports aesthetic similar to the TECHNOPATH font used in the brand graphics. Teko is freely available and works seamlessly with Next.js font optimization.
+
+**Network Dependency:** The implementation uses Google Fonts (Teko for headings, Outfit for body). During local development in restricted environments, font loading may fail. This is expected and will work correctly in production deployment (Netlify) with internet access.
 
 **Verification:** Linting passed with no errors in new files. All existing linting warnings are pre-existing and unrelated to this implementation.
 

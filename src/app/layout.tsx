@@ -3,7 +3,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Outfit, Big_Shoulders_Display } from "next/font/google";
+import { Outfit, Teko } from "next/font/google";
 
 // Body/secondary font
 const outfit = Outfit({
@@ -13,10 +13,10 @@ const outfit = Outfit({
   variable: "--font-body",
 });
 
-// Display font for headings - esports aesthetic
-const bigShouldersDisplay = Big_Shoulders_Display({
+// Display font for headings - esports aesthetic (similar to TECHNOPATH)
+const displayFont = Teko({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["500", "600", "700"],
   display: "swap",
   variable: "--font-display",
 });
@@ -93,7 +93,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${bigShouldersDisplay.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${displayFont.variable} ${outfit.variable}`}>
       <body className="safe-areas">
         <Navbar />
         {children}

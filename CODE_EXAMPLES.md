@@ -19,7 +19,7 @@ const heading = Outfit({
 
 ### After (layout.tsx)
 ```tsx
-import { Outfit, Big_Shoulders_Display } from "next/font/google";
+import { Outfit, Teko } from "next/font/google";
 
 // Body font
 const outfit = Outfit({
@@ -29,16 +29,16 @@ const outfit = Outfit({
   variable: "--font-body",
 });
 
-// Display font for headings - esports aesthetic
-const bigShouldersDisplay = Big_Shoulders_Display({
+// Display font for headings - esports aesthetic (similar to TECHNOPATH)
+const displayFont = Teko({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["500", "600", "700"],
   display: "swap",
   variable: "--font-display",
 });
 
 // In HTML
-<html lang="en" className={`${bigShouldersDisplay.variable} ${outfit.variable}`}>
+<html lang="en" className={`${displayFont.variable} ${outfit.variable}`}>
 ```
 
 ## 2. Enhanced Text Effects
