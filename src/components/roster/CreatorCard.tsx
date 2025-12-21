@@ -133,7 +133,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         <div className="relative h-full rounded-2xl overflow-hidden bg-black/60 border border-white/8 backdrop-blur-sm antialiased transition-all duration-300"
           style={{
             borderColor: isHovered ? tierConfig.accentColor === "#E8AA39" ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)',
-            boxShadow: isHovered && tierConfig.tier === 'elite' ? '0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(255,187,0,0.08)' : '0 8px 32px rgba(0,0,0,0.2)'
+            boxShadow: isHovered && creator.tier === 'elite' ? '0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(255,187,0,0.08)' : '0 8px 32px rgba(0,0,0,0.2)'
           }}
         >
           {/* Image Section - More compact on mobile */}
