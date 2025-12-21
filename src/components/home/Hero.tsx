@@ -161,7 +161,7 @@ function Particles() {
 
 function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
   return (
-    <span className={highlight ? "text-gold-3d" : ""}>
+    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
@@ -179,7 +179,7 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 font-technopath leading-tight text-center select-none"
+      className="h1 leading-tight text-center select-none tracking-wide"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
@@ -231,13 +231,12 @@ export function Hero() {
   return (
     <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Gold corner glows - subtle radial gradients */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(255,187,0,0.1), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(212,175,55,0.08), transparent 50%),
+              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.08), transparent 50%),
+              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.05), transparent 50%),
               radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.03), transparent 50%)
             `
           }}

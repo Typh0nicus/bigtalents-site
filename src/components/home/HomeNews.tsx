@@ -91,8 +91,8 @@ export function HomeNews() {
           className="mb-7 md:mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between"
         >
           <div>
-            <h2 className="h2 font-technopath">
-              <span className="text-gold-3d">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">
+              <span className="bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
                 Featured News
               </span>
             </h2>

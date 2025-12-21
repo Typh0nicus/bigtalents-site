@@ -182,10 +182,12 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="h1 font-technopath mb-6"
+              className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-6"
             >
               <span className="block text-white/90">Meet Our</span>
-              <span className="block text-gold-3d">
+              <span
+                className="block bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]"
+              >
                 Creators
               </span>
             </motion.h1>
@@ -208,17 +210,17 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               className="flex flex-wrap items-center justify-center gap-8 lg:gap-12"
             >
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-technopath text-gold-3d mb-2">
+                <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] mb-2">
                   {formatCompact(combinedReach)}
                 </div>
-                <div className="text-sm text-white/50 uppercase tracking-wider label-esports">Total Reach</div>
+                <div className="text-sm text-white/50 uppercase tracking-wider">Total Reach</div>
               </div>
               {combinedViews > 0 && (
                 <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-technopath text-gold-3d mb-2">
+                  <div className="text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37] mb-2">
                     {formatCompact(combinedViews)}
                   </div>
-                  <div className="text-sm text-white/50 uppercase tracking-wider label-esports">Total Views</div>
+                  <div className="text-sm text-white/50 uppercase tracking-wider">Total Views</div>
                 </div>
               )}
             </motion.div>
@@ -235,7 +237,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37]/20 to-[#FFD700]/20 border border-[#D4AF37]/30">
                   <FaTrophy className="text-[#D4AF37] text-sm" />
-                  <span className="label-esports text-sm text-white">
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
                     Elite Creators
                   </span>
                 </div>
@@ -263,7 +265,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30">
                   <FaStar className="text-purple-400 text-sm" />
-                  <span className="label-esports text-sm text-white">
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
                     Partnered Creators
                   </span>
                 </div>
@@ -291,7 +293,7 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
               <div className="flex items-center gap-3 mb-8">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-sky-500/20 to-cyan-500/20 border border-sky-400/30">
                   <HiSparkles className="text-sky-400 text-sm" />
-                  <span className="label-esports text-sm text-white">
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
                     Academy Creators
                   </span>
                 </div>

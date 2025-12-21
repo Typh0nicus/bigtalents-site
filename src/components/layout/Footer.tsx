@@ -87,7 +87,7 @@ export function Footer() {
               >
                 {/* Quick Links */}
                 <div>
-                  <h3 className="font-technopath text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h3>
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Quick Links</h3>
                   <ul className="space-y-3">
                     {[
                       { label: "Achievements", href: "/achievements" },
@@ -109,7 +109,7 @@ export function Footer() {
 
                 {/* Company */}
                 <div>
-                  <h3 className="font-technopath text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
                   <ul className="space-y-3">
                     {[
                       { label: "About", href: "/about" },
@@ -131,7 +131,7 @@ export function Footer() {
 
                 {/* Community */}
                 <div>
-                  <h3 className="font-technopath text-white mb-4 text-sm uppercase tracking-wider">Community</h3>
+                  <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Community</h3>
                   <ul className="space-y-3">
                     {[
                       { label: "Discord Server", href: "https://discord.gg/bgt", external: true },

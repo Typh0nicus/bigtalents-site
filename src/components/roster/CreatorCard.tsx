@@ -130,7 +130,7 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
         className="group relative cursor-pointer h-full"
       >
         {/* Card Container */}
-        <div className={`relative h-full rounded-2xl overflow-hidden bg-gradient-to-br from-zinc-900/50 to-black backdrop-blur-sm antialiased ${creator.tier === 'elite' ? 'card-gold-border' : 'border border-white/10'}`}>
+        <div className="relative h-full rounded-2xl overflow-hidden bg-gradient-to-br from-zinc-900/50 to-black border border-white/10 backdrop-blur-sm antialiased">
           {/* Image Section - More compact on mobile */}
           <div className="relative aspect-square sm:aspect-[3/4] overflow-hidden">
             <Image
@@ -196,12 +196,12 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
             
             {/* Tier Badge - Desktop only, positioned below name like original */}
             <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-5 z-20">
-              <h3 className="font-technopath text-base sm:text-2xl text-white mb-0.5 sm:mb-1 line-clamp-1">
+              <h3 className="text-base sm:text-2xl font-black text-white mb-0.5 sm:mb-1 line-clamp-1">
                 {creator.name}
               </h3>
               {/* Desktop: Show tier badge below name */}
               <p
-                className={`hidden sm:block label-esports text-xs bg-clip-text text-transparent ${tierConfig.tierGradient} mb-1`}
+                className={`hidden sm:block text-xs font-semibold uppercase tracking-[0.15em] bg-clip-text text-transparent ${tierConfig.tierGradient} mb-1`}
               >
                 {tierConfig.label}
               </p>

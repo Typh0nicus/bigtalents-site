@@ -251,7 +251,7 @@ export function ExclusiveClub() {
         >
           {/* Title with FIXED badge */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
-            <h2 className="h2 font-technopath text-gold-3d">
+            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
               BGT Elite Club
             </h2>
             
