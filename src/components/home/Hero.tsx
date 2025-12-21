@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import { GridOverlay } from "@/components/ui/GridOverlay";
-import { GoldVineFlourish } from "@/components/ui/GoldVineFlourish";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -231,21 +230,21 @@ export function Hero() {
   return (
     <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* BGT Background System - warm gold corner glow */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.08), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.05), transparent 50%),
-              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.03), transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
             `
           }}
         />
         <Particles />
         
-        {/* Enhanced grid overlay */}
+        {/* BGT Grid overlay */}
         <div className="absolute inset-0">
-          <GridOverlay opacity={0.03} size={40} />
+          <GridOverlay />
           {/* Very subtle fade at top for navbar */}
           <div 
             className="absolute inset-x-0 top-0 h-48 pointer-events-none"
@@ -255,12 +254,7 @@ export function Hero() {
           />
         </div>
         
-        {/* Vine flourishes - desktop only */}
-        <div className="hidden lg:block">
-          <GoldVineFlourish position="top-left" />
-          <GoldVineFlourish position="top-right" />
-        </div>
-        
+        {/* Subtle noise texture */}
         <div
           className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
           style={{
@@ -290,7 +284,17 @@ export function Hero() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.15, y: -3 }}
                 whileTap={{ scale: 0.95 }}
-                className={`inline-flex aspect-square h-12 w-12 items-center justify-center leading-none rounded-xl p-0 ${s.color} ${s.bg} bg-white/5 transition-all duration-300 hover:shadow-lg backdrop-blur-sm ring-1 ring-white/10 hover:ring-white/20`}
+                className={`inline-flex aspect-square h-12 w-12 items-center justify-center leading-none rounded-xl p-0 transition-all duration-300 bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:ring-[#D4AF37]/30 ${s.color} ${s.bg}`}
+                style={{
+                  boxShadow: 'none',
+                  transition: 'all 0.3s ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(212,175,55,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 aria-label={s.label}
               >
                 <Icon size={20} />

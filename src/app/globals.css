@@ -48,32 +48,47 @@ input, textarea, select, button {
   --bg: #0a0a0a;
   --muted: rgba(255,255,255,.78);
   
-  /* Enhanced Gold/Orange Palette - Brand Guidelines */
+  /* BGT Premium Esports Color Palette */
+  --gold-primary: #FFBB00; /* vibrant orange-gold */
+  --gold-classic: #D4AF37; /* classic gold */
+  --gold-bright: #FFD700; /* bright gold */
+  --gold-dark: #B8860B; /* dark gold for shadows */
+  
+  /* Legacy gold variables for compatibility */
   --gold: #d4af37;
-  --gold-vibrant: #FFBB00; /* Primary Orange/Gold - More vibrant */
-  --gold-light: #E0B84F; /* Light gold for highlights (separate from scale) */
+  --gold-vibrant: #FFBB00;
+  --gold-light: #E0B84F;
   
   /* Gold color scale (properly ordered from light to dark) */
   --gold-50: #fffbf1;
   --gold-100: #fef5e1;
   --gold-400: #f2cc60;
-  --gold-500: #d4af37;  /* Base gold */
-  --gold-600: #b8941f;  /* Darker than 500 */
-  --gold-700: #8b6914;  /* Darker than 600 */
-  --gold-800: #5c4409;  /* Darker than 700 */
-  --gold-900: #3d2d06;  /* Darkest */
+  --gold-500: #d4af37;
+  --gold-600: #b8941f;
+  --gold-700: #8b6914;
+  --gold-800: #5c4409;
+  --gold-900: #3d2d06;
   
-  /* New Brand Colors from Guidelines */
+  /* Brand Colors */
   --orange-vibrant: #FFBB00;
   --grey-dark: #A9A9A9;
   --grey-light: #EFEFEF;
   
-  /* Border colors with vibrant orange option */
+  /* BGT Background System */
+  --bg-dark: #0a0a0a;
+  --bg-card: rgba(255,255,255,0.03);
+  
+  /* BGT Border System */
   --border: rgba(212,175,55,.35);
   --border-vibrant: rgba(255,187,0,.35);
-  --border-subtle: rgba(255,255,255,.10);
+  --border-subtle: rgba(255,255,255,.08);
   --border-hover: rgba(255,255,255,.20);
+  --border-gold: rgba(212,175,55,.25);
   --border-gold-glow: rgba(255,187,0,.5);
+  
+  /* BGT Text Colors */
+  --text-primary: rgba(255,255,255,0.9);
+  --text-muted: rgba(255,255,255,0.6);
   
   --font-heading: ui-sans-serif;
   --font-technopath: 'Technopath', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
@@ -299,29 +314,37 @@ html, body {
   min-height: 56px;
 }
 
-/* ===== Cards =================================================== */
+/* ===== Cards - BGT Premium Style ============================== */
 .card {
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  backdrop-filter: saturate(120%) blur(2px);
-  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  transition: all 0.3s ease-out;
 }
 
 .card:hover {
-  border-color: var(--border);
-  transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  border-color: rgba(212,175,55,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(212,175,55,0.1);
+  transform: translateY(-4px);
 }
 
 .card:focus-within {
-  border-color: var(--border);
+  border-color: rgba(212,175,55,0.25);
 }
 
 .card-glass {
   background: rgba(255,255,255,0.02);
   backdrop-filter: blur(20px) saturate(120%);
   border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1.5rem;
+  transition: all 0.3s ease-out;
+}
+
+.card-glass:hover {
+  border-color: rgba(212,175,55,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(255,187,0,0.08);
+  transform: translateY(-4px);
 }
 
 .card-elevated {
@@ -456,26 +479,47 @@ input:focus, textarea:focus, select:focus {
   animation: skel-sweep 1.5s linear infinite;
 }
 
-/* ===== Utility Classes ======================================== */
+/* ===== BGT Utility Classes ===================================== */
 .no-scroll { 
   overflow: hidden; 
 }
 
+/* Gold gradient text */
 .text-gradient-gold {
-  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  background: linear-gradient(90deg, var(--gold-classic), var(--gold-light));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-vibrant {
-  background: linear-gradient(135deg, var(--orange-vibrant), var(--gold-light), var(--gold));
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-light), var(--gold-classic));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Subtle text shadow for premium feel - not excessive glow */
+/* Subtle gold glow - NOT cheap */
+.gold-glow-subtle {
+  box-shadow: 0 0 40px rgba(255,187,0,0.08);
+}
+
+/* Section divider with gold accent */
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
+}
+
+/* Label/badge styling - uppercase with spacing */
+.label-caps {
+  font-family: var(--font-heading), ui-sans-serif, system-ui;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Subtle text shadow for premium feel */
 .text-refined {
   text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
@@ -572,11 +616,11 @@ input:focus, textarea:focus, select:focus {
   --glass-gold: color-mix(in srgb, var(--gold) 25%, transparent);
 }
 
-/* ===== Decorative Effects ===================================== */
-/* Subtle dotted grid - less visible, more refined */
+/* ===== Decorative Effects - BGT Grid System =================== */
+/* Subtle dotted grid matching BGT specs */
 .dotted-grid {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.035) 1.5px, transparent 1.5px);
+  background-size: 40px 40px;
 }
 
 .diagonal-lines {
