@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        technopath: ['Technopath', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
         gold: {
           DEFAULT: '#D4AF37',
