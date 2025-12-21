@@ -134,46 +134,24 @@ export default function TournamentsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: EASE_OUT }}
       >
-          const B = parseWhen(b.date);
-          return A - B;
-        }
-      }
-    });
-
-    if (dir === "desc") {
-      tournaments.reverse();
-    }
-
-    return tournaments;
-  }, [q, sort, dir, filter]);
-
-  const hasResults = filteredTournaments.length > 0;
-
-  return (
-    <motion.section
-      className="container py-20 select-none"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: EASE_OUT }}
-    >
-      {/* Header */}
-      <motion.div
-        className="mb-12"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.25, ease: EASE_OUT }}
-      >
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-2">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]">
-            Tournaments
-          </span>
-        </h1>
-        <p className="text-white/60 mb-6">
-          Total prizes awarded:{" "}
-          <span className="text-[#D4AF37] font-bold">
-            ${(totalPrize + 13 + 30 + 30 + 50).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-          </span>
-        </p>
+        {/* Header */}
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.25, ease: EASE_OUT }}
+        >
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-2">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FFBB00] via-[#FFD700] to-[#D4AF37]">
+              Tournaments
+            </span>
+          </h1>
+          <p className="text-white/60 mb-6">
+            Total prizes awarded:{" "}
+            <span className="text-[#D4AF37] font-bold">
+              ${(totalPrize + 13 + 30 + 30 + 50).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            </span>
+          </p>
 
         {/* Filter Tabs */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
