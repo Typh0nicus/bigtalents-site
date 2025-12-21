@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface GoldFlourishProps {
@@ -22,6 +23,7 @@ export function GoldFlourish({
   size = 120,
 }: GoldFlourishProps) {
   const prefersReduced = useReducedMotion();
+  const gradientId = `goldGradient-${useId()}`;
 
   const positionClasses = {
     "top-left": "top-0 left-0",
@@ -48,7 +50,7 @@ export function GoldFlourish({
         className="w-full h-full"
       >
         <defs>
-          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#FFD700" stopOpacity="0.6" />
             <stop offset="50%" stopColor="#FFBB00" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.4" />
@@ -58,7 +60,7 @@ export function GoldFlourish({
         {/* Main vine curve */}
         <path
           d="M 5 5 Q 15 15, 25 20 Q 35 25, 40 35 Q 45 45, 50 50"
-          stroke="url(#goldGradient)"
+          stroke={`url(#${gradientId})`}
           strokeWidth="1.5"
           fill="none"
           opacity="0.7"
@@ -67,7 +69,7 @@ export function GoldFlourish({
         {/* Secondary vine branch */}
         <path
           d="M 25 20 Q 30 15, 35 18 Q 40 21, 42 26"
-          stroke="url(#goldGradient)"
+          stroke={`url(#${gradientId})`}
           strokeWidth="1"
           fill="none"
           opacity="0.6"
@@ -79,7 +81,7 @@ export function GoldFlourish({
           cy="18"
           rx="4"
           ry="7"
-          fill="url(#goldGradient)"
+          fill={`url(#${gradientId})`}
           opacity="0.5"
           transform="rotate(-25 28 18)"
         />
@@ -90,7 +92,7 @@ export function GoldFlourish({
           cy="30"
           rx="5"
           ry="8"
-          fill="url(#goldGradient)"
+          fill={`url(#${gradientId})`}
           opacity="0.5"
           transform="rotate(15 38 30)"
         />
@@ -101,7 +103,7 @@ export function GoldFlourish({
           cy="45"
           rx="4"
           ry="7"
-          fill="url(#goldGradient)"
+          fill={`url(#${gradientId})`}
           opacity="0.5"
           transform="rotate(-35 47 45)"
         />

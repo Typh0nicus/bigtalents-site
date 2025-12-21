@@ -67,7 +67,6 @@ input, textarea, select, button {
   --border-gold-glow: rgba(255,187,0,.5);
   
   --font-heading: var(--font-display, ui-sans-serif);
-  --font-body: var(--font-body, ui-sans-serif);
   
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);

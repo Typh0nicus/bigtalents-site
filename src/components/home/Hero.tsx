@@ -160,9 +160,9 @@ function Particles() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[0.55] pointer-events-none" aria-hidden />;
 }
 
-function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: boolean }) {
+function AnimatedChunk({ text }: { text: string }) {
   return (
-    <span className={highlight ? "bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e]" : ""}>
+    <span>
       {text.split("").map((ch, i) => (
         <motion.span
           key={`${ch}-${i}`}
@@ -186,10 +186,10 @@ function AnimatedHeading() {
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
       aria-label="Big Talents. Bigger Stages."
     >
-      <AnimatedChunk text="Big Talents. " highlight={false} />
+      <AnimatedChunk text="Big Talents. " />
       <br />
       <span className="text-3d-gold">
-        <AnimatedChunk text="Bigger Stages." highlight={false} />
+        <AnimatedChunk text="Bigger Stages." />
       </span>
     </motion.h1>
   );
