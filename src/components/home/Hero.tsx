@@ -186,10 +186,10 @@ function AnimatedHeading() {
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
       aria-label="Big Talents. Bigger Stages."
     >
-      <AnimatedChunk text="Big Talents. " />
+      <AnimatedChunk text="Big Talents. " highlight={false} />
       <br />
       <span className="text-3d-gold">
-        <AnimatedChunk text="Bigger Stages." />
+        <AnimatedChunk text="Bigger Stages." highlight={false} />
       </span>
     </motion.h1>
   );

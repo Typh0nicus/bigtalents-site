@@ -14,7 +14,7 @@ const outfit = Outfit({
 });
 
 // Display font for headings - esports aesthetic
-const displayFont = Big_Shoulders_Display({
+const bigShouldersDisplay = Big_Shoulders_Display({
   subsets: ["latin"],
   weight: ["700", "800", "900"],
   display: "swap",
@@ -93,7 +93,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${bigShouldersDisplay.variable} ${outfit.variable}`}>
       <body className="safe-areas">
         <Navbar />
         {children}
