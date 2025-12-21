@@ -243,16 +243,7 @@ export function Hero() {
         <Particles />
         
         {/* BGT Grid overlay */}
-        <div className="absolute inset-0">
-          <GridOverlay />
-          {/* Very subtle fade at top for navbar */}
-          <div 
-            className="absolute inset-x-0 top-0 h-48 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.04) 60%, rgba(0,0,0,0) 100%)',
-            }}
-          />
-        </div>
+        <GridOverlay />
         
         {/* Subtle noise texture */}
         <div

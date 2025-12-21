@@ -5,6 +5,7 @@ import { NEWS } from "@/data/news";
 import { motion, type Variants } from "framer-motion";
 import { NewsCard } from "./NewsCard";
 import { FiSearch, FiX } from "react-icons/fi";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const gridStagger: Variants = {
   hidden: {},
@@ -69,12 +70,27 @@ export default function NewsClient() {
   }, [query, selectedCategory]);
 
   return (
-    <motion.section
-      className="container pt-32 pb-20 px-4 overflow-x-hidden"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div className="relative min-h-screen">
+      {/* BGT Background System */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+            `,
+          }}
+        />
+        <GridOverlay />
+      </div>
+      
+      <motion.section
+        className="container pt-32 pb-20 px-4 overflow-x-hidden relative z-10"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      >
       {/* Header */}
       <motion.div
         className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-12"
@@ -180,5 +196,6 @@ export default function NewsClient() {
         </motion.div>
       )}
     </motion.section>
+    </div>
   );
 }

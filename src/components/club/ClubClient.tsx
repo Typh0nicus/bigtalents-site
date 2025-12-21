@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import { FiExternalLink, FiUsers, FiGlobe, FiCheck } from "react-icons/fi";
 import { useState, useEffect, useRef, useMemo } from "react";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 /* --------------------------------- Utils --------------------------------- */
 
@@ -184,12 +185,14 @@ export default function ClubClient() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.08), transparent 55%),
-              radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 55%),
-              radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.05), transparent 55%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
             `,
           }}
         />
+        
+        {/* BGT Grid overlay */}
+        <GridOverlay />
 
         {!prefersReduced && isMounted && (
           <div className="absolute inset-0 opacity-25">

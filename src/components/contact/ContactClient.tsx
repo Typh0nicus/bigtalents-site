@@ -14,6 +14,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import { FaDiscord } from "react-icons/fa";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 type ContactMethod = {
   icon: React.ElementType;
@@ -145,19 +146,22 @@ export default function ContactClient() {
 
   return (
     <div className="relative min-h-screen bg-black text-white">
+      {/* BGT Background System */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+            `,
+          }}
+        />
+        <GridOverlay />
+      </div>
+      
       {/* Hero */}
-      <section className="relative py-20 md:py-32">
-        <div className="absolute inset-0 pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `
-                radial-gradient(1200px 600px at 25% 0%, rgba(212,175,55,0.04), transparent 60%),
-                radial-gradient(1000px 500px at 75% 20%, rgba(212,175,55,0.02), transparent 60%)
-              `,
-            }}
-          />
-        </div>
+      <section className="relative py-20 md:py-32 z-10">
         <div className="container relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
