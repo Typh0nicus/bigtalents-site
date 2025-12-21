@@ -290,8 +290,8 @@ export function CreatorProgram() {
               </span>
             </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight px-4">
-              <span className="bg-gradient-to-r from-white via-white to-[#D4AF37] bg-clip-text text-transparent">
+            <h1 className="h1 font-technopath mb-6 leading-tight px-4">
+              <span className="text-gold-3d">
                 Creator Program
               </span>
             </h1>
@@ -374,8 +374,8 @@ export function CreatorProgram() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 px-4">
-            Choose Your <span className="bg-gradient-to-r from-[#D4AF37] to-purple-400 bg-clip-text text-transparent">Path</span>
+          <h2 className="h2 font-technopath text-white mb-4 px-4">
+            Choose Your <span className="text-gold-3d">Path</span>
           </h2>
           <p className="text-white/60 text-lg max-w-2xl mx-auto leading-relaxed px-4">
             Three distinct tiers designed to support creators at every stage of their journey
@@ -448,7 +448,7 @@ export function CreatorProgram() {
 
                     {/* Content */}
                     <div className="mb-6 relative z-10">
-                      <h3 className="text-2xl font-black mb-2">{tier.name}</h3>
+                      <h3 className="h3 font-technopath mb-2">{tier.name}</h3>
                       <p className="text-[#D4AF37] text-sm font-bold mb-3">{tier.tagline}</p>
                       <p className="text-white/60 leading-relaxed text-sm mb-4">{tier.description}</p>
 

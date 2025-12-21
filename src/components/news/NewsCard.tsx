@@ -81,8 +81,8 @@ export function NewsCard({
         viewport={{ once: true, amount: 0.18 }}
         whileHover={{ y: -6, scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
-        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-colors duration-300 hover:border-[#FFD700]/60"
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-all duration-300 hover:border-[#FFD700]/40 hover:shadow-[0_0_40px_rgba(255,187,0,0.1),0_20px_60px_rgba(0,0,0,0.4)]"
         style={{ WebkitTapHighlightColor: "transparent" }}
       >
         {/* IMAGE HEADER */}
@@ -129,7 +129,7 @@ export function NewsCard({
 
           {/* category + date row */}
           <div className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2 text-[11px] sm:text-xs">
-            <span className="inline-flex items-center rounded-full bg-black/70 border border-white/15 px-2.5 py-1 uppercase tracking-[0.16em] font-semibold text-[10px] text-white/80">
+            <span className="label-esports inline-flex items-center rounded-full bg-black/70 border border-white/15 px-2.5 py-1 text-[10px] text-white/80">
               {category}
             </span>
             <span className="rounded-full bg-black/60 px-2 py-1 text-[11px] text-white/70 font-medium">
