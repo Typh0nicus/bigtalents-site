@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import { GridOverlay } from "@/components/ui/GridOverlay";
-import { GoldVineFlourish } from "@/components/ui/GoldVineFlourish";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -231,6 +230,7 @@ export function Hero() {
   return (
     <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Original Hero gradient - multiple gold glows */}
         <div
           className="absolute inset-0"
           style={{
@@ -243,24 +243,10 @@ export function Hero() {
         />
         <Particles />
         
-        {/* Enhanced grid overlay */}
-        <div className="absolute inset-0">
-          <GridOverlay opacity={0.03} size={40} />
-          {/* Very subtle fade at top for navbar */}
-          <div 
-            className="absolute inset-x-0 top-0 h-48 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.04) 60%, rgba(0,0,0,0) 100%)',
-            }}
-          />
-        </div>
+        {/* BGT Grid overlay */}
+        <GridOverlay />
         
-        {/* Vine flourishes - desktop only */}
-        <div className="hidden lg:block">
-          <GoldVineFlourish position="top-left" />
-          <GoldVineFlourish position="top-right" />
-        </div>
-        
+        {/* Subtle noise texture */}
         <div
           className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
           style={{
@@ -290,7 +276,17 @@ export function Hero() {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.15, y: -3 }}
                 whileTap={{ scale: 0.95 }}
-                className={`inline-flex aspect-square h-12 w-12 items-center justify-center leading-none rounded-xl p-0 ${s.color} ${s.bg} bg-white/5 transition-all duration-300 hover:shadow-lg backdrop-blur-sm ring-1 ring-white/10 hover:ring-white/20`}
+                className={`inline-flex aspect-square h-12 w-12 items-center justify-center leading-none rounded-xl p-0 transition-all duration-300 bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:ring-[#D4AF37]/30 ${s.color} ${s.bg}`}
+                style={{
+                  boxShadow: 'none',
+                  transition: 'all 0.3s ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(212,175,55,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 aria-label={s.label}
               >
                 <Icon size={20} />

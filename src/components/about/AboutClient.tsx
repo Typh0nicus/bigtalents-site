@@ -87,16 +87,15 @@ export default function AboutClient() {
     <div className="relative">
       {/* Hero Section with Floating Particles */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Enhanced Particle Background */}
+        {/* BGT Background System */}
         {isMounted && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div
               className="absolute inset-0"
               style={{
                 background: `
-                  radial-gradient(1400px 700px at 20% -10%, rgba(212,175,55,0.12), transparent 60%),
-                  radial-gradient(1200px 600px at 80% 10%, rgba(224,184,79,0.08), transparent 60%),
-                  radial-gradient(1000px 500px at 50% 100%, rgba(212,175,55,0.06), transparent 60%)
+                  radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+                  radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
                 `,
               }}
             />

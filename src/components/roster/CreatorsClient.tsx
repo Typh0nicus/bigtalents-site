@@ -78,27 +78,27 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
-      {/* Enhanced gradient background with vibrant accents */}
+      {/* BGT Background System - gold corner glow */}
       <div className="fixed inset-0 pointer-events-none">
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at 20% 20%, rgba(255,187,0,0.14) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(212,175,55,0.10) 0%, transparent 50%),
-              radial-gradient(circle at 40% 80%, rgba(255,215,0,0.08) 0%, transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
             `,
           }}
         />
         
-        {/* Refined grid overlay */}
-        <GridOverlay opacity={0.03} size={26} />
+        {/* BGT Grid overlay */}
+        <GridOverlay />
         
         {/* Gloss blur overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
+        
         {/* Subtle grain texture */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.008]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           }}

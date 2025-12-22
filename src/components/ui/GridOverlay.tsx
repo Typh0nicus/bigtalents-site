@@ -8,9 +8,9 @@ interface GridOverlayProps {
 }
 
 export function GridOverlay({ 
-  opacity = 0.03, // Subtle default matching graphics
-  size = 40, // 40px spacing as specified
-  color = "255,255,255", // White dots, not gold
+  opacity = 0.035, // BGT spec: 0.03-0.04
+  size = 40, // BGT spec: 40px spacing
+  color = "255,255,255", // BGT spec: white dots
   className = "" 
 }: GridOverlayProps) {
   return (

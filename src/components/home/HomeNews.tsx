@@ -135,14 +135,12 @@ function NewsCard({ item, priority }: { item: NewsItem; priority?: boolean }) {
     rest: {
       y: 0,
       scale: 1,
-      boxShadow: "0 18px 40px -24px rgba(0,0,0,0.8)",
-      borderColor: "rgba(255,255,255,0.12)",
+      borderColor: "rgba(255,255,255,0.08)",
     },
     hover: {
-      y: -8,
-      scale: 1.02,
-      boxShadow: "0 26px 60px -30px rgba(0,0,0,0.95)",
-      borderColor: "rgba(212,175,55,0.45)",
+      y: -4,
+      scale: 1.01,
+      borderColor: "rgba(212,175,55,0.3)",
     },
     tap: {
       scale: 0.99,
@@ -158,7 +156,10 @@ function NewsCard({ item, priority }: { item: NewsItem; priority?: boolean }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <motion.article
-        className="relative rounded-2xl overflow-hidden bg-black/70 border"
+        className="relative rounded-2xl overflow-hidden bg-black/70 border transition-all duration-300"
+        style={{
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        }}
         variants={cardVariants}
         initial="rest"
         animate="rest"
@@ -170,6 +171,20 @@ function NewsCard({ item, priority }: { item: NewsItem; priority?: boolean }) {
           damping: 22,
           mass: 0.9,
         }}
+        onHoverStart={() => {
+          // Apply gold glow on hover via inline style
+          const article = document.querySelector(`[data-news-slug="${item.slug}"]`);
+          if (article instanceof HTMLElement) {
+            article.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(255,187,0,0.08)';
+          }
+        }}
+        onHoverEnd={() => {
+          const article = document.querySelector(`[data-news-slug="${item.slug}"]`);
+          if (article instanceof HTMLElement) {
+            article.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+          }
+        }}
+        data-news-slug={item.slug}
       >
         {/* Image */}
         <div className="relative aspect-video overflow-hidden">

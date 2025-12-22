@@ -79,11 +79,15 @@ export function NewsCard({
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.18 }}
-        whileHover={{ y: -6, scale: 1.01 }}
+        whileHover={{ y: -4, scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
-        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/12 bg-black/70 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl transition-colors duration-300 hover:border-[#FFD700]/60"
-        style={{ WebkitTapHighlightColor: "transparent" }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-black/60 backdrop-blur-xl transition-all duration-300"
+        style={{
+          WebkitTapHighlightColor: "transparent",
+          borderColor: isHovered ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.08)',
+          boxShadow: isHovered ? '0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(255,187,0,0.08)' : '0 8px 32px rgba(0,0,0,0.2)'
+        }}
       >
         {/* IMAGE HEADER */}
         <div className="relative aspect-[16/9] overflow-hidden">
