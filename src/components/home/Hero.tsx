@@ -4,7 +4,6 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
-import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -255,9 +254,6 @@ export function Hero() {
         
         {/* Particles on top */}
         <Particles />
-        
-        {/* BGT Grid overlay */}
-        <GridOverlay />
         
         {/* Subtle noise texture */}
         <div

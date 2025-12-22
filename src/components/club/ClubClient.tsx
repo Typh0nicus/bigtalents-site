@@ -18,7 +18,6 @@ import {
 } from "react-icons/fa";
 import { FiExternalLink, FiUsers, FiGlobe, FiCheck } from "react-icons/fi";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { GridOverlay } from "@/components/ui/GridOverlay";
 
 /* --------------------------------- Utils --------------------------------- */
 
@@ -205,9 +204,6 @@ export default function ClubClient() {
           }}
         />
         
-        {/* BGT Grid overlay */}
-        <GridOverlay />
-
         {!prefersReduced && isMounted && (
           <div className="absolute inset-0 opacity-25">
             {PARTICLE_POSITIONS.map((pos, i) => (

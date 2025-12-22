@@ -11,7 +11,6 @@ import {
 } from "@/data/staffRoles";
 import { FiArrowRight } from "react-icons/fi";
 import { FaShieldAlt } from "react-icons/fa";
-import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const PARTICLE_COUNT = 18;
 
@@ -69,9 +68,6 @@ export default function PositionsClient() {
             `,
           }}
         />
-        
-        {/* BGT Grid overlay */}
-        <GridOverlay />
         
         {/* Gloss blur overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />

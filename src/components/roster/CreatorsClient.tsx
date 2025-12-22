@@ -6,7 +6,6 @@ import type { Creator } from "@/lib/featuredAlgorithm";
 import { CreatorCard } from "@/components/roster/CreatorCard";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
-import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const GOLD = "#D4AF37";
 
@@ -101,9 +100,6 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
             `,
           }}
         />
-        
-        {/* BGT Grid overlay */}
-        <GridOverlay />
         
         {/* Gloss blur overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
