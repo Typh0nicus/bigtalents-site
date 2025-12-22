@@ -18,7 +18,6 @@ import {
 } from "react-icons/fa";
 import { FiExternalLink, FiUsers, FiGlobe, FiCheck } from "react-icons/fi";
 import { useState, useEffect, useRef, useMemo } from "react";
-import { GridOverlay } from "@/components/ui/GridOverlay";
 
 /* --------------------------------- Utils --------------------------------- */
 
@@ -174,26 +173,37 @@ export default function ClubClient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* Background */}
+      {/* Background with Master Image */}
       <motion.div
         className="fixed inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Master background image for hero section */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+          style={{
+            backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 60%, transparent 100%)',
+          }}
+        />
+        
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black" />
+        
+        {/* Gold corner glows */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
-              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.06), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.03), transparent 50%)
             `,
           }}
         />
         
-        {/* BGT Grid overlay */}
-        <GridOverlay />
-
         {!prefersReduced && isMounted && (
           <div className="absolute inset-0 opacity-25">
             {PARTICLE_POSITIONS.map((pos, i) => (

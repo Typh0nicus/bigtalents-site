@@ -224,16 +224,28 @@ export function CreatorProgram() {
 
   return (
     <div className="w-full min-h-screen select-none overflow-x-hidden">
-      {/* Hero Section */}
+      {/* Hero Section with Master Background */}
       <section className="relative py-32 w-full">
         <motion.div className="absolute inset-0 overflow-hidden" style={{ y: isMounted ? y : undefined }}>
+          {/* Master background image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+            style={{
+              backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+            }}
+          />
+          
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black/80" />
+          
+          {/* Color accent glows */}
           <div
             className="absolute inset-0"
             style={{
               background: `
-                radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.12), transparent 50%),
-                radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.08), transparent 50%),
-                radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.06), transparent 50%)
+                radial-gradient(1400px 700px at 20% -5%, rgba(212,175,55,0.08), transparent 50%),
+                radial-gradient(1200px 600px at 80% 15%, rgba(168,85,247,0.06), transparent 50%),
+                radial-gradient(1000px 500px at 50% 100%, rgba(59,130,246,0.04), transparent 50%)
               `,
             }}
           />
