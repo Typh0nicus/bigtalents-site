@@ -105,10 +105,10 @@ export function HomeNews() {
           <div className="flex md:justify-end">
             <Link
               href="/news"
-              className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold text-white/70 hover:text-[color:var(--gold)] transition-colors group"
+              className="btn btn-outline btn-sm group border-[#FFD700]/30 hover:border-[#FFD700]/60 hover:text-white"
             >
-              <span>View all news</span>
-              <FiArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+              <span className="text-sm font-semibold">View all news</span>
+              <FiArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 text-[#FFD700]" />
             </Link>
           </div>
         </motion.div>

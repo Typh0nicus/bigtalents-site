@@ -4,6 +4,8 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import Link from "next/link";
+import Image from "next/image";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -11,6 +13,12 @@ const SPEED = 0.025;
 const MAX_FPS = 60;
 const FRAME_TIME = 1000 / MAX_FPS;
 const CONNECTION_DISTANCE = 160;
+
+const HIGHLIGHTS = [
+  { label: "Global Expansion", value: "NA 2026", detail: "Planting the BGT flag across continents" },
+  { label: "Championship DNA", value: "$7,300+", detail: "Awarded to competitors in our circuit" },
+  { label: "Community", value: "10,000+", detail: "Players and fans inside the BGT ecosystem" },
+];
 
 function Particles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -227,48 +235,105 @@ export function Hero() {
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
+    <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* BGT Master Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url('/images/background/bgt-master-bg.png')`,
           }}
         />
-        
+
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80" />
-        
-        {/* Original Hero gradient - multiple gold glows - lighter now with image */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-black/85" />
+
+        {/* Premium gold glows and map inspired wash */}
+        <div className="absolute inset-0 brand-ornament" />
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 opacity-[0.18]"
           style={{
-            background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.05), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.03), transparent 50%),
-              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.02), transparent 50%)
-            `
+            backgroundImage:
+              "radial-gradient(1200px 700px at 75% 18%, rgba(255, 196, 86, 0.09), transparent 55%), radial-gradient(900px 520px at 15% 12%, rgba(255, 221, 130, 0.07), transparent 50%)",
           }}
         />
-        
+
+        {/* Leaf-like filigree to match art direction */}
+        <div
+          className="absolute inset-0 mix-blend-screen opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='140' height='140' viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffcf6a' stroke-width='1.4' stroke-opacity='0.35'%3E%3Cpath d='M20 88c14-14 32-14 46 0m12-50c8-8 22-8 30 0'/%3E%3Cpath d='M68 30c-4 12-1 24 9 34 10 10 22 13 34 9' stroke-linecap='round'/%3E%3Cpath d='M12 54c10 0 18-4 24-10s10-14 10-24' stroke-linecap='round'/%3E%3Ccircle cx='48' cy='98' r='2.6'/%3E%3Ccircle cx='104' cy='34' r='2.6'/%3E%3C/g%3E%3C/svg%3E\")",
+            backgroundSize: "240px 240px",
+          }}
+        />
+
         {/* Particles on top */}
         <Particles />
-        
+
         {/* Subtle noise texture */}
         <div
-          className="absolute inset-0 opacity-[0.008] mix-blend-overlay"
+          className="absolute inset-0 opacity-[0.01] mix-blend-overlay"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
           }}
         />
       </div>
 
-      <div className="container relative z-10 text-center max-w-4xl px-6 pb-6">
-        <AnimatedHeading />
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.3 }}>
-          <TypingEffect text="Think Big, Play Bigger." />
+      {/* Crest / badge on the right for large screens */}
+      <motion.div
+        initial={{ opacity: 0, x: 60 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.6, duration: 0.6, ease: "easeOut" }}
+        className="hidden lg:flex absolute right-12 top-24 z-20"
+      >
+        <div className="glass-panel rounded-3xl px-6 py-6 flex flex-col items-center gap-4 border border-[#D4AF37]/30 shadow-2xl">
+          <div className="relative w-24 h-24">
+            <Image src="/images/logo/bgt-logo.png" alt="Big Talents crest" fill className="object-contain" sizes="96px" />
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFD700]/10 via-transparent to-transparent blur-xl" />
+          </div>
+          <div className="text-center space-y-1">
+            <p className="text-xs uppercase tracking-[0.25em] text-white/60">Premier Org</p>
+            <p className="text-lg font-bold bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+              Big Talents™
+            </p>
+            <p className="text-sm text-white/60">Elite rosters • Creator empire</p>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="container relative z-10 text-center max-w-5xl px-6 pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.4 }}
+          className="inline-flex items-center gap-3 rounded-full px-4 py-2 glass-panel border border-[#FFD700]/20 text-xs uppercase tracking-[0.2em] text-white/70"
+        >
+          <span className="inline-flex h-2 w-2 rounded-full bg-gradient-to-r from-[#FFD700] to-[#FFBB00] shadow-[0_0_0_6px_rgba(255,215,0,0.15)]" />
+          <span>Global Offensive</span>
+          <span className="text-[#FFD700] font-semibold">Coming to NA • 2026</span>
         </motion.div>
+
+        <AnimatedHeading />
+
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45, duration: 0.35 }}>
+          <TypingEffect text="Think Big, Play Bigger. Premium esports, creator-first." />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.45 }}
+          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <Link href="/club" className="btn btn-primary btn-lg shadow-xl">
+            Join the Club
+          </Link>
+          <Link href="/rosters" className="btn btn-outline btn-lg border-[#FFD700]/50">
+            Meet the Roster
+          </Link>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -302,6 +367,26 @@ export function Hero() {
               </motion.a>
             );
           })}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4"
+        >
+          {HIGHLIGHTS.map((item) => (
+            <div
+              key={item.label}
+              className="glass-panel rounded-2xl px-5 py-4 text-left border border-[#FFD700]/15 shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
+            >
+              <p className="text-xs uppercase tracking-[0.18em] text-white/50">{item.label}</p>
+              <p className="text-2xl font-black mt-2 bg-gradient-to-r from-white via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+                {item.value}
+              </p>
+              <p className="text-sm text-white/70 mt-1 leading-relaxed">{item.detail}</p>
+            </div>
+          ))}
         </motion.div>
       </div>
 
