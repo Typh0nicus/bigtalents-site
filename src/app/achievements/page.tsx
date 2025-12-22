@@ -287,8 +287,8 @@ export default function AchievementsPage() {
           }}
         />
         
-        {/* Subtle grid overlay */}
-        <GridOverlay opacity={0.02} size={28} />
+        {/* BGT Grid overlay - consistent with all other pages */}
+        <GridOverlay />
         
         {/* Gloss blur overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/[0.015] via-transparent to-black/10 pointer-events-none" />
