@@ -85,17 +85,29 @@ export default function AboutClient() {
 
   return (
     <div className="relative">
-      {/* Hero Section with Floating Particles */}
+      {/* Hero Section with Master Background and Floating Particles */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* BGT Background System */}
+        {/* BGT Master Background System */}
         {isMounted && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Master background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50"
+              style={{
+                backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+              }}
+            />
+            
+            {/* Dark overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black/80" />
+            
+            {/* Gold corner glows */}
             <div
               className="absolute inset-0"
               style={{
                 background: `
-                  radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
-                  radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+                  radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.06), transparent 50%),
+                  radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.03), transparent 50%)
                 `,
               }}
             />

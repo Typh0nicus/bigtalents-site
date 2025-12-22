@@ -736,3 +736,67 @@ html, body { overflow-x: hidden; }
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
 }
+
+/* ===== BGT Master Background Image ============================= */
+/* BGT Master Background */
+.bgt-bg-master {
+  background-image: url('/images/background/bgt-master-bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.bgt-bg-master-fixed {
+  background-image: url('/images/background/bgt-master-bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Dark overlay for readability */
+.bgt-overlay {
+  position: relative;
+}
+.bgt-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,10,10,0.3), rgba(10,10,10,0.7));
+  pointer-events: none;
+}
+
+/* Premium card styling */
+.card-premium {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  transition: all 0.3s ease-out;
+}
+.card-premium:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(212,175,55,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(-4px);
+}
+
+/* Gold accent text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFBB00, #D4AF37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Section with dark bg */
+.section-dark {
+  background-color: #0a0a0a;
+}
+
+/* Mobile: disable fixed background */
+@media (max-width: 768px) {
+  .bgt-bg-master-fixed {
+    background-attachment: scroll;
+  }
+}

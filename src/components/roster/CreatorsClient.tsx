@@ -78,14 +78,26 @@ export function CreatorsClient({ creators }: CreatorsClientProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-black text-white antialiased select-none">
-      {/* BGT Background System - gold corner glow */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* BGT Master Background - Hero only */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Master background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
+          style={{
+            backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+          }}
+        />
+        
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black" />
+        
+        {/* Gold corner glow */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
-              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.06), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.03), transparent 50%)
             `,
           }}
         />

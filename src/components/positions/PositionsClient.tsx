@@ -39,20 +39,33 @@ export default function PositionsClient() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-black text-white select-none">
-      {/* BGT Background System */}
+      {/* BGT Background System with Master Image */}
       <motion.div
         className="fixed inset-0 overflow-hidden pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: isMounted ? 1 : 0 }}
         transition={{ duration: 0.8 }}
       >
+        {/* Master background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+          style={{
+            backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 70%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 70%, transparent 100%)',
+          }}
+        />
+        
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/70 to-black" />
+        
         {/* BGT gold corner glow */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.08), transparent 50%),
-              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.04), transparent 50%)
+              radial-gradient(ellipse 800px 600px at 85% 5%, rgba(255,187,0,0.06), transparent 50%),
+              radial-gradient(ellipse 600px 400px at 15% 95%, rgba(212,175,55,0.03), transparent 50%)
             `,
           }}
         />

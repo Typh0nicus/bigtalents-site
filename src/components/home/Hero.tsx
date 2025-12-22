@@ -230,17 +230,30 @@ export function Hero() {
   return (
     <motion.section ref={containerRef} style={{ y, opacity }} className="relative min-h-screen flex items-center justify-center select-none">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Original Hero gradient - multiple gold glows */}
+        {/* BGT Master Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('/images/background/bgt-master-bg.png')`,
+          }}
+        />
+        
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80" />
+        
+        {/* Original Hero gradient - multiple gold glows - lighter now with image */}
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.08), transparent 50%),
-              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.05), transparent 50%),
-              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.03), transparent 50%)
+              radial-gradient(1400px 800px at 15% -10%, rgba(212,175,55,0.05), transparent 50%),
+              radial-gradient(1200px 600px at 85% 10%, rgba(224,184,79,0.03), transparent 50%),
+              radial-gradient(800px 600px at 50% 100%, rgba(212,175,55,0.02), transparent 50%)
             `
           }}
         />
+        
+        {/* Particles on top */}
         <Particles />
         
         {/* BGT Grid overlay */}
