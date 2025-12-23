@@ -23,18 +23,17 @@ type Benefit = {
   icon: React.ComponentType<{ className?: string }>; 
 };
 
-type PricingTier = {
+type AccessTier = {
   period: string;
-  price: string;
   duration: string;
+  note: string;
   popular?: boolean;
-  savings?: string;
 };
 
 /* ======================= Data ======================= */
 const MEMBERS: Member[] = [
   {
-    name: "HMB | Boss",
+    name: "Boss",
     image: "/images/club/boss.jpg",
     blurb: "2024 World Champion",
     youtube: "https://www.youtube.com/@BosS__BS",
@@ -42,9 +41,9 @@ const MEMBERS: Member[] = [
     wiki: "https://liquipedia.net/brawlstars/BosS",
   },
   {
-    name: "TTM | Angelboy",
+    name: "Angelboy",
     image: "/images/club/angelboy.png",
-    blurb: "Top-1 Ranked • Worlds Finalist",
+    blurb: "Multiple Worlds Finalist • #1 Global Ranked",
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
   },
@@ -56,9 +55,9 @@ const MEMBERS: Member[] = [
     youtube: "https://www.youtube.com/@VITALxSHARK",
   },
   {
-    name: "Sniper BS",
+    name: "Sniper",
     image: "/images/club/sniperbs_.jpg",
-    blurb: "Pro Player • 800K Youtube",
+    blurb: "Professional Player • 800K YouTube",
     youtube: "https://www.youtube.com/@Sniperbs_",
     wiki: "https://liquipedia.net/brawlstars/Sniper",
   },
@@ -70,10 +69,23 @@ const BENEFITS: Benefit[] = [
   { icon: FiStar, title: "Private club chat", desc: "Direct access to pros" },
 ];
 
-const PRICING_TIERS: PricingTier[] = [
-  { period: "Daily", price: "3.99", duration: "24 hours" },
-  { period: "Weekly", price: "19.99", duration: "7 days", popular: true, savings: "Save 30%" },
-  { period: "Monthly", price: "69.99", duration: "30 days", savings: "Best Value" },
+const ACCESS_TIERS: AccessTier[] = [
+  {
+    period: "Daily",
+    duration: "24 hours",
+    note: "Perfect for quick sessions and tryouts",
+  },
+  {
+    period: "Weekly",
+    duration: "7 days",
+    note: "Ideal for grinding events and scrims",
+    popular: true,
+  },
+  {
+    period: "Monthly",
+    duration: "30 days",
+    note: "Structured progression with full access",
+  },
 ];
 
 // Deterministic particle positions
@@ -305,7 +317,7 @@ export function ExclusiveClub() {
             })}
           </div>
 
-          {/* Pricing */}
+          {/* Access */}
           <div className="mt-10">
             <div className="mb-4 flex items-center justify-between">
               <motion.div
@@ -328,14 +340,14 @@ export function ExclusiveClub() {
                   href="/club"
                   className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
                 >
-                  View Full Club 
+                  View pricing on Club page
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
                 </Link>
               </motion.div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
-              {PRICING_TIERS.map((tier, idx) => (
+              {ACCESS_TIERS.map((tier, idx) => (
                 <motion.div
                   key={tier.period}
                   initial={{ opacity: 0, y: 20 }}
@@ -343,10 +355,10 @@ export function ExclusiveClub() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.8 + idx * 0.1, duration: 0.4 }}
                   whileHover={{ y: -6 }}
-                  className={`relative rounded-2xl border p-6 text-center transition-all duration-300 cursor-default ${
+                  className={`relative rounded-2xl border p-6 text-center transition-all duration-300 cursor-default backdrop-blur-lg ${
                     tier.popular 
-                      ? "border-[#D4AF37]/50 bg-[#D4AF37]/5 shadow-lg shadow-[#D4AF37]/10" 
-                      : "border-white/15 bg-white/[0.03] hover:border-white/25"
+                      ? "border-[#D4AF37]/50 bg-white/[0.08] shadow-lg shadow-[#D4AF37]/10" 
+                      : "border-white/15 bg-white/[0.05] hover:border-white/25"
                   }`}
                 >
                   {tier.popular && (
@@ -358,18 +370,12 @@ export function ExclusiveClub() {
                   <div className="mb-2 text-sm font-bold text-[#D4AF37] uppercase tracking-wide">
                     {tier.period}
                   </div>
-                  
-                  <div className="mb-1">
-                    <span className="text-4xl font-black text-white">${tier.price}</span>
+
+                  <div className="text-lg font-semibold text-white mb-1">
+                    {tier.duration}
                   </div>
-                  
-                  <div className="text-xs text-white/60 mb-3">{tier.duration}</div>
-                  
-                  {tier.savings && (
-                    <div className="text-xs font-semibold text-green-400 bg-green-500/10 rounded-full px-3 py-1 inline-block">
-                      {tier.savings}
-                    </div>
-                  )}
+
+                  <div className="text-xs text-white/60">{tier.note}</div>
                 </motion.div>
               ))}
             </div>
