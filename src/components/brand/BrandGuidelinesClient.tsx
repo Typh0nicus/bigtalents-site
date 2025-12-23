@@ -16,6 +16,7 @@ import {
 } from "react-icons/fi";
 import { FaDiscord } from "react-icons/fa";
 import { HiOutlineColorSwatch } from "react-icons/hi";
+import { GridOverlay } from "@/components/ui/GridOverlay";
 
 const BRAND_CONTACT_EMAIL = "support@bigtalents.org";
 
@@ -152,6 +153,9 @@ export default function BrandGuidelinesClient() {
 
   return (
     <div className="relative">
+      <div className="pointer-events-none absolute inset-0 opacity-20">
+        <GridOverlay />
+      </div>
       {/* ------------------------------- Hero ------------------------------- */}
       <section className="relative py-16 sm:py-20 md:py-32">
         <div className="absolute inset-0">
@@ -247,7 +251,7 @@ export default function BrandGuidelinesClient() {
             ))}
           </div>
 
-          <div className="hidden sm:grid grid-cols-2 gap-8 lg:gap-10 max-w-4xl mx-auto">
+          <div className="hidden sm:grid grid-cols-2 gap-6 w-fit mx-auto justify-items-center">
             {LOGO_VARIANTS.map((logo, idx) => (
               <motion.div
                 key={logo.name}
@@ -255,9 +259,9 @@ export default function BrandGuidelinesClient() {
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ delay: idx * 0.08, duration: 0.5, ease: EASE }}
-                className="card p-6 text-center"
+                className="card p-6 text-center w-[270px] sm:w-[300px]"
               >
-                <div className="aspect-square bg-white/5 rounded-2xl mb-5 flex items-center justify-center p-6">
+                <div className="aspect-square bg-white/5 rounded-xl mb-4 flex items-center justify-center p-6">
                   <Image
                     src={`/images/logo/${logo.file}`}
                     alt={logo.name}
@@ -298,7 +302,7 @@ export default function BrandGuidelinesClient() {
               onClick={handleDownloadPack}
               disabled={isPacking}
               className={cn(
-                "btn btn-primary rounded-2xl px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg inline-flex items-center justify-center select-none w-full max-w-xs sm:max-w-none",
+                "btn btn-primary rounded-2xl px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg inline-flex items-center justify-center select-none w-full max-w-xs sm:w-auto",
                 isPacking && "opacity-70 cursor-not-allowed"
               )}
             >

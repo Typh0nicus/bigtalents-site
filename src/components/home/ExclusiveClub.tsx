@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW } from "react-icons/fa";
+import { FaYoutube, FaTwitch, FaWikipediaW } from "react-icons/fa";
 import { FiArrowRight, FiStar, FiUsers, FiZap } from "react-icons/fi";
 import { useState } from "react";
 
@@ -302,43 +302,7 @@ export function ExclusiveClub() {
             })}
           </div>
 
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.1 }}
-            className="mt-8 flex flex-col sm:flex-row gap-4"
-          >
-            <motion.a
-              href="https://discord.gg/bgt?utm_source=site&utm_medium=exclusive_club&utm_campaign=apply"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="relative btn btn-primary rounded-2xl px-10 py-5 text-lg shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 inline-flex items-center justify-center gap-2.5 overflow-hidden group"
-            >
-              {/* Shine effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-              
-              <FaDiscord className="relative z-10 group-hover:scale-110 transition-transform duration-200" size={20} />
-              <span className="relative z-10 font-bold">Apply on Discord</span>
-            </motion.a>
-
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                href="/contact"
-                className="btn btn-outline rounded-2xl px-10 py-5 text-lg hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300 font-semibold"
-              >
-                Business / Media
-              </Link>
-            </motion.div>
-          </motion.div>
+          <div className="mt-6" />
         </motion.div>
 
         {/* Members Section */}
