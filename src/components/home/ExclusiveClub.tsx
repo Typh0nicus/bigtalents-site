@@ -23,12 +23,6 @@ type Benefit = {
   icon: React.ComponentType<{ className?: string }>; 
 };
 
-type AccessTier = {
-  period: string;
-  duration: string;
-  note: string;
-  popular?: boolean;
-};
 
 /* ======================= Data ======================= */
 const MEMBERS: Member[] = [
@@ -67,25 +61,6 @@ const BENEFITS: Benefit[] = [
   { icon: FiZap, title: "Pro insights", desc: "Learn from world champions" },
   { icon: FiUsers, title: "Real-time games", desc: "Play alongside the elite" },
   { icon: FiStar, title: "Private club chat", desc: "Direct access to pros" },
-];
-
-const ACCESS_TIERS: AccessTier[] = [
-  {
-    period: "Daily",
-    duration: "24 hours",
-    note: "Perfect for quick sessions and tryouts",
-  },
-  {
-    period: "Weekly",
-    duration: "7 days",
-    note: "Ideal for grinding events and scrims",
-    popular: true,
-  },
-  {
-    period: "Monthly",
-    duration: "30 days",
-    note: "Structured progression with full access",
-  },
 ];
 
 // Deterministic particle positions
@@ -317,68 +292,33 @@ export function ExclusiveClub() {
             })}
           </div>
 
-          {/* Access */}
-          <div className="mt-10">
-            <div className="mb-4 flex items-center justify-between">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
+          <div className="mt-10 flex items-center justify-between">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.7 }}
+            >
+              <h3 className="text-xl font-black text-white mb-1">
+                Membership Options
+              </h3>
+              <p className="text-sm text-white/60">Choose your access level</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.7 }}
+            >
+              <Link
+                href="/club"
+                className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
               >
-                <h3 className="text-xl font-black text-white mb-1">Membership Options</h3>
-                <p className="text-sm text-white/60">Choose your access level</p>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-              >
-                <Link
-                  href="/club"
-                  className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
-                >
-                  View pricing on Club page
-                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
-                </Link>
-              </motion.div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              {ACCESS_TIERS.map((tier, idx) => (
-                <motion.div
-                  key={tier.period}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 + idx * 0.1, duration: 0.4 }}
-                  whileHover={{ y: -6 }}
-                  className={`relative rounded-2xl border p-6 text-center transition-all duration-300 cursor-default backdrop-blur-lg ${
-                    tier.popular 
-                      ? "border-[#D4AF37]/50 bg-white/[0.08] shadow-lg shadow-[#D4AF37]/10" 
-                      : "border-white/15 bg-white/[0.05] hover:border-white/25"
-                  }`}
-                >
-                  {tier.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] px-3 py-1 text-[10px] font-black text-black shadow-lg uppercase tracking-wide">
-                      Popular
-                    </div>
-                  )}
-                  
-                  <div className="mb-2 text-sm font-bold text-[#D4AF37] uppercase tracking-wide">
-                    {tier.period}
-                  </div>
-
-                  <div className="text-lg font-semibold text-white mb-1">
-                    {tier.duration}
-                  </div>
-
-                  <div className="text-xs text-white/60">{tier.note}</div>
-                </motion.div>
-              ))}
-            </div>
+                View Full Club
+                <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* CTAs */}
@@ -421,7 +361,7 @@ export function ExclusiveClub() {
         </motion.div>
 
         {/* Members Section */}
-        <div className="mt-20">
+        <div className="mt-14">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

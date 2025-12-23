@@ -282,7 +282,7 @@ function PositionCard({ role }: { role: StaffRoleConfig; index: number }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-xl hover:border-[#D4AF37]/30 transition-all duration-500 overflow-hidden"
+      className="group relative rounded-2xl border border-white/12 bg-white/[0.04] backdrop-blur-lg hover:border-[#D4AF37]/30 transition-all duration-500 overflow-hidden"
     >
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
