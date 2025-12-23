@@ -236,19 +236,29 @@ export function ExclusiveClub() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-4xl"
         >
-          {/* Title with FIXED badge */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
-              BGT Elite Club
-            </h2>
-            
-            {/* FIXED: Subtle badge */}
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 backdrop-blur-sm">
-              <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black text-black uppercase">
-                Limited
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
+                BGT Elite Club
+              </h2>
+
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 backdrop-blur-sm">
+                <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black text-black uppercase">
+                  Limited
+                </span>
+                <span className="text-xs font-semibold text-white whitespace-nowrap">
+                  Only 3 fans at a time
+                </span>
               </span>
-              <span className="text-xs font-semibold text-white whitespace-nowrap">Only 3 fans at a time</span>
-            </span>
+            </div>
+
+            <Link
+              href="/club"
+              className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
+            >
+              View Full Club
+              <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
+            </Link>
           </div>
 
           <motion.p
@@ -361,7 +371,7 @@ export function ExclusiveClub() {
         </motion.div>
 
         {/* Members Section */}
-        <div className="mt-14">
+        <div className="mt-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

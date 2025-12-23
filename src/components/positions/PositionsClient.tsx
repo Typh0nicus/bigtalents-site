@@ -286,14 +286,18 @@ function PositionCard({ role }: { role: StaffRoleConfig; index: number }) {
     >
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/0 via-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-        animate={isHovered ? { scale: [1, 1.05, 1] } : {}}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={isHovered ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+        transition={{ duration: 2, repeat: isHovered ? Infinity : 0 }}
       />
 
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full"
-        animate={isHovered ? { x: ["100%", "200%"] } : {}}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        animate={isHovered ? { x: ["-120%", "120%"] } : { x: "-120%" }}
+        transition={{
+          duration: isHovered ? 1.1 : 0.3,
+          ease: "easeInOut",
+          repeat: isHovered ? Infinity : 0,
+        }}
       />
 
       <div className="relative p-6 sm:p-7 flex flex-col h-full">
