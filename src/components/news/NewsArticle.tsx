@@ -142,7 +142,7 @@ export default function NewsArticle({
       : NEWS.filter((n) => n.slug !== article.slug).slice(0, 3);
 
   return (
-    <div className="relative min-h-screen py-24 overflow-x-hidden">
+    <div className="relative min-h-screen py-24 overflow-x-hidden select-none">
       {/* Background: black with subtle gold glows, no blue */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div

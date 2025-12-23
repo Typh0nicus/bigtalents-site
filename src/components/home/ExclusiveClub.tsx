@@ -29,7 +29,7 @@ const MEMBERS: Member[] = [
   {
     name: "Boss",
     image: "/images/club/boss.jpg",
-    blurb: "2024 World Champion",
+    blurb: "2024 BSC World Champion • 2025 World Runner-Up",
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
     wiki: "https://liquipedia.net/brawlstars/BosS",
@@ -302,42 +302,13 @@ export function ExclusiveClub() {
             })}
           </div>
 
-          <div className="mt-10 flex items-center justify-between">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.7 }}
-            >
-              <h3 className="text-xl font-black text-white mb-1">
-                Membership Options
-              </h3>
-              <p className="text-sm text-white/60">Choose your access level</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.7 }}
-            >
-              <Link
-                href="/club"
-                className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
-              >
-                View Full Club
-                <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
-            </motion.div>
-          </div>
-
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 1.1 }}
-            className="mt-10 flex flex-col sm:flex-row gap-4"
+            className="mt-8 flex flex-col sm:flex-row gap-4"
           >
             <motion.a
               href="https://discord.gg/bgt?utm_source=site&utm_medium=exclusive_club&utm_campaign=apply"
@@ -371,7 +342,7 @@ export function ExclusiveClub() {
         </motion.div>
 
         {/* Members Section */}
-        <div className="mt-10">
+        <div className="mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

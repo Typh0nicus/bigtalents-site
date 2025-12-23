@@ -169,9 +169,9 @@ export default function BrandGuidelinesClient() {
 
         <div className="container relative z-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: EASE }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: EASE }}
             className="max-w-4xl mx-auto text-center"
           >
             <h1 className="h1 mb-6 select-none">
@@ -197,9 +197,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-24">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             className="text-center mb-12"
           >
             <h2 className="h2 mb-4 select-none">
@@ -212,17 +212,52 @@ export default function BrandGuidelinesClient() {
           </motion.div>
 
           {/* Centered, compact grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-3xl mx-auto justify-items-center">
+          <div className="sm:hidden grid grid-cols-2 gap-3">
             {LOGO_VARIANTS.map((logo, idx) => (
               <motion.div
                 key={logo.name}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ delay: idx * 0.08, duration: 0.55, ease: EASE }}
-                className="card p-5 sm:p-6 text-center w-full max-w-sm sm:max-w-none sm:w-[300px]"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ delay: idx * 0.08, duration: 0.4, ease: EASE }}
+                className="card p-4 text-center"
               >
-                <div className="aspect-square bg-white/5 rounded-xl mb-4 flex items-center justify-center p-6">
+                <div className="aspect-square bg-white/5 rounded-xl mb-3 flex items-center justify-center p-3">
+                  <Image
+                    src={`/images/logo/${logo.file}`}
+                    alt={logo.name}
+                    width={140}
+                    height={140}
+                    className="object-contain w-auto h-auto max-w-[90px] max-h-[90px]"
+                    priority={idx === 0}
+                  />
+                </div>
+                <h3 className="text-sm font-semibold mb-1 select-none">
+                  {logo.name}
+                </h3>
+                <a
+                  href={`/images/logo/${logo.file}`}
+                  download
+                  className="mt-3 btn btn-outline rounded-lg py-2 text-xs inline-flex items-center justify-center w-full"
+                >
+                  <FiDownload className="mr-2" />
+                  Download PNG
+                </a>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="hidden sm:grid grid-cols-2 gap-8 lg:gap-10 max-w-4xl mx-auto">
+            {LOGO_VARIANTS.map((logo, idx) => (
+              <motion.div
+                key={logo.name}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ delay: idx * 0.08, duration: 0.5, ease: EASE }}
+                className="card p-6 text-center"
+              >
+                <div className="aspect-square bg-white/5 rounded-2xl mb-5 flex items-center justify-center p-6">
                   <Image
                     src={`/images/logo/${logo.file}`}
                     alt={logo.name}
@@ -238,7 +273,6 @@ export default function BrandGuidelinesClient() {
                   {logo.description}
                 </p>
 
-                {/* Real download link (works if file exists in /public) */}
                 <a
                   href={`/images/logo/${logo.file}`}
                   download
@@ -253,18 +287,18 @@ export default function BrandGuidelinesClient() {
 
           {/* Pack download (client-generated ZIP) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
             transition={{ delay: 0.2 }}
-            className="text-center mt-8 sm:mt-10"
+            className="text-center mt-6 sm:mt-10"
           >
             <button
               type="button"
               onClick={handleDownloadPack}
               disabled={isPacking}
               className={cn(
-                "btn btn-primary rounded-2xl px-8 py-4 text-lg inline-flex items-center justify-center select-none",
+                "btn btn-primary rounded-2xl px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg inline-flex items-center justify-center select-none w-full max-w-xs sm:max-w-none",
                 isPacking && "opacity-70 cursor-not-allowed"
               )}
             >
@@ -289,9 +323,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-20 bg-white/[0.02]">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.5, ease: EASE }}
             className="text-center mb-10"
           >
@@ -308,9 +342,9 @@ export default function BrandGuidelinesClient() {
             {LOGO_RULES.map((rule, i) => (
               <motion.div
                 key={rule.title}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.4 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{ delay: i * 0.08, duration: 0.5, ease: EASE }}
                 className="card p-5 sm:p-6"
               >
@@ -329,9 +363,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-24">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             className="text-center mb-12"
           >
             <div className="inline-flex items-center gap-2 mb-4 select-none">
@@ -349,9 +383,9 @@ export default function BrandGuidelinesClient() {
             {BRAND_COLORS.map((color, idx) => (
               <motion.div
                 key={color.name}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.4 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{ delay: idx * 0.06, duration: 0.5, ease: EASE }}
                 className="text-center group"
               >
@@ -386,9 +420,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-24 bg-white/[0.02]">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             className="text-center mb-12"
           >
             <div className="inline-flex items-center gap-2 mb-4 select-none">
@@ -403,9 +437,9 @@ export default function BrandGuidelinesClient() {
 
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
               className="card p-6 sm:p-8"
             >
               <h3 className="text-xl font-bold mb-6 select-none">Primary Font</h3>
@@ -436,9 +470,9 @@ export default function BrandGuidelinesClient() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
               className="card p-6 sm:p-8"
             >
               <h3 className="text-xl font-bold mb-6 select-none">Usage Guidelines</h3>
@@ -469,9 +503,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-24">
         <div className="container">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             className="text-center mb-12"
           >
             <h2 className="h2 mb-4 select-none">Brand Integrity</h2>
@@ -482,9 +516,9 @@ export default function BrandGuidelinesClient() {
 
           <div className="grid gap-8 lg:grid-cols-2">
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
               className="card p-6 sm:p-8"
             >
               <div className="flex items-center gap-2 mb-6 select-none">
@@ -502,9 +536,9 @@ export default function BrandGuidelinesClient() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
               transition={{ delay: 0.08 }}
               className="card p-6 sm:p-8"
             >
@@ -529,9 +563,9 @@ export default function BrandGuidelinesClient() {
       <section className="py-14 md:py-24 bg-white/[0.02]">
         <div className="container text-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.4 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             className="max-w-2xl mx-auto"
           >
             <h2 className="text-3xl font-bold mb-4 select-none">Need Help?</h2>
