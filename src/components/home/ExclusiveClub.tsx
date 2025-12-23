@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FaDiscord, FaYoutube, FaTwitch, FaWikipediaW } from "react-icons/fa";
+import { FaYoutube, FaTwitch, FaWikipediaW } from "react-icons/fa";
 import { FiArrowRight, FiStar, FiUsers, FiZap } from "react-icons/fi";
 import { useState } from "react";
 
@@ -23,28 +23,21 @@ type Benefit = {
   icon: React.ComponentType<{ className?: string }>; 
 };
 
-type PricingTier = {
-  period: string;
-  price: string;
-  duration: string;
-  popular?: boolean;
-  savings?: string;
-};
 
 /* ======================= Data ======================= */
 const MEMBERS: Member[] = [
   {
-    name: "HMB | Boss",
+    name: "Boss",
     image: "/images/club/boss.jpg",
-    blurb: "2024 World Champion",
+    blurb: "2024 BSC World Champion • 2025 World Runner-Up",
     youtube: "https://www.youtube.com/@BosS__BS",
     twitch: "https://www.twitch.tv/boss__bs",
     wiki: "https://liquipedia.net/brawlstars/BosS",
   },
   {
-    name: "TTM | Angelboy",
+    name: "Angelboy",
     image: "/images/club/angelboy.png",
-    blurb: "Top-1 Ranked • Worlds Finalist",
+    blurb: "Multiple Worlds Finalist • #1 Global Ranked",
     youtube: "https://www.youtube.com/@angelboybs",
     wiki: "https://liquipedia.net/brawlstars/Angelboy",
   },
@@ -56,9 +49,9 @@ const MEMBERS: Member[] = [
     youtube: "https://www.youtube.com/@VITALxSHARK",
   },
   {
-    name: "Sniper BS",
+    name: "Sniper",
     image: "/images/club/sniperbs_.jpg",
-    blurb: "Pro Player • 800K Youtube",
+    blurb: "Professional Player • 800K YouTube",
     youtube: "https://www.youtube.com/@Sniperbs_",
     wiki: "https://liquipedia.net/brawlstars/Sniper",
   },
@@ -68,12 +61,6 @@ const BENEFITS: Benefit[] = [
   { icon: FiZap, title: "Pro insights", desc: "Learn from world champions" },
   { icon: FiUsers, title: "Real-time games", desc: "Play alongside the elite" },
   { icon: FiStar, title: "Private club chat", desc: "Direct access to pros" },
-];
-
-const PRICING_TIERS: PricingTier[] = [
-  { period: "Daily", price: "3.99", duration: "24 hours" },
-  { period: "Weekly", price: "19.99", duration: "7 days", popular: true, savings: "Save 30%" },
-  { period: "Monthly", price: "69.99", duration: "30 days", savings: "Best Value" },
 ];
 
 // Deterministic particle positions
@@ -249,19 +236,29 @@ export function ExclusiveClub() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-4xl"
         >
-          {/* Title with FIXED badge */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
-              BGT Elite Club
-            </h2>
-            
-            {/* FIXED: Subtle badge */}
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 backdrop-blur-sm">
-              <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black text-black uppercase">
-                Limited
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-[#D4AF37] to-white bg-clip-text text-transparent">
+                BGT Elite Club
+              </h2>
+
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1.5 backdrop-blur-sm">
+                <span className="rounded-full bg-[#D4AF37] px-2 py-0.5 text-[10px] font-black text-black uppercase">
+                  Limited
+                </span>
+                <span className="text-xs font-semibold text-white whitespace-nowrap">
+                  Only 3 fans at a time
+                </span>
               </span>
-              <span className="text-xs font-semibold text-white whitespace-nowrap">Only 3 fans at a time</span>
-            </span>
+            </div>
+
+            <Link
+              href="/club"
+              className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
+            >
+              View Full Club
+              <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
+            </Link>
           </div>
 
           <motion.p
@@ -305,117 +302,11 @@ export function ExclusiveClub() {
             })}
           </div>
 
-          {/* Pricing */}
-          <div className="mt-10">
-            <div className="mb-4 flex items-center justify-between">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-              >
-                <h3 className="text-xl font-black text-white mb-1">Membership Options</h3>
-                <p className="text-sm text-white/60">Choose your access level</p>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7 }}
-              >
-                <Link
-                  href="/club"
-                  className="text-sm font-semibold text-[#D4AF37] hover:text-[#FFD700] inline-flex items-center gap-1.5 transition-colors duration-200 group"
-                >
-                  View Full Club 
-                  <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-200" />
-                </Link>
-              </motion.div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              {PRICING_TIERS.map((tier, idx) => (
-                <motion.div
-                  key={tier.period}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 + idx * 0.1, duration: 0.4 }}
-                  whileHover={{ y: -6 }}
-                  className={`relative rounded-2xl border p-6 text-center transition-all duration-300 cursor-default ${
-                    tier.popular 
-                      ? "border-[#D4AF37]/50 bg-[#D4AF37]/5 shadow-lg shadow-[#D4AF37]/10" 
-                      : "border-white/15 bg-white/[0.03] hover:border-white/25"
-                  }`}
-                >
-                  {tier.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] px-3 py-1 text-[10px] font-black text-black shadow-lg uppercase tracking-wide">
-                      Popular
-                    </div>
-                  )}
-                  
-                  <div className="mb-2 text-sm font-bold text-[#D4AF37] uppercase tracking-wide">
-                    {tier.period}
-                  </div>
-                  
-                  <div className="mb-1">
-                    <span className="text-4xl font-black text-white">${tier.price}</span>
-                  </div>
-                  
-                  <div className="text-xs text-white/60 mb-3">{tier.duration}</div>
-                  
-                  {tier.savings && (
-                    <div className="text-xs font-semibold text-green-400 bg-green-500/10 rounded-full px-3 py-1 inline-block">
-                      {tier.savings}
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.1 }}
-            className="mt-10 flex flex-col sm:flex-row gap-4"
-          >
-            <motion.a
-              href="https://discord.gg/bgt?utm_source=site&utm_medium=exclusive_club&utm_campaign=apply"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="relative btn btn-primary rounded-2xl px-10 py-5 text-lg shadow-2xl hover:shadow-[#D4AF37]/40 transition-all duration-300 inline-flex items-center justify-center gap-2.5 overflow-hidden group"
-            >
-              {/* Shine effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.6 }}
-              />
-              
-              <FaDiscord className="relative z-10 group-hover:scale-110 transition-transform duration-200" size={20} />
-              <span className="relative z-10 font-bold">Apply on Discord</span>
-            </motion.a>
-
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                href="/contact"
-                className="btn btn-outline rounded-2xl px-10 py-5 text-lg hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-300 font-semibold"
-              >
-                Business / Media
-              </Link>
-            </motion.div>
-          </motion.div>
+          <div className="mt-6" />
         </motion.div>
 
         {/* Members Section */}
-        <div className="mt-20">
+        <div className="mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -70,7 +70,7 @@ export default function NewsClient() {
   }, [query, selectedCategory]);
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen select-none">
       {/* BGT Background System */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
@@ -117,7 +117,7 @@ export default function NewsClient() {
               placeholder="Search articles..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-10 pr-10 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors"
+              className="pl-10 pr-10 py-3 w-full sm:w-64 rounded-xl border border-white/15 bg-white/5 text-sm outline-none focus:border-[color:var(--gold)] transition-colors select-text"
             />
             {query && (
               <button
