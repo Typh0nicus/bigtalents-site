@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import type { Creator } from "@/lib/featuredAlgorithm";
+import type { CreatorEngagementWindow } from "@/types/creatorEngagement";
 import { CreatorCard } from "@/components/roster/CreatorCard";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
@@ -23,6 +24,7 @@ function formatCompact(n: number): string {
 
 type CreatorWithViews = Creator & {
   totalViews?: number;
+  engagement30d?: CreatorEngagementWindow;
 };
 
 interface CreatorsClientProps {

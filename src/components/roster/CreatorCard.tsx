@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Creator } from "@/lib/featuredAlgorithm";
+import type { CreatorEngagementWindow } from "@/types/creatorEngagement";
 import { FaYoutube, FaTwitch, FaInstagram, FaTwitter } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 
@@ -83,7 +84,7 @@ function SocialIcon(props: { platform: PlatformKey; size?: string }) {
 }
 
 interface CreatorCardProps {
-  creator: Creator;
+  creator: Creator & { engagement30d?: CreatorEngagementWindow };
   index?: number;
 }
 
@@ -215,6 +216,11 @@ export function CreatorCard({ creator, index = 0 }: CreatorCardProps) {
                   {formatFans(totalFans)} followers
                 </p>
               )}
+              {creator.engagement30d?.totalInteractions ? (
+                <p className="text-[10px] sm:text-xs text-white/60 font-medium">
+                  30d interactions {formatFans(creator.engagement30d.totalInteractions)}
+                </p>
+              ) : null}
             </div>
           </div>
 

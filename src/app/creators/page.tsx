@@ -1,14 +1,26 @@
 import { CREATORS } from "@/data/creators";
 import type { Creator } from "@/lib/featuredAlgorithm";
-import { fetchYouTubeChannelStats } from "@/lib/youtube";
-import { fetchTwitchUser } from "@/lib/twitch";
+import type { CreatorEngagementWindow } from "@/types/creatorEngagement";
+import { fetchYouTubeChannelStats, fetchYouTubeVideos } from "@/lib/youtube";
+import { fetchTwitchUser, fetchTwitchVODs } from "@/lib/twitch";
 import { fetchTikTokUser, fetchAllTikTokVideos } from "@/lib/tiktok";
 import { CreatorsClient } from "@/components/roster/CreatorsClient";
 
 // Extend Creator with a totalViews field for this page
 export type CreatorWithViews = Creator & {
   totalViews?: number;
+  engagement30d?: CreatorEngagementWindow;
 };
+
+const ENGAGEMENT_WINDOW_DAYS = 30;
+
+function isWithinWindow(publishedAt: string, windowDays: number): boolean {
+  const timestamp = new Date(publishedAt).getTime();
+  if (!Number.isFinite(timestamp)) return false;
+  const cutoff =
+    Date.now() - windowDays * 24 * 60 * 60 * 1000;
+  return timestamp >= cutoff;
+}
 
 // Safe helper to extract a view count from any stats object
 function extractViewCount(stats: unknown): number {
@@ -43,7 +55,14 @@ function mergeFollowers(
 }
 
 async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
-  const [ytStats, twitchStats, tiktokStats, tiktokVideos] = await Promise.all([
+  const [
+    ytStats,
+    twitchStats,
+    tiktokStats,
+    tiktokVideos,
+    youtubeVideos,
+    twitchVods,
+  ] = await Promise.all([
     creator.platforms.youtube?.channelId
       ? fetchYouTubeChannelStats(creator.platforms.youtube.channelId)
       : Promise.resolve(null),
@@ -55,6 +74,12 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
       : Promise.resolve(null),
     creator.platforms.tiktok?.username
       ? fetchAllTikTokVideos(creator.platforms.tiktok.username)
+      : Promise.resolve([]),
+    creator.platforms.youtube?.channelId
+      ? fetchYouTubeVideos(creator.platforms.youtube.channelId, 20)
+      : Promise.resolve([]),
+    creator.platforms.twitch?.userId
+      ? fetchTwitchVODs(creator.platforms.twitch.userId, 20)
       : Promise.resolve([]),
   ]);
 
@@ -91,6 +116,53 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
 
   const totalViews = youtubeViews + twitchViews + tiktokViews;
 
+  const youtubeEngagement = youtubeVideos
+    .filter((video) =>
+      isWithinWindow(video.publishedAt, ENGAGEMENT_WINDOW_DAYS)
+    )
+    .reduce(
+      (totals, video) => {
+        totals.likes += video.likeCount ?? 0;
+        totals.comments += video.commentCount ?? 0;
+        totals.views += video.viewCount ?? 0;
+        return totals;
+      },
+      { likes: 0, comments: 0, views: 0 }
+    );
+
+  const tiktokEngagement = tiktokVideos
+    .filter((video) =>
+      isWithinWindow(video.publishedAt, ENGAGEMENT_WINDOW_DAYS)
+    )
+    .reduce(
+      (totals, video) => {
+        totals.likes += video.likeCount ?? 0;
+        totals.comments += video.commentCount ?? 0;
+        totals.shares += video.shareCount ?? 0;
+        totals.views += video.viewCount ?? 0;
+        return totals;
+      },
+      { likes: 0, comments: 0, shares: 0, views: 0 }
+    );
+
+  const twitchViews30d = twitchVods
+    .filter((vod) => isWithinWindow(vod.publishedAt, ENGAGEMENT_WINDOW_DAYS))
+    .reduce((sum, vod) => sum + (vod.viewCount ?? 0), 0);
+
+  const engagement30d: CreatorEngagementWindow = {
+    windowDays: ENGAGEMENT_WINDOW_DAYS,
+    likes: youtubeEngagement.likes + tiktokEngagement.likes,
+    comments: youtubeEngagement.comments + tiktokEngagement.comments,
+    shares: tiktokEngagement.shares,
+    views: youtubeEngagement.views + tiktokEngagement.views + twitchViews30d,
+    totalInteractions:
+      youtubeEngagement.likes +
+      youtubeEngagement.comments +
+      tiktokEngagement.likes +
+      tiktokEngagement.comments +
+      tiktokEngagement.shares,
+  };
+
   console.log(
     "Computed stats for",
     creator.id,
@@ -109,6 +181,8 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
     twitchViews,
     "TT views:",
     tiktokViews,
+    "30d interactions:",
+    engagement30d.totalInteractions,
     "(from", Array.isArray(tiktokVideos) ? tiktokVideos.length : 0, "total videos)",
     "TOTAL views:",
     totalViews
@@ -140,6 +214,7 @@ async function enrichCreator(creator: Creator): Promise<CreatorWithViews> {
         },
     },
     totalViews,
+    engagement30d,
   };
 }
 
