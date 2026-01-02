@@ -27,6 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/club", label: "Club", special: true },
   { href: "/", label: "Home" },
   { href: "/news", label: "News" },
+  { href: "/apparel", label: "Apparel" },
   { 
     href: "/rosters", 
     label: "Rosters",
@@ -137,6 +138,7 @@ const LEFT_NAV_ITEMS: NavItem[] = [
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
   { href: "/achievements", label: "Achievements" },
+  { href: "/apparel", label: "Apparel" },
   { 
     href: "/rosters", 
     label: "Rosters",
