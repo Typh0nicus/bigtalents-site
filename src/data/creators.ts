@@ -21,7 +21,7 @@ export const CREATORS: Creator[] = [
       },
       x: {
         handle: 'radan_bs',
-        followers: 296,
+        followers: 306,
         url: 'https://x.com/radan_bs',
       },
     },
@@ -31,7 +31,7 @@ export const CREATORS: Creator[] = [
     name: 'Ivanoz7',
     tier: 'academy',
     region: 'EU',
-    avatar: '/images/creators/ivanoz7.webp',
+    avatar: '/images/creators/ivanoz7.jpg',
     banner: '/images/creators/ivanoz7-banner.jpg',
     platforms: {
       youtube: {
@@ -52,7 +52,7 @@ export const CREATORS: Creator[] = [
       },
       x: {
         handle: 'Ivanoz7_',
-        followers: 1043, 
+        followers: 1235, 
         url: 'https://x.com/Ivanoz7_',
       },
     },
@@ -63,7 +63,7 @@ export const CREATORS: Creator[] = [
   tier: "elite",
   region: "NA",
   avatar: "/images/creators/superlab.jpg",
-  banner: "/images/creators/superlab-banner.jpg",
+  banner: "/images/creators/superlab-banner.png",
   platforms: {
     youtube: {
       channelId: "UC0VXAuazhUHrPL7lzwp0SBw",
@@ -105,8 +105,28 @@ export const CREATORS: Creator[] = [
       },
       x: {
         handle: 'Ruffy',
-        followers: 205,
+        followers: 206,
         url: 'https://x.com/Ruffy_Bs',
+      },
+    },
+  },
+    {
+    id: 'rockit',
+    name: 'Rockit',
+    tier: 'elite',
+    region: 'EU',
+    avatar: '/images/creators/rockit.jpg',
+    banner: '/images/creators/rockit-banner.jpg',
+    platforms: {
+      youtube: {
+        channelId: 'UCJrlJzqJ2Ek3mJFMHyAvBnw',
+        subscribers: 0,
+        url: 'https://youtube.com/@rockitbs',
+      },
+      x: {
+        handle: 'Rockit',
+        followers: 5100,
+        url: 'https://x.com/rockit_bs',
       },
     },
   },
