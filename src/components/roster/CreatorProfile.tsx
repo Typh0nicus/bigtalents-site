@@ -194,7 +194,7 @@ export default function CreatorProfile({
     platforms.find(([key]) => key === "tiktok")?.[0] ??
     platforms[0]?.[0];
 
-  const regionCode = creator.region || null;
+  const regionCode = creator.language || null;
   const creatorWithDiscord = creator as CreatorWithDiscord;
 
   // ✅ Keep the banner stage tight on phones. The card is the hero on mobile.
