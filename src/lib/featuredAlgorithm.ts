@@ -90,6 +90,7 @@ export interface Creator {
   name: string;
   tier: CreatorTier;
   region?: "NA" | "EU" | "EA" | "LATAM" | "APAC" | string;
+  language?: "English" | "Spanish" | string;
   country?: string;
   countryCode?: string;
   bio?: string;

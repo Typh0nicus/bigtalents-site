@@ -6,6 +6,7 @@ export const CREATORS: Creator[] = [
     name: 'Radan',
     tier: 'partnered',
     region: 'EU',
+    language: 'English',
     avatar: '/images/creators/radanbs.jpg',
     banner: '/images/creators/radanbs-banner.jpg',
     platforms: {
@@ -31,6 +32,7 @@ export const CREATORS: Creator[] = [
     name: 'Ivanoz7',
     tier: 'academy',
     region: 'EU',
+    language: 'Spanish',
     avatar: '/images/creators/ivanoz7.jpg',
     banner: '/images/creators/ivanoz7-banner.jpg',
     platforms: {
@@ -62,6 +64,7 @@ export const CREATORS: Creator[] = [
   name: "Superlab",
   tier: "elite",
   region: "NA",
+  language: "English",
   avatar: "/images/creators/superlab.jpg",
   banner: "/images/creators/superlab-banner.png",
   platforms: {
@@ -90,6 +93,7 @@ export const CREATORS: Creator[] = [
     name: 'Ruffy',
     tier: 'elite',
     region: 'EU',
+    language: 'English',
     avatar: '/images/creators/ruffybs.jpg',
     banner: '/images/creators/ruffybs-banner.jpg',
     platforms: {
@@ -115,6 +119,7 @@ export const CREATORS: Creator[] = [
     name: 'Rockit',
     tier: 'elite',
     region: 'EU',
+    language: 'Spanish',
     avatar: '/images/creators/rockit.jpg',
     banner: '/images/creators/rockit-banner.jpg',
     platforms: {
