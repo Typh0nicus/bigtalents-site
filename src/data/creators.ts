@@ -120,7 +120,7 @@ export const CREATORS: Creator[] = [
     tier: 'elite',
     region: 'EU',
     language: 'Spanish',
-    avatar: '/images/creators/rockit.jpg',
+    avatar: '/images/creators/rockit.png',
     banner: '/images/creators/rockit-banner.jpg',
     platforms: {
       youtube: {
@@ -128,6 +128,16 @@ export const CREATORS: Creator[] = [
         subscribers: 0,
         url: 'https://youtube.com/@rockitbs',
       },
+      tiktok: {
+        username: 'rockitbs',
+        followers: 0,
+        url: 'https://www.tiktok.com/@rockitbs',
+      },
+    instagram: {
+      handle: "Rockit",
+      followers: 1980,
+      url: "https://instagram.com/rockitbs",
+    },
       x: {
         handle: 'Rockit',
         followers: 5100,
