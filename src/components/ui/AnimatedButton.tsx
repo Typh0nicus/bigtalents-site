@@ -40,10 +40,10 @@ const baseClasses =
 
 const variants: Record<NonNullable<BaseButtonProps["variant"]>, string> = {
   primary:
-    "bg-[var(--gold)] text-black hover:bg-[var(--gold-light)] focus:ring-[var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed",
+    "bg-gradient-to-r from-[var(--gold-primary)] to-[var(--gold-light)] text-black hover:shadow-glow-gold-md focus:ring-[var(--gold)]/50 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden",
   outline:
-    "border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 focus:ring-white/50 disabled:opacity-50",
-  ghost: "text-white hover:bg-white/10 focus:ring-white/50 disabled:opacity-50",
+    "border-2 border-[var(--border-gold)] text-[var(--gold-vibrant)] hover:bg-[var(--gold-primary)]/10 hover:border-[var(--border-gold-glow)] hover:shadow-glow-gold-sm focus:ring-[var(--gold)]/50 disabled:opacity-50 backdrop-blur-sm",
+  ghost: "text-white border border-white/10 hover:bg-white/5 hover:border-[var(--border-gold)]/30 hover:text-[var(--gold-vibrant)] focus:ring-white/50 disabled:opacity-50 backdrop-blur-sm",
   danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50 disabled:opacity-50",
 };
 

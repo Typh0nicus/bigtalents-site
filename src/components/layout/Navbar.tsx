@@ -716,7 +716,7 @@ export function Navbar() {
         }}
         className={`fixed top-0 left-0 right-0 z-[9997] border-b transition-all duration-300 ${
           isScrolled 
-            ? 'bg-black/70 backdrop-blur-2xl backdrop-saturate-150 border-white/10 shadow-2xl shadow-black/50' 
+            ? 'glass-surface-strong border-[var(--border-gold)]/20 shadow-dramatic' 
             : 'bg-transparent border-transparent'
         }`}
         style={{ overflow: 'visible' }}

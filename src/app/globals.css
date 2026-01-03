@@ -77,6 +77,9 @@ input, textarea, select, button {
   /* BGT Background System */
   --bg-dark: #0a0a0a;
   --bg-card: rgba(255,255,255,0.03);
+  --bg-surface-1: rgba(255,255,255,0.02);
+  --bg-surface-2: rgba(255,255,255,0.04);
+  --bg-surface-3: rgba(255,255,255,0.06);
   
   /* BGT Border System */
   --border: rgba(212,175,55,.35);
@@ -85,6 +88,23 @@ input, textarea, select, button {
   --border-hover: rgba(255,255,255,.20);
   --border-gold: rgba(212,175,55,.25);
   --border-gold-glow: rgba(255,187,0,.5);
+  --border-neon: rgba(255,187,0,.6);
+  
+  /* Neon & Highlights */
+  --neon-gold: #FFBB00;
+  --neon-blue: #00D9FF;
+  --neon-purple: #B026FF;
+  
+  /* Shadow & Glow System */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.3);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.5);
+  --glow-gold-sm: 0 0 10px rgba(255,187,0,0.15);
+  --glow-gold-md: 0 0 20px rgba(255,187,0,0.25);
+  --glow-gold-lg: 0 0 40px rgba(255,187,0,0.35);
+  --glow-neon-blue: 0 0 20px rgba(0,217,255,0.4);
+  --glow-neon-purple: 0 0 20px rgba(176,38,255,0.4);
   
   /* BGT Text Colors */
   --text-primary: rgba(255,255,255,0.9);
@@ -799,4 +819,238 @@ html, body { overflow-x: hidden; }
   .bgt-bg-master-fixed {
     background-attachment: scroll;
   }
+}
+
+/* ===== Esports-Themed Enhancements ============================= */
+
+/* Text glow effects */
+.text-glow {
+  text-shadow: 0 0 20px rgba(255,187,0,0.5), 0 0 40px rgba(255,187,0,0.3);
+}
+
+.text-glow-subtle {
+  text-shadow: 0 0 15px rgba(255,187,0,0.3);
+}
+
+.text-glow-neon {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+/* Box shadow glows */
+.shadow-glow-vibrant {
+  box-shadow: 0 0 30px rgba(255,187,0,0.2), 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.shadow-dramatic {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,187,0,0.1);
+}
+
+.shadow-neon-blue {
+  box-shadow: 0 0 20px rgba(0,217,255,0.4), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.shadow-neon-purple {
+  box-shadow: 0 0 20px rgba(176,38,255,0.4), 0 4px 16px rgba(0,0,0,0.3);
+}
+
+/* Animated scanline overlay */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scanline-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scanline-overlay::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(transparent, rgba(255,255,255,0.03), transparent);
+  animation: scanline 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline-overlay::after {
+    animation: none;
+  }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-effect::after {
+    animation: none;
+  }
+}
+
+/* Energy glow hover effect */
+@keyframes energy-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.energy-glow:hover::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255,187,0,0.4), transparent 70%);
+  animation: energy-glow 2s infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .energy-glow:hover::before {
+    animation: none;
+  }
+}
+
+/* Animated glowing border */
+@keyframes glow-border-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.glow-border {
+  position: relative;
+  background: rgba(255,255,255,0.02);
+  border-radius: 1rem;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #FFBB00, #D4AF37, #FFBB00);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.7;
+  animation: glow-border-rotate 3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-border::before {
+    animation: none;
+  }
+}
+
+/* Diagonal stripe pattern */
+.diagonal-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255,187,0,0.03) 10px,
+    rgba(255,187,0,0.03) 20px
+  );
+}
+
+/* Grid pattern with gold */
+.grid-pattern-gold {
+  background-image: 
+    linear-gradient(rgba(255,187,0,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,187,0,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Glitch effect (subtle) */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+}
+
+.glitch-hover:hover {
+  animation: glitch 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-hover:hover {
+    animation: none;
+  }
+}
+
+/* Neon text variants */
+.text-neon-blue {
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+
+.text-neon-purple {
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+}
+
+/* Hover lift with shadow */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,187,0,0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Asymmetric accent line */
+.accent-line-gold {
+  position: relative;
+}
+
+.accent-line-gold::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 60%;
+  background: linear-gradient(180deg, #FFBB00, #D4AF37);
+  border-radius: 2px;
+}
+
+/* Glassmorphic surface */
+.glass-surface {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.glass-surface-strong {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(30px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.15);
 }
