@@ -4,6 +4,9 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { useEffect, useRef, useState } from "react";
 import { FaTwitter, FaInstagram, FaDiscord } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import { GridOverlay } from "@/components/ui/GridOverlay";
+import { EnergyLines } from "@/components/ui/EnergyLines";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 
 const PARTICLE_COUNT = 70;
 const PARTICLE_COUNT_MOBILE = 35;
@@ -177,7 +180,7 @@ function AnimatedChunk({ text, highlight = false }: { text: string; highlight?: 
 function AnimatedHeading() {
   return (
     <motion.h1
-      className="h1 leading-tight text-center select-none tracking-wide"
+      className="h1 leading-tight text-center select-none tracking-wide text-glow-subtle"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.035 } } }}
@@ -252,8 +255,20 @@ export function Hero() {
           }}
         />
         
+        {/* Grid overlay for esports aesthetic */}
+        <GridOverlay opacity={0.04} size={40} className="opacity-60" />
+        
+        {/* Energy lines for motion */}
+        <EnergyLines count={6} />
+        
+        {/* Diagonal stripe pattern */}
+        <div className="absolute inset-0 diagonal-stripes opacity-30" />
+        
         {/* Particles on top */}
         <Particles />
+        
+        {/* Scanline overlay */}
+        <div className="scanline-overlay" />
         
         {/* Subtle noise texture */}
         <div
@@ -269,11 +284,40 @@ export function Hero() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.3 }}>
           <TypingEffect text="Think Big, Play Bigger." />
         </motion.div>
+        
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
+        >
+          <AnimatedButton
+            as="link"
+            href="/creator-program"
+            variant="primary"
+            size="lg"
+            className="min-w-[200px]"
+          >
+            Join Our Team
+          </AnimatedButton>
+          <AnimatedButton
+            as="link"
+            href="/achievements"
+            variant="ghost"
+            size="lg"
+            className="min-w-[200px]"
+          >
+            View Achievements
+          </AnimatedButton>
+        </motion.div>
+        
+        {/* Social Icons */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.8 }}
-          className="flex items-center justify-center gap-4 mt-10"
+          className="flex items-center justify-center gap-4 mt-8"
         >
           {SOCIALS.map((s) => {
             const Icon = s.icon;

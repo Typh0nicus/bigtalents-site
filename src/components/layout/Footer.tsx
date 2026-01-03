@@ -8,9 +8,13 @@ import { FiArrowRight } from "react-icons/fi";
 
 export function Footer() {
   return (
-    <footer className="relative bg-black/40 backdrop-blur-sm border-t border-white/10">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+    <footer className="relative border-t border-white/10">
+      {/* Tiered dark surfaces */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-surface-1)] via-[var(--bg-surface-2)] to-[var(--bg-surface-3)] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 dotted-grid opacity-30 pointer-events-none" />
       
       <div className="container relative">
         <div className="py-16 md:py-20">
@@ -45,7 +49,7 @@ export function Footer() {
                     href="https://discord.gg/bgt"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
+                    className="p-3 glass-surface hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border hover:border-[var(--border-gold)]/30 hover:shadow-glow-gold-sm"
                     aria-label="Discord"
                   >
                     <FaDiscord size={20} />
@@ -56,7 +60,7 @@ export function Footer() {
                     href="https://x.com/bgtalents"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
+                    className="p-3 glass-surface hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border hover:border-[var(--border-gold)]/30 hover:shadow-glow-gold-sm"
                     aria-label="Twitter"
                   >
                     <FaTwitter size={20} />
@@ -67,7 +71,7 @@ export function Footer() {
                     href="https://instagram.com/bigtalents_org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border border-white/10 hover:border-[var(--gold)]/30"
+                    className="p-3 glass-surface hover:bg-white/10 rounded-xl text-white/70 hover:text-[var(--gold)] transition-all duration-200 border hover:border-[var(--border-gold)]/30 hover:shadow-glow-gold-sm"
                     aria-label="Instagram"
                   >
                     <FaInstagram size={20} />
