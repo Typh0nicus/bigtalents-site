@@ -26,13 +26,13 @@ export function ComingSoonHero() {
 
   return (
     <div className="relative flex flex-col items-center justify-center px-4 py-12 md:py-16 min-h-screen">
-      {/* 2026 watermark behind Santa - repositioned lower and more subtle */}
-      <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
+      {/* 2026 watermark behind Santa */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.2 }}
-          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[28rem] font-black text-white/[0.05] select-none block"
+          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[24rem] font-black text-white/[0.02] select-none block"
           style={{ lineHeight: 1 }}
         >
           2026
@@ -81,17 +81,19 @@ export function ComingSoonHero() {
             priority
           />
           
-          {/* Fog/mist gradient at bottom of Santa - stronger dissolve effect */}
+          {/* Atmospheric fog gradient at bottom of Santa - natural dissolve */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-56 md:h-72 pointer-events-none"
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.95) 25%, rgba(10,10,10,0.85) 45%, rgba(10,10,10,0.5) 70%, transparent 100%)",
+              height: "200px",
+              background: "radial-gradient(ellipse 120% 100% at 50% 100%, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 30%, rgba(10,10,10,0.4) 50%, transparent 70%)",
+              filter: "blur(20px)",
               zIndex: 1,
             }}
           />
         </motion.div>
 
-        {/* Mystery name tag "???" overlaid on fog */}
+        {/* Mystery name tag "???" in Techno style */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -103,7 +105,7 @@ export function ComingSoonHero() {
               prefersReduced
                 ? {}
                 : {
-                    opacity: [0.8, 1, 0.8],
+                    opacity: [0.9, 1, 0.9],
                   }
             }
             transition={{
@@ -111,10 +113,12 @@ export function ComingSoonHero() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="block text-5xl md:text-6xl lg:text-7xl font-black tracking-widest"
+            className="block text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.3em]"
             style={{
-              color: "#D4AF37",
-              textShadow: "0 0 40px rgba(212,175,55,0.9), 0 0 80px rgba(212,175,55,0.5), 0 0 120px rgba(212,175,55,0.3)",
+              color: "#ffffff",
+              fontFamily: "monospace",
+              textTransform: "uppercase",
+              letterSpacing: "0.3em",
             }}
           >
             ???
