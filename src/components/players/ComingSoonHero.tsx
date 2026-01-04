@@ -26,20 +26,20 @@ export function ComingSoonHero() {
 
   return (
     <div className="relative flex flex-col items-center justify-center px-4 py-12 md:py-16 min-h-screen">
-      {/* 2026 watermark behind Santa */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
+      {/* 2026 watermark behind Santa - repositioned lower and more subtle */}
+      <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.2 }}
-          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[24rem] font-black text-white/[0.02] select-none block"
+          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[28rem] font-black text-white/[0.05] select-none block"
           style={{ lineHeight: 1 }}
         >
           2026
         </motion.span>
       </div>
 
-      {/* Santa figure with gold aura */}
+      {/* Santa figure with gold aura and fog effect */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -71,7 +71,7 @@ export function ComingSoonHero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative w-48 h-72 sm:w-56 sm:h-80 md:w-64 md:h-96"
+          className="relative w-64 h-96 sm:w-80 sm:h-[28rem] md:w-96 md:h-[32rem] lg:w-[28rem] lg:h-[36rem]"
         >
           <Image
             src="/images/players/coming-soon/santa-silhouette.png"
@@ -80,6 +80,45 @@ export function ComingSoonHero() {
             className="object-contain drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]"
             priority
           />
+          
+          {/* Fog/mist gradient at bottom of Santa - stronger dissolve effect */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-56 md:h-72 pointer-events-none"
+            style={{
+              background: "linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.95) 25%, rgba(10,10,10,0.85) 45%, rgba(10,10,10,0.5) 70%, transparent 100%)",
+              zIndex: 1,
+            }}
+          />
+        </motion.div>
+
+        {/* Mystery name tag "???" overlaid on fog */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 z-20"
+        >
+          <motion.span
+            animate={
+              prefersReduced
+                ? {}
+                : {
+                    opacity: [0.8, 1, 0.8],
+                  }
+            }
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="block text-5xl md:text-6xl lg:text-7xl font-black tracking-widest"
+            style={{
+              color: "#D4AF37",
+              textShadow: "0 0 40px rgba(212,175,55,0.9), 0 0 80px rgba(212,175,55,0.5), 0 0 120px rgba(212,175,55,0.3)",
+            }}
+          >
+            ???
+          </motion.span>
         </motion.div>
       </motion.div>
 
