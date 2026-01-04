@@ -90,23 +90,23 @@ export function ComingSoonHero() {
             }}
           />
           
-          {/* Simple black gradient smoke - clean and professional */}
+          {/* Clean black gradient at bottom where Santa fades */}
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
-              height: "50%",
-              background: "linear-gradient(to top, #000000 0%, transparent 100%)",
+              height: "40%",
+              background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.7) 50%, transparent 100%)",
               zIndex: 1,
             }}
           />
         </motion.div>
 
-        {/* Follow for the reveal - positioned lower on desktop */}
+        {/* Follow for the reveal - positioned LOWER (smaller bottom value = lower on page) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="absolute bottom-8 sm:bottom-12 md:bottom-24 lg:bottom-32 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4"
+          className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4"
         >
           <p className="text-white/80 uppercase tracking-[0.2em] font-bold text-xs sm:text-sm mb-4 sm:mb-6">
             Follow for the reveal
