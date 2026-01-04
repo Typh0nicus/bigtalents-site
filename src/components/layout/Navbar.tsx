@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail, FiUsers, FiAward, FiShoppingBag } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiBriefcase, FiImage, FiMail, FiHeart, FiAward, FiShoppingBag, FiRss, FiVideo, FiUserPlus } from "react-icons/fi";
 import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
 
 type NavItem = {
@@ -34,13 +34,13 @@ const NAV_ITEMS: NavItem[] = [
       { 
         href: "/news", 
         label: "News",
-        icon: FiFileText,
+        icon: FiRss,
         description: "Latest updates and announcements"
       },
       { 
         href: "/club", 
         label: "Club",
-        icon: FiUsers,
+        icon: FiHeart,
         description: "Join the BGT community"
       },
       { 
@@ -59,13 +59,13 @@ const NAV_ITEMS: NavItem[] = [
       { 
         href: "/creator-program/overview", 
         label: "Overview",
-        icon: FiInfo,
+        icon: FiVideo,
         description: "Learn about our creator benefits"
       },
       { 
         href: "/creator-program/apply", 
         label: "Apply Now",
-        icon: FiStar,
+        icon: FiUserPlus,
         description: "Join the BGT family"
       }
     ]
@@ -84,13 +84,13 @@ const NAV_ITEMS: NavItem[] = [
       { 
         href: "/positions", 
         label: "Positions",
-        icon: FiInfo,
+        icon: FiBriefcase,
         description: "Explore open team positions"
       },
       { 
         href: "/brand-guidelines", 
         label: "Brand Guidelines",
-        icon: FiFileText,
+        icon: FiImage,
         description: "Download our brand assets"
       }
     ]
@@ -108,13 +108,13 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/news", 
         label: "News",
-        icon: FiFileText,
+        icon: FiRss,
         description: "Latest updates and announcements"
       },
       { 
         href: "/club", 
         label: "Club",
-        icon: FiUsers,
+        icon: FiHeart,
         description: "Join the BGT community"
       },
       { 
@@ -133,13 +133,13 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/creator-program/overview", 
         label: "Overview",
-        icon: FiInfo,
+        icon: FiVideo,
         description: "Learn about our creator benefits"
       },
       { 
         href: "/creator-program/apply", 
         label: "Apply Now",
-        icon: FiStar,
+        icon: FiUserPlus,
         description: "Join the BGT family"
       }
     ]
@@ -158,13 +158,13 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/positions", 
         label: "Positions",
-        icon: FiInfo,
+        icon: FiBriefcase,
         description: "Explore open team positions"
       },
       { 
         href: "/brand-guidelines", 
         label: "Brand Guidelines",
-        icon: FiFileText,
+        icon: FiImage,
         description: "Download our brand assets"
       }
     ]
