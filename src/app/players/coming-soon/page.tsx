@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { PlayersComingSoon } from "@/components/players/PlayersComingSoon";
 
 export const metadata: Metadata = {
-  title: "Players",
-  description: "Meet the BGT competitive roster. Player profiles coming soon.",
+  title: "Players Coming Soon",
+  description: "Three elite players joining the BGT roster. New competitive lineup incoming. Follow for the reveal.",
   openGraph: {
-    title: "Players | Big Talents",
-    description: "Discover the talented players competing under the BGT banner.",
+    title: "Players Coming Soon | Big Talents",
+    description: "Three elite players joining the BGT roster. The reveal is coming soon.",
     url: "https://bigtalents.org/players/coming-soon",
     siteName: "Big Talents",
     images: [
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Big Talents Players",
+        alt: "Big Talents Players Coming Soon",
       },
     ],
     locale: "en_US",
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@bgtalents",
     creator: "@bgtalents",
-    title: "Players | Big Talents",
-    description: "Discover the talented players competing under the BGT banner.",
+    title: "Players Coming Soon | Big Talents",
+    description: "Three elite players joining the BGT roster. Follow for the reveal.",
     images: ["/og.png"],
   },
 };
