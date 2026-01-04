@@ -81,12 +81,12 @@ export function ComingSoonHero() {
           />
         </motion.div>
 
-        {/* Follow for the reveal - positioned LOWER (smaller bottom value = lower on page) */}
+        {/* Follow for the reveal - positioned lower on desktop */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4"
+          className="absolute bottom-4 sm:bottom-6 md:bottom-2 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4"
         >
           <p className="text-white/80 uppercase tracking-[0.2em] font-bold text-xs sm:text-sm mb-4 sm:mb-6">
             Follow for the reveal
