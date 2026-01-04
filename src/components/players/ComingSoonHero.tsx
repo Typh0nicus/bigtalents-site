@@ -37,7 +37,6 @@ export function ComingSoonHero() {
             lineHeight: 1,
             color: "transparent",
             WebkitTextStroke: "2px rgba(212,175,55,0.15)",
-            textStroke: "2px rgba(212,175,55,0.15)",
             mixBlendMode: "overlay",
           }}
         >
@@ -133,7 +132,6 @@ export function ComingSoonHero() {
               color: "#ffffff",
               fontFamily: "monospace",
               textTransform: "uppercase",
-              letterSpacing: "0.4em",
               textShadow: "0 0 20px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.6)",
             }}
           >
