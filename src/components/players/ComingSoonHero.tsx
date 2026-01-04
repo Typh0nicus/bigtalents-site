@@ -118,78 +118,31 @@ export function ComingSoonHero() {
               zIndex: 3,
             }}
           />
-        </motion.div>
-
-        {/* Mystery name tag "???" positioned professionally */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute -bottom-2 md:bottom-0 left-1/2 -translate-x-1/2 z-20"
-        >
-          <motion.span
-            animate={
-              prefersReduced
-                ? {}
-                : {
-                    opacity: [0.85, 1, 0.85],
-                  }
-            }
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="block text-4xl md:text-5xl lg:text-6xl font-black tracking-[0.4em]"
+          {/* Additional fadeout on Santa's lower end */}
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
-              color: "#ffffff",
-              fontFamily: "monospace",
-              textTransform: "uppercase",
-              textShadow: "0 0 20px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.6)",
+              height: "25%",
+              background: "linear-gradient(to top, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.6) 30%, rgba(10,10,10,0.3) 60%, transparent 100%)",
+              filter: "blur(8px)",
+              zIndex: 4,
             }}
-          >
-            ???
-          </motion.span>
+          />
         </motion.div>
-      </motion.div>
 
-      {/* Headline */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="text-center max-w-4xl z-10"
-      >
-        <h1 className="h1 mb-4 md:mb-6">
-          <span className="block text-white">NEW ROSTER</span>
-          <span className="block bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#ffdf7e] bg-clip-text text-transparent">
-            INCOMING
-          </span>
-        </h1>
-
-        {/* Subtext */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="lead text-white/70 max-w-2xl mx-auto mb-8 md:mb-12"
-        >
-          Three elite players. One legendary team. The reveal is coming.
-        </motion.p>
-
-        {/* Follow for the reveal */}
+        {/* Follow for the reveal - positioned on the smoke */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="mt-8 md:mt-12"
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="absolute bottom-8 sm:bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4"
         >
-          <p className="text-white/70 uppercase tracking-wider font-bold text-sm mb-6">
+          <p className="text-white/80 uppercase tracking-[0.2em] font-bold text-xs sm:text-sm mb-4 sm:mb-6">
             Follow for the reveal
           </p>
 
           {/* Social buttons */}
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
             {SOCIALS.map((s) => {
               const Icon = s.icon;
               return (
@@ -198,9 +151,9 @@ export function ComingSoonHero() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.15, y: -3 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`inline-flex aspect-square h-14 w-14 items-center justify-center rounded-xl transition-all duration-300 bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:ring-[#D4AF37]/30 ${s.color} ${s.bg}`}
+                  className={`inline-flex aspect-square h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl transition-all duration-300 bg-white/5 backdrop-blur-sm ring-1 ring-white/10 hover:ring-[#D4AF37]/30 ${s.color} ${s.bg}`}
                   style={{
                     boxShadow: "none",
                     transition: "all 0.3s ease-out",
@@ -213,7 +166,7 @@ export function ComingSoonHero() {
                   }}
                   aria-label={s.label}
                 >
-                  <Icon size={24} />
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </motion.a>
               );
             })}
