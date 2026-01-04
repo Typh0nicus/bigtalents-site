@@ -8,6 +8,7 @@ const PARTICLE_COUNT_MOBILE = 25;
 const SPEED = 0.02;
 const MAX_FPS = 60;
 const FRAME_TIME = 1000 / MAX_FPS;
+const MAX_DELTA_TIME = 0.025; // Cap delta time at 25ms to prevent large jumps
 
 export function GoldParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,7 +91,7 @@ export function GoldParticles() {
         raf = requestAnimationFrame(animate);
         return;
       }
-      const dt = Math.min((ts - last) / 1000, 0.025);
+      const dt = Math.min((ts - last) / 1000, MAX_DELTA_TIME);
       last = ts;
       lastDraw = ts;
 

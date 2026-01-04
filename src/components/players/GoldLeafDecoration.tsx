@@ -21,19 +21,19 @@ export function GoldLeafDecoration() {
         >
           <path
             d="M10 10 Q30 30 10 50 Q20 40 30 30 Q40 20 50 10"
-            stroke="url(#goldGradient)"
+            stroke="url(#goldGradientTopLeft)"
             strokeWidth="2"
             fill="none"
           />
           <path
             d="M10 10 Q20 40 10 70 Q15 50 20 40 Q30 25 40 10"
-            stroke="url(#goldGradient)"
+            stroke="url(#goldGradientTopLeft)"
             strokeWidth="1.5"
             fill="none"
             opacity="0.6"
           />
           <defs>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="goldGradientTopLeft" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#D4AF37" />
               <stop offset="50%" stopColor="#FFD700" />
               <stop offset="100%" stopColor="#D4AF37" />
@@ -58,19 +58,19 @@ export function GoldLeafDecoration() {
         >
           <path
             d="M110 10 Q90 30 110 50 Q100 40 90 30 Q80 20 70 10"
-            stroke="url(#goldGradient2)"
+            stroke="url(#goldGradientTopRight)"
             strokeWidth="2"
             fill="none"
           />
           <path
             d="M110 10 Q100 40 110 70 Q105 50 100 40 Q90 25 80 10"
-            stroke="url(#goldGradient2)"
+            stroke="url(#goldGradientTopRight)"
             strokeWidth="1.5"
             fill="none"
             opacity="0.6"
           />
           <defs>
-            <linearGradient id="goldGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id="goldGradientTopRight" x1="100%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#D4AF37" />
               <stop offset="50%" stopColor="#FFD700" />
               <stop offset="100%" stopColor="#D4AF37" />
