@@ -26,33 +26,39 @@ export function ComingSoonHero() {
 
   return (
     <div className="relative flex flex-col items-center justify-center px-4 py-12 md:py-16 min-h-screen">
-      {/* 2026 watermark behind Santa */}
+      {/* 2026 watermark behind Santa with stroke */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0">
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.2 }}
-          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[24rem] font-black text-white/[0.02] select-none block"
-          style={{ lineHeight: 1 }}
+          className="text-[12rem] sm:text-[16rem] md:text-[20rem] lg:text-[24rem] font-black select-none block"
+          style={{ 
+            lineHeight: 1,
+            color: "transparent",
+            WebkitTextStroke: "2px rgba(212,175,55,0.15)",
+            textStroke: "2px rgba(212,175,55,0.15)",
+            mixBlendMode: "overlay",
+          }}
         >
           2026
         </motion.span>
       </div>
 
-      {/* Santa figure with gold aura and fog effect */}
+      {/* Santa figure with enhanced fog and positioning */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mb-8 md:mb-12 z-10"
+        className="relative mb-0 z-10 -mt-12 md:-mt-16"
       >
-        {/* Gold radial glow behind Santa */}
+        {/* Enhanced gold radial glow behind Santa */}
         <div
           className="absolute inset-0 -z-10"
           style={{
-            background: "radial-gradient(circle at center, rgba(212,175,55,0.15) 0%, rgba(255,215,0,0.08) 40%, transparent 70%)",
-            filter: "blur(40px)",
-            transform: "scale(1.5)",
+            background: "radial-gradient(circle at center, rgba(212,175,55,0.2) 0%, rgba(255,215,0,0.12) 35%, rgba(212,175,55,0.06) 60%, transparent 80%)",
+            filter: "blur(60px)",
+            transform: "scale(1.8)",
           }}
         />
 
@@ -71,41 +77,50 @@ export function ComingSoonHero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative w-64 h-96 sm:w-80 sm:h-[28rem] md:w-96 md:h-[32rem] lg:w-[28rem] lg:h-[36rem]"
+          className="relative w-80 h-[30rem] sm:w-96 sm:h-[36rem] md:w-[32rem] md:h-[42rem] lg:w-[36rem] lg:h-[48rem]"
         >
           <Image
             src="/images/players/coming-soon/santa-silhouette.png"
             alt="Mystery figure"
             fill
-            className="object-contain drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+            className="object-contain object-top drop-shadow-[0_0_40px_rgba(212,175,55,0.4)]"
             priority
           />
           
-          {/* Atmospheric fog gradient at bottom of Santa - natural dissolve */}
+          {/* Multi-layer atmospheric fog for proper mist effect */}
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
-              height: "200px",
-              background: "radial-gradient(ellipse 120% 100% at 50% 100%, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 30%, rgba(10,10,10,0.4) 50%, transparent 70%)",
-              filter: "blur(20px)",
+              height: "40%",
+              background: "radial-gradient(ellipse 140% 100% at 50% 100%, rgba(10,10,10,1) 0%, rgba(10,10,10,0.95) 20%, rgba(10,10,10,0.75) 40%, rgba(10,10,10,0.4) 60%, transparent 85%)",
+              filter: "blur(30px)",
               zIndex: 1,
+            }}
+          />
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: "35%",
+              background: "linear-gradient(to top, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.6) 30%, rgba(10,10,10,0.3) 60%, transparent 100%)",
+              filter: "blur(15px)",
+              zIndex: 2,
             }}
           />
         </motion.div>
 
-        {/* Mystery name tag "???" in Techno style */}
+        {/* Mystery name tag "???" positioned professionally */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 z-20"
+          className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-20"
         >
           <motion.span
             animate={
               prefersReduced
                 ? {}
                 : {
-                    opacity: [0.9, 1, 0.9],
+                    opacity: [0.85, 1, 0.85],
                   }
             }
             transition={{
@@ -113,12 +128,13 @@ export function ComingSoonHero() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="block text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.3em]"
+            className="block text-4xl md:text-5xl lg:text-6xl font-black tracking-[0.4em]"
             style={{
               color: "#ffffff",
               fontFamily: "monospace",
               textTransform: "uppercase",
-              letterSpacing: "0.3em",
+              letterSpacing: "0.4em",
+              textShadow: "0 0 20px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.6)",
             }}
           >
             ???
