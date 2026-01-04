@@ -49,7 +49,7 @@ export function ComingSoonHero() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative mb-0 z-10 -mt-12 md:-mt-16"
+        className="relative mb-16 md:mb-20 z-10"
       >
         {/* Enhanced gold radial glow behind Santa */}
         <div
@@ -76,7 +76,7 @@ export function ComingSoonHero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative w-80 h-[30rem] sm:w-96 sm:h-[36rem] md:w-[32rem] md:h-[42rem] lg:w-[36rem] lg:h-[48rem]"
+          className="relative w-80 h-[28rem] sm:w-96 sm:h-[32rem] md:w-[30rem] md:h-[36rem] lg:w-[32rem] lg:h-[40rem]"
         >
           <Image
             src="/images/players/coming-soon/santa-silhouette.png"
@@ -86,23 +86,36 @@ export function ComingSoonHero() {
             priority
           />
           
-          {/* Multi-layer atmospheric fog for proper mist effect */}
+          {/* Extended atmospheric fog layers for proper fadeout */}
+          {/* Base fog layer - extends beyond image */}
           <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            className="absolute -bottom-20 left-1/2 -translate-x-1/2 pointer-events-none"
             style={{
-              height: "40%",
-              background: "radial-gradient(ellipse 140% 100% at 50% 100%, rgba(10,10,10,1) 0%, rgba(10,10,10,0.95) 20%, rgba(10,10,10,0.75) 40%, rgba(10,10,10,0.4) 60%, transparent 85%)",
-              filter: "blur(30px)",
+              width: "150%",
+              height: "60%",
+              background: "radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.85) 25%, rgba(10,10,10,0.6) 45%, rgba(10,10,10,0.3) 65%, transparent 90%)",
+              filter: "blur(40px)",
               zIndex: 1,
             }}
           />
+          {/* Secondary mist layer */}
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: "45%",
+              background: "radial-gradient(ellipse 120% 100% at 50% 100%, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 30%, rgba(10,10,10,0.4) 55%, transparent 80%)",
+              filter: "blur(25px)",
+              zIndex: 2,
+            }}
+          />
+          {/* Top smooth gradient for natural blend */}
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
               height: "35%",
-              background: "linear-gradient(to top, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.6) 30%, rgba(10,10,10,0.3) 60%, transparent 100%)",
-              filter: "blur(15px)",
-              zIndex: 2,
+              background: "linear-gradient(to top, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.5) 35%, rgba(10,10,10,0.2) 65%, transparent 100%)",
+              filter: "blur(12px)",
+              zIndex: 3,
             }}
           />
         </motion.div>
@@ -112,7 +125,7 @@ export function ComingSoonHero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-20"
+          className="absolute -bottom-2 md:bottom-0 left-1/2 -translate-x-1/2 z-20"
         >
           <motion.span
             animate={
