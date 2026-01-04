@@ -1,0 +1,35 @@
+<svg width="400" height="600" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Santa silhouette with finger hearts pose - mysterious figure -->
+  <defs>
+    <radialGradient id="santaGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Glow effect -->
+  <ellipse cx="200" cy="300" rx="180" ry="280" fill="url(#santaGlow)" />
+  
+  <!-- Body silhouette -->
+  <path d="M200 50 C220 50 240 70 240 90 L240 120 C240 140 220 160 200 160 C180 160 160 140 160 120 L160 90 C160 70 180 50 200 50 Z" fill="#0a0a0a"/>
+  
+  <!-- Body/torso -->
+  <ellipse cx="200" cy="280" rx="90" ry="150" fill="#0a0a0a"/>
+  
+  <!-- Arms in finger heart pose -->
+  <!-- Left arm -->
+  <path d="M120 200 Q80 220 70 260 L90 270 Q100 240 130 220 Z" fill="#0a0a0a"/>
+  <!-- Right arm -->
+  <path d="M280 200 Q320 220 330 260 L310 270 Q300 240 270 220 Z" fill="#0a0a0a"/>
+  
+  <!-- Hands forming heart -->
+  <path d="M70 260 L85 280 L100 265 L90 250 Z" fill="#0a0a0a"/>
+  <path d="M330 260 L315 280 L300 265 L310 250 Z" fill="#0a0a0a"/>
+  
+  <!-- Legs -->
+  <rect x="170" y="400" width="30" height="160" rx="15" fill="#0a0a0a"/>
+  <rect x="200" y="400" width="30" height="160" rx="15" fill="#0a0a0a"/>
+  
+  <!-- Subtle gold edge glow -->
+  <ellipse cx="200" cy="300" rx="95" ry="155" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.3"/>
+</svg>
