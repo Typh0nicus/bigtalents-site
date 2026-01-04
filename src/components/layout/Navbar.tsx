@@ -7,8 +7,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiStar, FiBriefcase, FiImage, FiMail, FiHeart, FiAward, FiShoppingBag, FiRss, FiVideo, FiUserPlus } from "react-icons/fi";
-import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiImage, FiMail, FiAward, FiShoppingBag, FiRss, FiUserPlus } from "react-icons/fi";
+import { FaDiscord, FaTwitter, FaInstagram, FaShieldAlt, FaCrown } from "react-icons/fa";
 
 type NavItem = {
   href: string;
@@ -26,80 +26,8 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/store", label: "Store", special: true },
   { href: "/", label: "Home" },
-  { 
-    href: "/general", 
-    label: "General",
-    preventNavigation: true,
-    dropdown: [
-      { 
-        href: "/news", 
-        label: "News",
-        icon: FiRss,
-        description: "Latest updates and announcements"
-      },
-      { 
-        href: "/club", 
-        label: "Club",
-        icon: FiHeart,
-        description: "Join the BGT community"
-      },
-      { 
-        href: "/achievements", 
-        label: "Record",
-        icon: FiAward,
-        description: "Our tournament history"
-      }
-    ]
-  },
-  { 
-    href: "/creator-program", 
-    label: "Creator Program",
-    preventNavigation: true,
-    dropdown: [
-      { 
-        href: "/creator-program/overview", 
-        label: "Overview",
-        icon: FiVideo,
-        description: "Learn about our creator benefits"
-      },
-      { 
-        href: "/creator-program/apply", 
-        label: "Apply Now",
-        icon: FiUserPlus,
-        description: "Join the BGT family"
-      }
-    ]
-  },
-  { 
-    href: "/company", 
-    label: "Company",
-    preventNavigation: true,
-    dropdown: [
-      { 
-        href: "/contact", 
-        label: "Contact",
-        icon: FiMail,
-        description: "Get in touch with us"
-      },
-      { 
-        href: "/positions", 
-        label: "Positions",
-        icon: FiBriefcase,
-        description: "Explore open team positions"
-      },
-      { 
-        href: "/brand-guidelines", 
-        label: "Brand Guidelines",
-        icon: FiImage,
-        description: "Download our brand assets"
-      }
-    ]
-  },
+  { href: "/creators", label: "Creators" },
   { href: "/players/coming-soon", label: "Players" },
-  { href: "/creators", label: "Creators" }
-];
-
-const LEFT_NAV_ITEMS: NavItem[] = [
   { 
     href: "/general", 
     label: "General",
@@ -114,7 +42,7 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/club", 
         label: "Club",
-        icon: FiHeart,
+        icon: FaCrown,
         description: "Join the BGT community"
       },
       { 
@@ -133,7 +61,7 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/creator-program/overview", 
         label: "Overview",
-        icon: FiVideo,
+        icon: FiStar,
         description: "Learn about our creator benefits"
       },
       { 
@@ -158,7 +86,7 @@ const LEFT_NAV_ITEMS: NavItem[] = [
       { 
         href: "/positions", 
         label: "Positions",
-        icon: FiBriefcase,
+        icon: FaShieldAlt,
         description: "Explore open team positions"
       },
       { 
@@ -171,9 +99,81 @@ const LEFT_NAV_ITEMS: NavItem[] = [
   }
 ];
 
+const LEFT_NAV_ITEMS: NavItem[] = [
+  { 
+    href: "/creator-program", 
+    label: "Creator Program",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/creator-program/overview", 
+        label: "Overview",
+        icon: FiStar,
+        description: "Learn about our creator benefits"
+      },
+      { 
+        href: "/creator-program/apply", 
+        label: "Apply Now",
+        icon: FiUserPlus,
+        description: "Join the BGT family"
+      }
+    ]
+  },
+  { 
+    href: "/company", 
+    label: "Company",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/contact", 
+        label: "Contact",
+        icon: FiMail,
+        description: "Get in touch with us"
+      },
+      { 
+        href: "/positions", 
+        label: "Positions",
+        icon: FaShieldAlt,
+        description: "Explore open team positions"
+      },
+      { 
+        href: "/brand-guidelines", 
+        label: "Brand Guidelines",
+        icon: FiImage,
+        description: "Download our brand assets"
+      }
+    ]
+  },
+  { href: "/players/coming-soon", label: "Players" }
+];
+
 const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/players/coming-soon", label: "Players" },
   { href: "/creators", label: "Creators" },
+  { 
+    href: "/general", 
+    label: "General",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/news", 
+        label: "News",
+        icon: FiRss,
+        description: "Latest updates and announcements"
+      },
+      { 
+        href: "/club", 
+        label: "Club",
+        icon: FaCrown,
+        description: "Join the BGT community"
+      },
+      { 
+        href: "/achievements", 
+        label: "Record",
+        icon: FiAward,
+        description: "Our tournament history"
+      }
+    ]
+  },
   { href: "/store", label: "Store", special: true }
 ];
 
