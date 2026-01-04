@@ -6,28 +6,21 @@ import { ComingSoonHero } from "./ComingSoonHero";
 export function PlayersComingSoon() {
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Dark atmospheric background */}
-      <div className="absolute inset-0 bg-[#0a0a0a]">
-        {/* Subtle dotted grid */}
-        <div className="absolute inset-0 dotted-grid" />
-
-        {/* Gold gradient glows */}
+      {/* Full page gold-to-black gradient background */}
+      <div className="absolute inset-0">
+        {/* Main gradient - gold at top fading to black at bottom */}
         <div
           className="absolute inset-0"
           style={{
-            background: `
-              radial-gradient(ellipse 1200px 800px at 50% 20%, rgba(212,175,55,0.08), transparent 60%),
-              radial-gradient(ellipse 1000px 600px at 80% 80%, rgba(255,215,0,0.04), transparent 60%),
-              radial-gradient(ellipse 900px 500px at 20% 90%, rgba(255,187,0,0.03), transparent 60%)
-            `,
+            background: "linear-gradient(to bottom, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.08) 20%, rgba(10,10,10,0.95) 60%, #000000 100%)",
           }}
         />
 
+        {/* Subtle dotted grid */}
+        <div className="absolute inset-0 dotted-grid opacity-30" />
+
         {/* Gold particles effect */}
         <GoldParticles />
-
-        {/* Subtle fog gradient at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent pointer-events-none" />
       </div>
 
       {/* Main content */}
