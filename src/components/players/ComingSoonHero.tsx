@@ -44,23 +44,13 @@ export function ComingSoonHero() {
         </motion.span>
       </div>
 
-      {/* Santa figure with enhanced fog and positioning */}
+      {/* Santa figure */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="relative mb-16 md:mb-20 z-10"
       >
-        {/* Enhanced gold radial glow behind Santa */}
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background: "radial-gradient(circle at center, rgba(212,175,55,0.2) 0%, rgba(255,215,0,0.12) 35%, rgba(212,175,55,0.06) 60%, transparent 80%)",
-            filter: "blur(60px)",
-            transform: "scale(1.8)",
-          }}
-        />
-
         {/* Breathing/floating animation */}
         <motion.div
           animate={
@@ -82,21 +72,11 @@ export function ComingSoonHero() {
             src="/images/players/coming-soon/santa-silhouette.png"
             alt="Mystery figure"
             fill
-            className="object-contain object-top drop-shadow-[0_0_40px_rgba(212,175,55,0.4)]"
+            className="object-contain object-top"
             priority
             style={{
               maskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 70%, transparent 100%)",
-            }}
-          />
-          
-          {/* Clean black gradient at bottom where Santa fades */}
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{
-              height: "40%",
-              background: "linear-gradient(to top, #000000 0%, rgba(0,0,0,0.7) 50%, transparent 100%)",
-              zIndex: 1,
             }}
           />
         </motion.div>
