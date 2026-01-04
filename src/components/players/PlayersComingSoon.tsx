@@ -2,9 +2,6 @@
 
 import { GoldParticles } from "./GoldParticles";
 import { ComingSoonHero } from "./ComingSoonHero";
-import { GiftBoxGrid } from "./GiftBoxGrid";
-import { SocialCTA } from "./SocialCTA";
-import { GoldLeafDecoration } from "./GoldLeafDecoration";
 
 export function PlayersComingSoon() {
   return (
@@ -29,33 +26,14 @@ export function PlayersComingSoon() {
         {/* Gold particles effect */}
         <GoldParticles />
 
-        {/* Faded "2026" watermark */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span
-            className="text-[20rem] md:text-[28rem] font-black text-white/[0.015] select-none"
-            style={{ lineHeight: 1 }}
-          >
-            2026
-          </span>
-        </div>
-
         {/* Subtle fog gradient at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent pointer-events-none" />
       </div>
 
-      {/* Decorative gold leaf flourishes */}
-      <GoldLeafDecoration />
-
       {/* Main content */}
       <div className="relative z-10">
-        {/* Hero section with Santa and headline */}
+        {/* Hero section with Santa, headline, and social CTA */}
         <ComingSoonHero />
-
-        {/* Gift box grid */}
-        <GiftBoxGrid />
-
-        {/* Social CTA */}
-        <SocialCTA />
       </div>
     </section>
   );
