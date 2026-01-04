@@ -7,8 +7,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail, FiUsers } from "react-icons/fi";
-import { FaDiscord, FaTwitter, FaInstagram, FaCrown } from "react-icons/fa";
+import { FiMenu, FiX, FiChevronDown, FiStar, FiInfo, FiFileText, FiMail, FiUsers, FiAward, FiShoppingBag } from "react-icons/fi";
+import { FaDiscord, FaTwitter, FaInstagram } from "react-icons/fa";
 
 type NavItem = {
   href: string;
@@ -24,20 +24,30 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/club", label: "Club", special: true },
+  { href: "/store", label: "Store", special: true },
   { href: "/", label: "Home" },
-  { href: "/news", label: "News" },
-  { href: "/apparel", label: "Apparel" },
   { 
-    href: "/rosters", 
-    label: "Rosters",
+    href: "/general", 
+    label: "General",
     preventNavigation: true,
     dropdown: [
       { 
-        href: "/creators", 
-        label: "Creators",
+        href: "/news", 
+        label: "News",
+        icon: FiFileText,
+        description: "Latest updates and announcements"
+      },
+      { 
+        href: "/club", 
+        label: "Club",
         icon: FiUsers,
-        description: "Meet our content creators"
+        description: "Join the BGT community"
+      },
+      { 
+        href: "/achievements", 
+        label: "Record",
+        icon: FiAward,
+        description: "Our tournament history"
       }
     ]
   },
@@ -85,11 +95,37 @@ const NAV_ITEMS: NavItem[] = [
       }
     ]
   },
-  { href: "/achievements", label: "Achievements" }
+  { href: "/players/coming-soon", label: "Players" },
+  { href: "/creators", label: "Creators" }
 ];
 
 const LEFT_NAV_ITEMS: NavItem[] = [
   { 
+    href: "/general", 
+    label: "General",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/news", 
+        label: "News",
+        icon: FiFileText,
+        description: "Latest updates and announcements"
+      },
+      { 
+        href: "/club", 
+        label: "Club",
+        icon: FiUsers,
+        description: "Join the BGT community"
+      },
+      { 
+        href: "/achievements", 
+        label: "Record",
+        icon: FiAward,
+        description: "Our tournament history"
+      }
+    ]
+  },
+  { 
     href: "/creator-program", 
     label: "Creator Program",
     preventNavigation: true,
@@ -132,27 +168,13 @@ const LEFT_NAV_ITEMS: NavItem[] = [
         description: "Download our brand assets"
       }
     ]
-  },
-  { href: "/news", label: "News" },
-  { href: "/apparel", label: "Apparel" }
+  }
 ];
 
 const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/achievements", label: "Achievements" },
-  { 
-    href: "/rosters", 
-    label: "Rosters",
-    preventNavigation: true,
-    dropdown: [
-      { 
-        href: "/creators", 
-        label: "Creators",
-        icon: FiUsers,
-        description: "Meet our content creators"
-      }
-    ]
-  },
-  { href: "/club", label: "Club", special: true }
+  { href: "/players/coming-soon", label: "Players" },
+  { href: "/creators", label: "Creators" },
+  { href: "/store", label: "Store", special: true }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -328,7 +350,7 @@ function DesktopLink({
             className={`relative ${baseClasses} ${active ? activeClasses : inactiveClasses} ${isLocked ? 'text-[var(--gold)]' : ''}`}
             aria-expanded={dropdown ? isOpen : undefined}
           >
-            {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+            {special && <FiShoppingBag className="text-[var(--gold)]" size={14} />}
             {label}
             {dropdown && (
               <motion.div
@@ -346,7 +368,7 @@ function DesktopLink({
             className={`relative ${baseClasses} ${active ? activeClasses : inactiveClasses}`}
             aria-expanded={dropdown ? isOpen : undefined}
           >
-            {special && <FaCrown className="text-[var(--gold)]" size={14} />}
+            {special && <FiShoppingBag className="text-[var(--gold)]" size={14} />}
             {label}
             {dropdown && (
               <motion.div
@@ -514,7 +536,7 @@ function MobileMenu({
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                            {item.special && <FiShoppingBag className="text-[var(--gold)]" size={16} />}
                             {item.label}
                           </div>
                         </button>
@@ -531,7 +553,7 @@ function MobileMenu({
                           }`}
                         >
                           <div className="flex items-center gap-2">
-                            {item.special && <FaCrown className="text-[var(--gold)]" size={16} />}
+                            {item.special && <FiShoppingBag className="text-[var(--gold)]" size={16} />}
                             {item.label}
                           </div>
                         </Link>
