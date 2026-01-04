@@ -120,36 +120,6 @@ const LEFT_NAV_ITEMS: NavItem[] = [
     ]
   },
   { 
-    href: "/company", 
-    label: "Company",
-    preventNavigation: true,
-    dropdown: [
-      { 
-        href: "/contact", 
-        label: "Contact",
-        icon: FiMail,
-        description: "Get in touch with us"
-      },
-      { 
-        href: "/positions", 
-        label: "Positions",
-        icon: FaShieldAlt,
-        description: "Explore open team positions"
-      },
-      { 
-        href: "/brand-guidelines", 
-        label: "Brand Guidelines",
-        icon: FiImage,
-        description: "Download our brand assets"
-      }
-    ]
-  },
-  { href: "/players/coming-soon", label: "Players" }
-];
-
-const RIGHT_NAV_ITEMS: NavItem[] = [
-  { href: "/creators", label: "Creators" },
-  { 
     href: "/general", 
     label: "General",
     preventNavigation: true,
@@ -171,6 +141,36 @@ const RIGHT_NAV_ITEMS: NavItem[] = [
         label: "Record",
         icon: FiAward,
         description: "Our tournament history"
+      }
+    ]
+  },
+  { href: "/creators", label: "Creators" }
+];
+
+const RIGHT_NAV_ITEMS: NavItem[] = [
+  { href: "/players/coming-soon", label: "Players" },
+  { 
+    href: "/company", 
+    label: "Company",
+    preventNavigation: true,
+    dropdown: [
+      { 
+        href: "/contact", 
+        label: "Contact",
+        icon: FiMail,
+        description: "Get in touch with us"
+      },
+      { 
+        href: "/positions", 
+        label: "Positions",
+        icon: FaShieldAlt,
+        description: "Explore open team positions"
+      },
+      { 
+        href: "/brand-guidelines", 
+        label: "Brand Guidelines",
+        icon: FiImage,
+        description: "Download our brand assets"
       }
     ]
   },

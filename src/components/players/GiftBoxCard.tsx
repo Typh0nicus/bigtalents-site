@@ -97,7 +97,7 @@ export function GiftBoxCard({ index }: GiftBoxCardProps) {
             className="relative w-full h-full"
           >
             <Image
-              src="/images/players/coming-soon/gift-box.svg"
+              src="/images/players/coming-soon/gift-box.png"
               alt="Mystery player"
               fill
               className="object-contain drop-shadow-[0_4px_20px_rgba(0,0,0,0.3)]"

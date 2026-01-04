@@ -74,7 +74,7 @@ export function ComingSoonHero() {
           className="relative w-48 h-72 sm:w-56 sm:h-80 md:w-64 md:h-96"
         >
           <Image
-            src="/images/players/coming-soon/santa-silhouette.svg"
+            src="/images/players/coming-soon/santa-silhouette.png"
             alt="Mystery figure"
             fill
             className="object-contain drop-shadow-[0_0_30px_rgba(212,175,55,0.3)]"
